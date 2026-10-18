@@ -3,13 +3,15 @@ import { spawn } from "node:child_process";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
-import { type IdentitySource, SECRET_ENV_VARS, findIdentity, loadIdentity, publicRecipient } from "./identity.js";
+import { AgentClient, agentIdentityFor, agentRecipient, agentSocket, selectAgentKey } from "./agent.js";
+import { type IdentitySource, SECRET_ENV_VARS, explicitIdentity, findIdentity, loadIdentity, publicRecipient } from "./identity.js";
 import {
   type Identity,
   PassphraseRequiredError,
   type Recipient,
   fingerprint,
   generateAgeIdentity,
+  isEncryptedSSHKey,
   parseRecipient,
   recipientKey,
 } from "./keys.js";
@@ -20,9 +22,10 @@ const HELP = `envseal — encrypted .env files you can commit
 Usage: envseal [-f FILE] [-i KEY] <command> [args]
 
 Commands:
-  init [--recipient KEY]... [--keep-plain]
+  init [--recipient KEY]... [--agent [--key K]] [--keep-plain]
                          Start using envseal in FILE, encrypted for your SSH key
-                         (or the given public keys). Existing values get encrypted.
+                         (or your ssh-agent key, or the given public keys).
+                         Existing values get encrypted.
   set NAME [VALUE] [--plain]
                          Set a variable. Without VALUE it is read from stdin or
                          prompted for, so it doesn't end up in your shell history.
@@ -37,7 +40,13 @@ Commands:
   recipients             List who can decrypt the file.
   add KEY... [--label TEXT]
                          Give access to a public key: "ssh-ed25519 AAAA...",
-                         a .pub file, an age1... key, or @github-user.
+                         a .pub file, an age1... key, an "ssh-agent ..." line
+                         from \`envseal pubkey --agent\`, or @github-user.
+  add --agent [--key K]  Give access to your own ssh-agent key, so you can
+                         decrypt without a key file or passphrase prompt.
+  pubkey [--agent [--key K]]
+                         Print your public key, to send to someone who will
+                         \`envseal add\` it. With --agent, your ssh-agent key.
   remove WHO...          Revoke access (fingerprint, label or number from
                          \`recipients\`) and rotate the data key.
   keygen [--label TEXT]  Create a dedicated key (e.g. for CI), add it as a
@@ -46,7 +55,8 @@ Commands:
 Options:
   -f, --file FILE        File to use (default: $ENVSEAL_FILE or .env)
   -i, --identity KEY     Private key file (default: $ENVSEAL_PRIVATE_KEY,
-                         $ENVSEAL_IDENTITY or ~/.ssh/id_ed25519)
+                         $ENVSEAL_IDENTITY, ssh-agent, or ~/.ssh/id_ed25519)
+  --key K                Which ssh-agent key: fingerprint or comment
   -h, --help             Show this help
   -v, --version          Show the version
 `;
@@ -60,7 +70,7 @@ interface Args {
   rest: string[];
 }
 
-const VALUE_FLAGS = new Set(["file", "identity", "recipient", "label"]);
+const VALUE_FLAGS = new Set(["file", "identity", "recipient", "label", "key"]);
 const ALIASES: Record<string, string> = { f: "file", i: "identity", h: "help", v: "version" };
 
 function parseArgs(argv: string[]): Args {
@@ -94,6 +104,12 @@ const info = (s: string) => process.stderr.write(s + "\n");
 
 function describe(r: Recipient): string {
   return `${fingerprint(r)}  ${r.type === "X25519" ? "age" : r.type}${r.label ? `  ${r.label}` : ""}`;
+}
+
+function agentClient(): AgentClient {
+  const socket = agentSocket();
+  if (!socket) throw new Error("no ssh-agent found: SSH_AUTH_SOCK is not set");
+  return new AgentClient(socket);
 }
 
 async function promptHidden(question: string): Promise<string> {
@@ -157,6 +173,56 @@ class Session {
     }
   }
 
+  /** This user's ssh-agent recipient (signs twice to check it's deterministic). */
+  async agentRecipient(): Promise<Recipient> {
+    const client = agentClient();
+    let preferred: Buffer | undefined;
+    try {
+      const src = findIdentity(process.env, this.args.flags.get("identity")?.at(-1));
+      const pub = src && publicRecipient(src);
+      if (pub && pub.type === "ssh-ed25519") preferred = pub.wire;
+    } catch {
+      // Only used to pick between several agent keys.
+    }
+    const key = selectAgentKey(await client.keys(), this.args.flags.get("key")?.at(-1), preferred);
+    return agentRecipient(client, key);
+  }
+
+  /** Unlock with an explicit key, else ssh-agent, else ~/.ssh/id_ed25519. */
+  async unlock(env: SealedEnv): Promise<void> {
+    const explicit = explicitIdentity(process.env, this.args.flags.get("identity")?.at(-1));
+    let agentError: Error | undefined;
+    const socket = agentSocket();
+    if (!explicit && socket && env.recipients.some((r) => r.recipient.type === "ssh-agent")) {
+      try {
+        const identity = await agentIdentityFor(new AgentClient(socket), env.recipients.map((r) => r.recipient));
+        if (identity) return env.unlock(identity);
+      } catch (err) {
+        agentError = err as Error;
+      }
+    }
+    if (!explicit && !findIdentity(process.env) && agentError) throw agentError;
+    const identity = await this.identity();
+    env.unlock(identity);
+    await this.suggestAgent(env, identity, socket);
+  }
+
+  /** After typing a passphrase for a key the agent already holds, point at `add --agent`. */
+  private async suggestAgent(env: SealedEnv, identity: Identity, socket: string | null): Promise<void> {
+    if (!socket || identity.recipient.type !== "ssh-ed25519") return;
+    const { wire } = identity.recipient;
+    if (env.recipients.some((r) => r.recipient.type === "ssh-agent" && r.recipient.wire.equals(wire))) return;
+    try {
+      if (!isEncryptedSSHKey(this.identitySource().text, this.identitySource().source)) return;
+      const keys = await new AgentClient(socket).keys();
+      if (keys.some((k) => k.wire.equals(wire))) {
+        info("Tip: this key is loaded in ssh-agent. Run `envseal add --agent` to stop typing its passphrase here.");
+      }
+    } catch {
+      // Only a hint.
+    }
+  }
+
   read(): SealedEnv {
     return new SealedEnv(existsSync(this.path) ? readFileSync(this.path, "utf8") : "");
   }
@@ -168,7 +234,7 @@ class Session {
       if (!existsSync(this.path)) throw new Error(`${this.path} not found. Run \`envseal init\` first.`);
       return env;
     }
-    env.unlock(await this.identity());
+    await this.unlock(env);
     return env;
   }
 
@@ -237,7 +303,9 @@ async function run(argv: string[]): Promise<number> {
     case "init": {
       const env = s.read();
       const specs = args.flags.get("recipient") ?? [];
-      const recipients = specs.length ? await resolveRecipients(specs) : [publicRecipient(s.identitySource())];
+      const recipients = specs.length ? await resolveRecipients(specs) : [];
+      if (args.flags.has("agent")) recipients.push(await s.agentRecipient());
+      if (recipients.length === 0) recipients.push(publicRecipient(s.identitySource()));
       const encrypted = env.init(recipients, { keepPlain: args.flags.has("keep-plain") });
       s.write(env);
       info(`envseal: ${s.path} is now encrypted for:`);
@@ -309,9 +377,14 @@ async function run(argv: string[]): Promise<number> {
       return 0;
     }
     case "add": {
-      if (args.positional.length === 0) throw new UsageError("usage: envseal add KEY...");
+      if (args.positional.length === 0 && !args.flags.has("agent")) throw new UsageError("usage: envseal add KEY... | --agent");
       const recipients = await resolveRecipients(args.positional, label);
       const env = await s.openSealed();
+      if (args.flags.has("agent")) {
+        const mine = await s.agentRecipient();
+        if (label) mine.label = label;
+        recipients.push(mine);
+      }
       for (const r of recipients) env.addRecipient(r);
       s.write(env);
       for (const r of recipients) info(`Added ${describe(r)}`);
@@ -328,6 +401,11 @@ async function run(argv: string[]): Promise<number> {
       s.write(env);
       for (const r of removed) info(`Removed ${describe(r)}`);
       info("The data key was rotated. Anyone removed may still know the values they could read: rotate those secrets too.");
+      return 0;
+    }
+    case "pubkey": {
+      const r = args.flags.has("agent") ? await s.agentRecipient() : publicRecipient(s.identitySource());
+      out(`${recipientKey(r)}${r.label ? ` ${r.label}` : ""}`);
       return 0;
     }
     case "keygen": {

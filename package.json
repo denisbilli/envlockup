@@ -1,6 +1,6 @@
 {
   "name": "envseal",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Encrypted .env files you can commit. Decrypt with the SSH key you already have.",
   "keywords": ["dotenv", "env", "secrets", "encryption", "ssh", "age"],
   "license": "MIT",
@@ -25,7 +25,7 @@
   },
   "files": ["dist", "README.md", "LICENSE"],
   "engines": {
-    "node": ">=20.19"
+    "node": ">=22.12"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

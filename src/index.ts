@@ -1,6 +1,10 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { SECRET_ENV_VARS, findIdentity, loadIdentity } from "./identity.js";
+import { fileURLToPath } from "node:url";
+import { agentSocket } from "./agent.js";
+import { SECRET_ENV_VARS, defaultIdentity, explicitIdentity, loadIdentity } from "./identity.js";
+import { type Identity, recipientKey, x25519Identity } from "./keys.js";
 import { SealedEnv } from "./vault.js";
 
 export { SealedEnv, NotARecipientError, LockedError, isEncryptedValue } from "./vault.js";
@@ -33,15 +37,47 @@ export function load(options: Omit<ConfigOptions, "override" | "processEnv"> = {
   const path = resolve(options.path ?? process.env.ENVSEAL_FILE ?? ".env");
   const env = new SealedEnv(readFileSync(path, "utf8"));
   if (env.entries().some((e) => e.encrypted)) {
-    const src = options.privateKey ? { text: options.privateKey, source: "privateKey option" } : findIdentity();
+    const explicit = options.privateKey ? { text: options.privateKey, source: "privateKey option" } : explicitIdentity();
+    let agentError: Error | undefined;
+    if (!explicit) {
+      try {
+        const identity = agentIdentitySync(env);
+        if (identity) {
+          env.unlock(identity);
+          return env.decryptAll();
+        }
+      } catch (err) {
+        agentError = err as Error;
+      }
+    }
+    const src = explicit ?? defaultIdentity();
     if (!src) {
       throw new Error(
-        `${path} contains encrypted values but no private key was found. Use ~/.ssh/id_ed25519, or set ENVSEAL_PRIVATE_KEY or ENVSEAL_IDENTITY.`,
+        agentError
+          ? `${path}: ${agentError.message}`
+          : `${path} contains encrypted values but no private key was found. Use ~/.ssh/id_ed25519 or ssh-agent, or set ENVSEAL_PRIVATE_KEY or ENVSEAL_IDENTITY.`,
       );
     }
     env.unlock(loadIdentity(src, options.passphrase));
   }
   return env.decryptAll();
+}
+
+/** Ask ssh-agent for an identity, synchronously, via a short-lived child process. */
+function agentIdentitySync(env: SealedEnv): Identity | null {
+  const agentRecipients = env.recipients.filter((r) => r.recipient.type === "ssh-agent").map((r) => recipientKey(r.recipient));
+  if (agentRecipients.length === 0 || !agentSocket()) return null;
+  const helper = fileURLToPath(new URL("./agent-helper.js", import.meta.url));
+  let out: string;
+  try {
+    out = execFileSync(process.execPath, [helper], { input: JSON.stringify(agentRecipients), encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+  } catch (err) {
+    const stderr = (err as { stderr?: string }).stderr?.trim();
+    throw new Error(stderr || (err as Error).message);
+  }
+  const found = JSON.parse(out) as { secret?: string; wire?: string; comment?: string };
+  if (!found.secret || !found.wire) return null;
+  return x25519Identity(Buffer.from(found.secret, "hex"), found.comment ?? "", Buffer.from(found.wire, "base64"));
 }
 
 /**

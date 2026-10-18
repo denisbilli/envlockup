@@ -18,7 +18,7 @@ STRIPE_KEY=envseal:v1:d_1O_5okxkAcURxzsPU9dZWzjvRvELqCzyuTDQIHxNmEIbCaHswcn6ZMZg
 LOG_LEVEL=debug
 ```
 
-- **No new keys or passwords.** It uses your `~/.ssh/id_ed25519`, including passphrase-protected ones.
+- **No new keys or passwords.** It uses your `~/.ssh/id_ed25519`, including passphrase-protected ones, or the key in your **ssh-agent**, so the private key never has to be on disk.
 - **Drop-in for dotenv.** Replace `import "dotenv/config"` with `import "envseal/config"`.
 - **Readable diffs.** Only values are encrypted. Names, comments and order stay as they are, so reviews and merges work.
 - **Nothing decrypted on disk.** `envseal run -- <command>` passes the values straight to the process.
@@ -74,6 +74,37 @@ Keys fetched from GitHub are trusted as published: confirm the fingerprint with
 their owner. After `remove`, the person removed still knows every value they could
 read before. **Rotate those secrets**; envseal can't do that part for you.
 
+## Using ssh-agent
+
+If your key lives in an agent (a passphrase-protected key loaded with `ssh-add`,
+or a password manager's SSH agent), envseal can use it directly. It is tested with
+OpenSSH's `ssh-agent`; other agents should work as long as they sign with Ed25519
+or RSA, and envseal checks that before using a key:
+
+```sh
+npx envseal init --agent           # new file, encrypted for your agent key
+npx envseal add --agent            # or: add your agent key to an existing file
+```
+
+From then on, `get`, `run` and `import "envseal/config"` ask the agent and don't
+need a key file or a passphrase. If the agent holds several keys, pick one with
+`--key <fingerprint or comment>`.
+
+An agent can only sign, not decrypt, so envseal derives a separate age key from
+the agent's signature over a fixed, envseal-specific message. That key has its own
+public part, which is what others need to give you access:
+
+```sh
+npx envseal pubkey --agent         # send this line to a teammate
+# ssh-agent age1... ssh-ed25519 AAAA... denis@laptop
+npx envseal add "ssh-agent age1... ssh-ed25519 AAAA... denis@laptop"   # they run this
+```
+
+`add @github-user` adds the plain SSH key, which needs the key file to decrypt.
+Supported agent keys: `ssh-ed25519` and `ssh-rsa`. Hardware-backed ECDSA keys
+(Secretive, Secure Enclave) and FIDO `sk-` keys can't be used, because their
+signatures change every time; envseal checks this before adding a key.
+
 ## CI and servers
 
 Don't put your personal SSH key on a server. Create a dedicated key instead:
@@ -99,11 +130,14 @@ In order:
 
 1. `ENVSEAL_PRIVATE_KEY`: the key itself (an `AGE-SECRET-KEY-1...` or an OpenSSH private key; a literal `\n` is accepted for flattened secrets)
 2. `-i FILE` or `ENVSEAL_IDENTITY`: path to a key file
-3. `~/.ssh/id_ed25519`
+3. ssh-agent (`SSH_AUTH_SOCK`), if the file has an `ssh-agent` recipient the agent holds
+4. `~/.ssh/id_ed25519`
 
-A passphrase-protected key is unlocked with `ENVSEAL_SSH_PASSPHRASE`, or by a
-prompt when you use the CLI in a terminal. `import "envseal/config"` cannot
-prompt, so with a protected key use `envseal run` during development.
+When 1 or 2 is set, nothing else is tried.
+
+A passphrase-protected key file is unlocked with `ENVSEAL_SSH_PASSPHRASE`, or by
+a prompt when you use the CLI in a terminal. `import "envseal/config"` cannot
+prompt: load the key in ssh-agent and run `envseal add --agent` once instead.
 
 envseal removes `ENVSEAL_PRIVATE_KEY` and `ENVSEAL_SSH_PASSPHRASE` from the
 environment of the commands it runs, and from `process.env` after `config()`.
@@ -112,7 +146,7 @@ environment of the commands it runs, and from `process.env` after `config()`.
 
 | Command | |
 |---|---|
-| `init [--recipient KEY]... [--keep-plain]` | Start using envseal; encrypts existing values |
+| `init [--recipient KEY]... [--agent] [--keep-plain]` | Start using envseal; encrypts existing values |
 | `set NAME [VALUE] [--plain]` | Set a value (prompted or read from stdin if omitted) |
 | `get NAME` | Print one decrypted value |
 | `unset NAME` | Remove a variable |
@@ -121,11 +155,13 @@ environment of the commands it runs, and from `process.env` after `config()`.
 | `decrypt` | Print the whole file decrypted (dotenv format) |
 | `run [--override] -- CMD...` | Run a command with the variables set |
 | `recipients` | List who can decrypt |
-| `add KEY... [--label TEXT]` | Give access to a key, `.pub` file, `age1...` or `@github-user` |
+| `add KEY... [--label TEXT]` | Give access to a key, `.pub` file, `age1...`, `ssh-agent ...` line or `@github-user` |
+| `add --agent [--key K]` | Give access to your own ssh-agent key |
+| `pubkey [--agent] [--key K]` | Print your public key, to send to whoever will `add` you |
 | `remove WHO...` | Revoke access (fingerprint, label or number) and rotate the data key |
 | `keygen [--label TEXT]` | Create a dedicated key for CI/servers |
 
-Global options: `-f FILE` (default `$ENVSEAL_FILE` or `.env`), `-i KEY`.
+Global options: `-f FILE` (default `$ENVSEAL_FILE` or `.env`), `-i KEY`, `--key K` (which agent key).
 
 As in dotenv, variables that are already set are not overwritten, unless you pass
 `--override` (CLI) or `override: true` (API).
@@ -144,8 +180,9 @@ like you would review code. See [docs/DESIGN.md](docs/DESIGN.md) for the details
 
 ## Requirements
 
-Node.js 20.19 or later. Keys: `ssh-ed25519` (RSA and FIDO `sk-` keys are not
-supported yet) and native age X25519 keys.
+Node.js 22.12 or later. Keys: `ssh-ed25519` files, `ssh-ed25519` and `ssh-rsa`
+keys in ssh-agent, and native age X25519 keys. RSA key files and FIDO `sk-` keys
+are not supported.
 
 ## License
 

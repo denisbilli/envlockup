@@ -1,8 +1,10 @@
 // Recipients (public keys a file is encrypted to) and identities (private keys
-// that can decrypt it). Two kinds are supported, both straight from age:
+// that can decrypt it):
 //
-//   ssh-ed25519  your existing SSH key (~/.ssh/id_ed25519)
+//   ssh-ed25519  your existing SSH key (~/.ssh/id_ed25519), as in age
 //   X25519       a native age key (AGE-SECRET-KEY-1...), handy for CI
+//   ssh-agent    an X25519 key derived from a signature made by ssh-agent
+//                (see agent.ts); the SSH key only tells us which agent key to use
 
 import { createDecipheriv } from "node:crypto";
 import bcrypt from "bcrypt-pbkdf";
@@ -23,10 +25,11 @@ import {
 
 export type Recipient =
   | { type: "ssh-ed25519"; wire: Buffer; label: string }
-  | { type: "X25519"; publicKey: Buffer; label: string };
+  | { type: "X25519"; publicKey: Buffer; label: string }
+  | { type: "ssh-agent"; wire: Buffer; publicKey: Buffer; label: string };
 
 export interface Stanza {
-  type: Recipient["type"];
+  type: "ssh-ed25519" | "X25519";
   args: string[];
   body: Buffer;
 }
@@ -83,6 +86,19 @@ function ed25519Wire(publicKey: Uint8Array): Buffer {
   return Buffer.concat([sshString(Buffer.from("ssh-ed25519")), sshString(publicKey)]);
 }
 
+/** The key type of an SSH public key in wire format, e.g. "ssh-ed25519". */
+export function sshKeyType(wire: Buffer): string {
+  return new Reader(wire).string().toString();
+}
+
+export function parseSSHPublicKey(text: string): { wire: Buffer; comment: string } {
+  const parts = text.trim().split(/\s+/);
+  if (!parts[0] || !parts[1]) throw new Error("invalid SSH public key");
+  const wire = unb64(parts[1].replace(/=+$/, ""));
+  if (sshKeyType(wire) !== parts[0]) throw new Error("invalid SSH public key");
+  return { wire, comment: parts.slice(2).join(" ") };
+}
+
 function ed25519FromWire(wire: Buffer): Buffer {
   const r = new Reader(wire);
   const type = r.string().toString();
@@ -94,31 +110,47 @@ function ed25519FromWire(wire: Buffer): Buffer {
 
 // --- Recipients -------------------------------------------------------------------
 
-/** Parse `ssh-ed25519 AAAA... [comment]` or `age1...`. */
+function decodeAgeRecipient(s: string): Buffer {
+  const { hrp, data } = bech32.decode(s);
+  if (hrp !== "age" || data.length !== 32) throw new Error("invalid age recipient");
+  return data;
+}
+
+/** Parse `ssh-ed25519 AAAA... [comment]`, `age1...` or `ssh-agent age1... <ssh key> [comment]`. */
 export function parseRecipient(text: string, label?: string): Recipient {
   const parts = text.trim().split(/\s+/);
+  if (parts[0] === "ssh-agent" && parts[1] && parts[2] && parts[3]) {
+    const publicKey = decodeAgeRecipient(parts[1]);
+    const { wire } = parseSSHPublicKey(`${parts[2]} ${parts[3]}`);
+    return { type: "ssh-agent", wire, publicKey, label: label ?? parts.slice(4).join(" ") };
+  }
   if (parts[0] === "ssh-ed25519" && parts[1]) {
     const wire = unb64(parts[1].replace(/=+$/, ""));
     ed25519FromWire(wire);
     return { type: "ssh-ed25519", wire, label: label ?? parts.slice(2).join(" ") };
   }
   if (parts[0]?.startsWith("age1")) {
-    const { hrp, data } = bech32.decode(parts[0]);
-    if (hrp !== "age" || data.length !== 32) throw new Error("invalid age recipient");
-    return { type: "X25519", publicKey: data, label: label ?? parts.slice(1).join(" ") };
+    return { type: "X25519", publicKey: decodeAgeRecipient(parts[0]), label: label ?? parts.slice(1).join(" ") };
   }
   if (parts[0]?.startsWith("sk-")) throw new Error("FIDO (sk-) SSH keys cannot decrypt; use a regular ssh-ed25519 key");
   throw new Error(`unsupported recipient "${parts[0] ?? ""}" (expected ssh-ed25519 or age1...)`);
 }
 
-/** The public key as it is written in the file: `ssh-ed25519 AAAA...` or `age1...`. */
+/** The public key in the form `parseRecipient` accepts, without the label. */
 export function recipientKey(r: Recipient): string {
-  return r.type === "ssh-ed25519" ? `ssh-ed25519 ${r.wire.toString("base64")}` : bech32.encode("age", r.publicKey);
+  switch (r.type) {
+    case "ssh-ed25519":
+      return `ssh-ed25519 ${r.wire.toString("base64")}`;
+    case "X25519":
+      return bech32.encode("age", r.publicKey);
+    case "ssh-agent":
+      return `ssh-agent ${bech32.encode("age", r.publicKey)} ${sshKeyType(r.wire)} ${r.wire.toString("base64")}`;
+  }
 }
 
-/** Short, human-friendly fingerprint (SHA256, like `ssh-keygen -l`). */
+/** Short, human-friendly fingerprint. For SSH keys it matches `ssh-keygen -l`. */
 export function fingerprint(r: Recipient): string {
-  const material = r.type === "ssh-ed25519" ? r.wire : r.publicKey;
+  const material = r.type === "X25519" ? r.publicKey : r.wire;
   return `SHA256:${b64(sha256(material))}`;
 }
 
@@ -129,7 +161,7 @@ export function sameRecipient(a: Recipient, b: Recipient): boolean {
 export function wrap(r: Recipient, fileKey: Uint8Array): Stanza {
   const ephemeral = randomBytes(32);
   const share = x25519Base(ephemeral);
-  if (r.type === "X25519") {
+  if (r.type === "X25519" || r.type === "ssh-agent") {
     const shared = x25519(ephemeral, r.publicKey);
     const key = hkdf(shared, Buffer.concat([share, r.publicKey]), X25519_LABEL, 32);
     return { type: "X25519", args: [b64(share)], body: seal(key, fileKey) };
@@ -144,10 +176,10 @@ export function wrap(r: Recipient, fileKey: Uint8Array): Stanza {
 
 // --- Identities -------------------------------------------------------------------
 
-function x25519Identity(secret: Buffer, label: string): Identity {
+export function x25519Identity(secret: Buffer, label: string, agentKey?: Buffer): Identity {
   const publicKey = x25519Base(secret);
   return {
-    recipient: { type: "X25519", publicKey, label },
+    recipient: agentKey ? { type: "ssh-agent", wire: agentKey, publicKey, label } : { type: "X25519", publicKey, label },
     unwrap(stanza) {
       if (stanza.type !== "X25519" || stanza.args.length !== 1) return null;
       try {

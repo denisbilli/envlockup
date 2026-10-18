@@ -2,7 +2,10 @@
 //
 //   1. ENVSEAL_PRIVATE_KEY  the key itself (CI: store it as a single secret)
 //   2. ENVSEAL_IDENTITY     path to a key file
-//   3. ~/.ssh/id_ed25519    your SSH key
+//   3. ssh-agent            if the file has an ssh-agent recipient the agent holds
+//   4. ~/.ssh/id_ed25519    your SSH key
+//
+// 1 and 2 (and the CLI's -i) are "explicit": when set, nothing else is tried.
 //
 // A passphrase-protected SSH key is unlocked with ENVSEAL_SSH_PASSPHRASE, or
 // interactively by the CLI.
@@ -27,7 +30,7 @@ export function defaultKeyPath(): string {
   return join(homedir(), ".ssh", "id_ed25519");
 }
 
-export function findIdentity(env: Env = process.env, path?: string): IdentitySource | null {
+export function explicitIdentity(env: Env = process.env, path?: string): IdentitySource | null {
   if (path) return { text: readFileSync(path, "utf8"), source: path, path };
   const inline = env.ENVSEAL_PRIVATE_KEY?.trim();
   if (inline) {
@@ -35,9 +38,18 @@ export function findIdentity(env: Env = process.env, path?: string): IdentitySou
     const text = inline.includes("\n") ? inline : inline.replace(/\\n/g, "\n");
     return { text, source: "ENVSEAL_PRIVATE_KEY" };
   }
-  const file = env.ENVSEAL_IDENTITY || defaultKeyPath();
-  if (env.ENVSEAL_IDENTITY || existsSync(file)) return { text: readFileSync(file, "utf8"), source: file, path: file };
+  const file = env.ENVSEAL_IDENTITY;
+  if (file) return { text: readFileSync(file, "utf8"), source: file, path: file };
   return null;
+}
+
+export function defaultIdentity(): IdentitySource | null {
+  const file = defaultKeyPath();
+  return existsSync(file) ? { text: readFileSync(file, "utf8"), source: file, path: file } : null;
+}
+
+export function findIdentity(env: Env = process.env, path?: string): IdentitySource | null {
+  return explicitIdentity(env, path) ?? defaultIdentity();
 }
 
 export function loadIdentity(src: IdentitySource, passphrase?: string, env: Env = process.env): Identity {

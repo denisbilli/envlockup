@@ -79,24 +79,33 @@ function decryptValue(dataKey: Buffer, name: string, value: string): string {
   }
 }
 
+// Per recipient type: how many tokens the public key takes, and the stanza it uses.
+const LINE_LAYOUT = {
+  "ssh-ed25519": { keyTokens: 1, stanza: "ssh-ed25519", args: 2 },
+  X25519: { keyTokens: 1, stanza: "X25519", args: 1 },
+  "ssh-agent": { keyTokens: 3, stanza: "X25519", args: 1 },
+} as const;
+
 function parseRecipientLine(line: string): RecipientEntry {
   const parts = line.slice(RECIPIENT_LINE.length).trim().split(/\s+/);
-  const type = parts[0];
-  const argCount = type === "ssh-ed25519" ? 2 : type === "X25519" ? 1 : -1;
-  if (argCount === -1 || parts.length < 3 + argCount) throw new Error(`malformed envseal recipient line: ${line}`);
-  const publicKey = type === "ssh-ed25519" ? `ssh-ed25519 ${parts[1]}` : parts[1]!;
-  const label = parts.slice(3 + argCount).join(" ");
-  const recipient = parseRecipient(publicKey, label);
+  const type = parts[0] as keyof typeof LINE_LAYOUT;
+  const layout = Object.hasOwn(LINE_LAYOUT, type) ? LINE_LAYOUT[type] : undefined;
+  if (!layout || parts.length < 2 + layout.keyTokens + layout.args) throw new Error(`malformed envseal recipient line: ${line}`);
+  const keyEnd = 1 + layout.keyTokens;
+  const stanzaEnd = keyEnd + layout.args;
+  const keyTokens = parts.slice(1, keyEnd).join(" ");
+  const label = parts.slice(stanzaEnd + 1).join(" ");
+  const recipient = parseRecipient(type === "X25519" ? keyTokens : `${type} ${keyTokens}`, label);
   if (recipient.type !== type) throw new Error(`malformed envseal recipient line: ${line}`);
   return {
     recipient,
-    stanza: { type, args: parts.slice(2, 2 + argCount), body: decodeBase64(parts[2 + argCount]!) },
+    stanza: { type: layout.stanza, args: parts.slice(keyEnd, stanzaEnd), body: decodeBase64(parts[stanzaEnd]!) },
   };
 }
 
 function formatRecipientLine({ recipient, stanza }: RecipientEntry): string {
-  const key = recipient.type === "ssh-ed25519" ? recipient.wire.toString("base64") : recipientKey(recipient);
-  const parts = [stanza.type, key, ...stanza.args, encodeBase64(stanza.body)];
+  const key = recipientKey(recipient);
+  const parts = [recipient.type === "X25519" ? `X25519 ${key}` : key, ...stanza.args, encodeBase64(stanza.body)];
   if (recipient.label) parts.push(recipient.label.replace(/\s+/g, " "));
   return RECIPIENT_LINE + parts.join(" ");
 }
