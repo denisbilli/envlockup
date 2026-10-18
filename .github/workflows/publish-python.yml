@@ -1,0 +1,29 @@
+name: Publish Python package
+
+# A GitHub release whose tag starts with py-v (e.g. py-v0.1.0) publishes
+# python/ to PyPI as envseal-python, with trusted publishing (no token).
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: startsWith(github.event.release.tag_name, 'py-v')
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # PyPI trusted publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install "./python[test]" build
+      - run: pytest python
+      - run: python -m build python
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: python/dist

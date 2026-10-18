@@ -10,6 +10,8 @@ permissions:
 
 jobs:
   publish:
+    # Tags starting with py-v are Python releases (publish-python.yml).
+    if: ${{ !startsWith(github.event.release.tag_name, 'py-v') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

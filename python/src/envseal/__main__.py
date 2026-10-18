@@ -1,0 +1,117 @@
+"""python -m envseal: read envseal files from the command line.
+
+Edit them with the envseal CLI from npm (`npx envseal set NAME`).
+"""
+
+from __future__ import annotations
+
+import argparse
+import getpass
+import json
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+from . import SECRET_ENV_VARS, _find_identity, load
+from ._keys import is_encrypted_ssh_key
+from .errors import EnvsealError, PassphraseRequiredError
+
+USAGE = """python -m envseal [-f FILE] [-i KEY] <command>
+
+Commands:
+  get NAME               Print one decrypted value.
+  decrypt                Print the whole file decrypted, in dotenv format.
+  run [--override] -- COMMAND [ARGS]...
+                         Run COMMAND with the variables in its environment.
+                         Nothing decrypted is written to disk.
+
+Options:
+  -f, --file FILE        File to use (default: $ENVSEAL_FILE or .env)
+  -i, --identity KEY     Private key file (default: $ENVSEAL_PRIVATE_KEY,
+                         $ENVSEAL_IDENTITY, or ~/.ssh/id_ed25519)
+"""
+
+
+def _parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(prog="python -m envseal", usage=USAGE, add_help=True)
+    p.add_argument("-f", "--file")
+    p.add_argument("-i", "--identity")
+    sub = p.add_subparsers(dest="command", required=True)
+    get = sub.add_parser("get")
+    get.add_argument("name")
+    sub.add_parser("decrypt")
+    run = sub.add_parser("run")
+    run.add_argument("--override", action="store_true")
+    run.add_argument("argv", nargs=argparse.REMAINDER)
+    return p
+
+
+def _values(args: argparse.Namespace) -> dict[str, str]:
+    try:
+        return load(args.file, identity=args.identity)
+    except PassphraseRequiredError:
+        # Ask interactively, like the Node CLI, when there is someone to ask.
+        if not sys.stdin.isatty():
+            raise
+        found = _find_identity(None, args.identity)
+        if not found or not is_encrypted_ssh_key(found[0]):
+            raise
+        passphrase = getpass.getpass(f"Passphrase for {found[1]}: ")
+        return load(args.file, identity=args.identity, passphrase=passphrase)
+
+
+def _run(command: list[str], env: dict[str, str]) -> int:
+    if os.name == "posix":
+        # Replace this process, so the command gets signals and keeps our PID
+        # (what systemd, supervisord and Docker expect).
+        try:
+            os.execvpe(command[0], command, env)
+        except OSError as err:
+            print(f"envseal: cannot run {command[0]}: {err.strerror}", file=sys.stderr)
+            return 127
+    # Windows: resolve .exe/.cmd through PATHEXT, then wait for the child.
+    exe = shutil.which(command[0], path=env.get("PATH")) or command[0]
+    try:
+        return subprocess.call([exe, *command[1:]], env=env)
+    except OSError as err:
+        print(f"envseal: cannot run {command[0]}: {err.strerror}", file=sys.stderr)
+        return 127
+    except KeyboardInterrupt:
+        return 130
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _parser().parse_args(argv)
+    try:
+        if args.command == "get":
+            values = _values(args)
+            if args.name not in values:
+                print(f"envseal: {args.name} is not set", file=sys.stderr)
+                return 1
+            print(values[args.name])
+        elif args.command == "decrypt":
+            for name, value in _values(args).items():
+                print(f"{name}={json.dumps(value, ensure_ascii=False)}")
+        elif args.command == "run":
+            command = args.argv[1:] if args.argv[:1] == ["--"] else args.argv
+            if not command:
+                print("usage: python -m envseal run -- COMMAND [ARGS]...", file=sys.stderr)
+                return 2
+            values = _values(args)
+            env = dict(os.environ)
+            for name in SECRET_ENV_VARS:
+                env.pop(name, None)
+            for name, value in values.items():
+                if args.override or name not in env:
+                    env[name] = value
+            return _run(command, env)
+    except (EnvsealError, OSError) as err:
+        print(f"envseal: {err}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
