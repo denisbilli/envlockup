@@ -1,0 +1,42 @@
+{
+  "name": "envseal",
+  "version": "0.1.0",
+  "description": "Encrypted .env files you can commit. Decrypt with the SSH key you already have.",
+  "keywords": ["dotenv", "env", "secrets", "encryption", "ssh", "age"],
+  "license": "MIT",
+  "author": "denisbilli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denisbilli/envseal.git"
+  },
+  "type": "module",
+  "bin": {
+    "envseal": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test \"test/*.test.js\"",
+    "prepublishOnly": "npm test"
+  },
+  "dependencies": {
+    "bcrypt-pbkdf": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}

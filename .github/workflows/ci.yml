@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20, 22, 24]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # The interop tests check envseal against the reference age CLI; they are
+      # skipped where age is not installed.
+      - if: runner.os == 'Linux'
+        run: sudo apt-get install -y age
+      - if: runner.os == 'macOS'
+        run: brew install age
+      - run: npm ci
+      - run: npm test
