@@ -118,10 +118,11 @@ export class SealedEnv {
 
   constructor(text = "") {
     this.lines = splitLines(text);
-    this.sealed = this.lines.some((l) => l === VERSION_LINE || l.startsWith(VERSION_LINE + " "));
+    const isVersionLine = (l: string) => l === VERSION_LINE || l.startsWith(VERSION_LINE + " ");
+    this.sealed = this.lines.some(isVersionLine);
     for (const line of this.lines) {
       if (line.startsWith(RECIPIENT_LINE)) this.recipients.push(parseRecipientLine(line));
-      else if (line.startsWith(HEADER) && !line.startsWith(VERSION_LINE)) {
+      else if (line.startsWith(HEADER) && !isVersionLine(line)) {
         throw new Error(`unsupported envseal header line (is your envseal up to date?): ${line}`);
       }
     }

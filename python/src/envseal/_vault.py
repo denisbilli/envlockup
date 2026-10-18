@@ -47,6 +47,10 @@ def is_encrypted_value(value: str) -> bool:
     return value.startswith(VALUE_PREFIX)
 
 
+def _is_version_line(line: str) -> bool:
+    return line == VERSION_LINE or line.startswith(VERSION_LINE + " ")
+
+
 def _check_recipient(kind: str, tokens: list[str]) -> None:
     """Validate the public key on a recipient line, as the Node implementation does."""
     if kind == "X25519":
@@ -103,7 +107,7 @@ class SealedFile:
 
     def __init__(self, text: str) -> None:
         lines = split_lines(text)
-        self.sealed = any(line == VERSION_LINE or line.startswith(VERSION_LINE + " ") for line in lines)
+        self.sealed = any(_is_version_line(line) for line in lines)
         self.stanzas: list[Stanza] = []
         self.agent_recipients = 0
         for line in lines:
@@ -111,7 +115,7 @@ class SealedFile:
                 self.stanzas.append(_parse_recipient_line(line))
                 if line[len(RECIPIENT_LINE) :].lstrip().startswith("ssh-agent "):
                     self.agent_recipients += 1
-            elif line.startswith(HEADER) and not line.startswith(VERSION_LINE):
+            elif line.startswith(HEADER) and not _is_version_line(line):
                 raise FormatError(f"unsupported envseal header line (is envseal up to date?): {line}")
         if self.sealed and not self.stanzas:
             raise FormatError("envseal file has no recipients")

@@ -256,1381 +256,181 @@
       }
     },
     {
-      "text": "\\",
+      "text": "n{﻿} \u001c=né`\u000b#\u001c= \t",
       "expected": {}
     },
     {
-      "text": "b'﻿-n$=\\ r",
-      "expected": {}
-    },
-    {
-      "text": " r﻿😀n  #`#{r😀}Ann\\ ",
-      "expected": {}
-    },
-    {
-      "text": "#_\u001cexport $",
-      "expected": {}
-    },
-    {
-      "text": "# -::_.nb'__😀\r \u000b'..\r",
-      "expected": {}
-    },
-    {
-      "text": "n'export =_\r`é-\u001c\u001c\u001c -\\😀\n#b#",
-      "expected": {}
-    },
-    {
-      "text": "b﻿\tb}:$\tn'n'_\t}}:export ",
-      "expected": {}
-    },
-    {
-      "text": "export ",
-      "expected": {}
-    },
-    {
-      "text": "\u001c\n \\ {export {export {\t",
-      "expected": {}
-    },
-    {
-      "text": "\u001cn #}#\nA\r  :\r\n",
-      "expected": {}
-    },
-    {
-      "text": "`export  😀_r''\"A\nAn",
-      "expected": {}
-    },
-    {
-      "text": "':r\t__'\"\\#\\ \u000b\\",
-      "expected": {}
-    },
-    {
-      "text": "`\n",
-      "expected": {}
-    },
-    {
-      "text": "﻿r::\n'\"-",
-      "expected": {}
-    },
-    {
-      "text": "ré \t",
-      "expected": {}
-    },
-    {
-      "text": "\t😀\\{",
-      "expected": {}
-    },
-    {
-      "text": "éexport nexport \t﻿`é\u000b\u001c:$n$'﻿",
-      "expected": {}
-    },
-    {
-      "text": "é😀 =n\"r",
-      "expected": {}
-    },
-    {
-      "text": "export \u001c\"$:=A\\'_{ _#\r_😀é A'",
-      "expected": {}
-    },
-    {
-      "text": ".\nr`{",
-      "expected": {}
-    },
-    {
-      "text": "nexport ={{  \u000b\"éAnr :\t😀\n_`",
+      "text": "\n`\u000b{_ \"-  \tn   A= $",
       "expected": {
-        "nexport": "{{  \u000b\"éAnr :\t😀"
+        "A": "$"
       }
     },
     {
-      "text": "\\😀_-﻿\"b{#n}-export :﻿\n `é b\u000bé😀",
+      "text": "_#",
       "expected": {}
     },
     {
-      "text": "\"\u001c=:}'\u001c﻿é `b﻿ }\"`\n",
+      "text": "é\n.n😀=\u000bé_",
       "expected": {}
     },
     {
-      "text": "'export  \tn'",
+      "text": "export $. b-n=A﻿é#{\".é﻿ é =\u000b}",
       "expected": {}
     },
     {
-      "text": "$` \t.😀",
+      "text": "\nb\r:.A:\r} { \\`\\",
       "expected": {}
     },
     {
-      "text": "\u001cexport \n\tnn\u000b{😀\"_\u001c﻿\u000b\t \u001cr\u001c \r﻿\\ ",
+      "text": "\\r\n` =- b\u001c_n.}\u001c_é\n'",
       "expected": {}
     },
     {
-      "text": " r﻿{:} 😀:Ab`\"\u001c$\r:\u001cr-",
+      "text": "A. \u000bexport n. ",
       "expected": {}
     },
     {
-      "text": " =$#{\\\n\u000b'\u001c#A ",
+      "text": "{",
       "expected": {}
     },
     {
-      "text": " \r😀 -A",
+      "text": "A",
       "expected": {}
     },
     {
-      "text": "export \r_",
+      "text": "n_`#é\\é é_ \t\nrn",
       "expected": {}
     },
     {
-      "text": "$",
+      "text": "\u001cé.: 'r\tr `_\u000b r=",
       "expected": {}
     },
     {
-      "text": "\u001c \t\r`'\tn \r $A- ",
+      "text": "{r`'",
       "expected": {}
     },
     {
-      "text": "\t-\r\u000b_\tb\\` \\\\`\u001c\r$ A\r",
+      "text": "_  ﻿\tA#😀\n`r﻿} .",
       "expected": {}
     },
     {
-      "text": "\r\t\u001c #",
+      "text": " }b",
       "expected": {}
     },
     {
-      "text": "nn{\u000b😀\t \ré😀\u000b",
+      "text": "_é\\  # #$ :\r:`A",
       "expected": {}
     },
     {
-      "text": "'#.}\u001cAA\rexport  }.$\"\n.",
+      "text": "n  \u001c﻿\rr\t😀\t😀`-#$",
       "expected": {}
     },
     {
-      "text": "\tr",
+      "text": "r  $-r",
       "expected": {}
     },
     {
-      "text": ":A:﻿`.}﻿'export bb\u000b}}\u000b",
+      "text": "😀bé-\t\t -",
       "expected": {}
     },
     {
-      "text": "\u001c'export \r﻿é😀:é\r'A😀",
+      "text": "😀r==.\r A{$_export ",
       "expected": {}
     },
     {
-      "text": ". =:\t## \"b_é-﻿}.-$export r\rb}",
-      "expected": {
-        ".": ":"
-      }
-    },
-    {
-      "text": "A: b-${}é \t.'n :export \u001c\n\u001c\u001c -",
-      "expected": {
-        "A": "b-${}é \t.'n :export \u001c"
-      }
-    },
-    {
-      "text": "\\n nnb}\\=\\\"é \n}\u001cr:😀",
-      "expected": {}
-    },
-    {
-      "text": "r{ =b$ export b=Aé﻿😀b\\",
-      "expected": {
-        "b": "Aé﻿😀b\\"
-      }
-    },
-    {
-      "text": "\"A rb=\u001c \u000b",
-      "expected": {}
-    },
-    {
-      "text": "$\u000b",
-      "expected": {}
-    },
-    {
-      "text": ". \r:-n\u000b'\u001c\r.-export  .#",
-      "expected": {}
-    },
-    {
-      "text": ":",
-      "expected": {}
-    },
-    {
-      "text": "--",
-      "expected": {}
-    },
-    {
-      "text": "\t.﻿b",
-      "expected": {}
-    },
-    {
-      "text": "\u001c#_}\u001c\n:\":﻿\r b#'.}A .",
-      "expected": {}
-    },
-    {
-      "text": " \u000brnr==nnexport b_` \\_ ' ﻿  ",
-      "expected": {
-        "rnr": "=nnexport b_` \\_ '"
-      }
-    },
-    {
-      "text": "é export : ",
-      "expected": {}
-    },
-    {
-      "text": "}=bA\t\\-\u000b",
-      "expected": {}
-    },
-    {
-      "text": "\":\\$rré\\n-$- \\\\'\u000br export ",
-      "expected": {}
-    },
-    {
-      "text": ".\\r#export export {}$\t\"==",
-      "expected": {}
-    },
-    {
-      "text": " \t",
-      "expected": {}
-    },
-    {
-      "text": "r##}\u000b",
-      "expected": {}
-    },
-    {
-      "text": ":\r.  rb﻿}",
-      "expected": {}
-    },
-    {
-      "text": "bn😀\n\".-.#\t:\u000b\rr#",
-      "expected": {}
-    },
-    {
-      "text": "-.😀=`#\t\" }-:`\"",
-      "expected": {}
-    },
-    {
-      "text": " _-",
-      "expected": {}
-    },
-    {
-      "text": "`_=b\r﻿#nA:",
-      "expected": {}
-    },
-    {
-      "text": "\t`-﻿--\n😀`  😀$r﻿#\u000b",
-      "expected": {}
-    },
-    {
-      "text": " '#.n _-}}#_=\\\"\t \u001cexport ",
-      "expected": {}
-    },
-    {
-      "text": "`\\\"{\\é\u001cn \" =n\u001c",
-      "expected": {}
-    },
-    {
-      "text": "#\t=n={'\n{\\- \"}\t\t'export \\-",
-      "expected": {}
-    },
-    {
-      "text": "{\t:A= én'export n.} é=\" export \u000b\t",
-      "expected": {}
-    },
-    {
-      "text": "---$.\t'b-.ébébnAA -",
-      "expected": {}
-    },
-    {
-      "text": " _\u000bn$: 'é. b",
-      "expected": {}
-    },
-    {
-      "text": "#é$é",
-      "expected": {}
-    },
-    {
-      "text": "\u000bn\u001c# \nb{r",
-      "expected": {}
-    },
-    {
-      "text": "{':\"\u001c_",
-      "expected": {}
-    },
-    {
-      "text": "﻿`br. \u000b.{#-",
-      "expected": {}
-    },
-    {
-      "text": "b",
-      "expected": {}
-    },
-    {
-      "text": "nrexport : Aexport :_r}-😀:\u001c",
-      "expected": {}
-    },
-    {
-      "text": " \n\".n#\n:\u001c\"  nn\u001c:",
-      "expected": {}
-    },
-    {
-      "text": "﻿",
-      "expected": {}
-    },
-    {
-      "text": "Aéé-`={.é \\:",
-      "expected": {}
-    },
-    {
-      "text": "r{export n`\r﻿\\Ar\r\u000b# rn\\-_",
-      "expected": {}
-    },
-    {
-      "text": "}:\t$é{#_\u001c\r:A'n﻿",
-      "expected": {}
-    },
-    {
-      "text": "export rexport 😀A{\rAexport #A",
-      "expected": {}
-    },
-    {
-      "text": "n export \"\u000bexport énb`",
-      "expected": {}
-    },
-    {
-      "text": "\r}\rexport { #export =\\é\"\"$#'#\tb﻿\"r",
-      "expected": {}
-    },
-    {
-      "text": " -r",
-      "expected": {}
-    },
-    {
-      "text": " }﻿export \tAexport }﻿A{﻿=:-..éé\u000b",
-      "expected": {}
-    },
-    {
-      "text": "  n:\\\u001c\u000b",
-      "expected": {}
-    },
-    {
-      "text": ":",
-      "expected": {}
-    },
-    {
-      "text": "\u001c'{}\tb\u001c'\t`}😀 .n-A= =",
-      "expected": {}
-    },
-    {
-      "text": "  =\u001c﻿é\n=A`\"}'\u000bb",
-      "expected": {}
-    },
-    {
-      "text": "n",
-      "expected": {}
-    },
-    {
-      "text": "._:$'\n\u001cb#-\\`n\\_export =\"`_😀",
-      "expected": {}
-    },
-    {
-      "text": "\"r#:A` #.'",
-      "expected": {}
-    },
-    {
-      "text": "#\"\\😀'-",
-      "expected": {}
-    },
-    {
-      "text": "'\r`\"﻿ rb_export _A=}\u000b=é_`",
-      "expected": {}
-    },
-    {
-      "text": "'# '`}﻿",
-      "expected": {}
-    },
-    {
-      "text": "r`é `'b",
-      "expected": {}
-    },
-    {
-      "text": "$A\u000bbr  -n$ é =A{A",
-      "expected": {}
-    },
-    {
-      "text": "﻿😀\u001c{{Ar_{- éexport ré\n -A :﻿",
-      "expected": {}
-    },
-    {
-      "text": " export \u001c\n$\rr.",
-      "expected": {}
-    },
-    {
-      "text": "﻿` \\_😀_\u000b😀A\u000bn﻿n#﻿r: 😀😀r",
-      "expected": {}
-    },
-    {
-      "text": "Aé$",
-      "expected": {}
-    },
-    {
-      "text": "\trn\u000b:_$",
-      "expected": {}
-    },
-    {
-      "text": "=\u001cn #.\u000b  }\u000b`\"\t_-\r\t\u001cA\t﻿$",
-      "expected": {}
-    },
-    {
-      "text": "\u001c",
-      "expected": {}
-    },
-    {
-      "text": "\" .b$}:\u000b=##export _=\u001cA\r'\"'",
-      "expected": {}
-    },
-    {
-      "text": ". A\"",
-      "expected": {}
-    },
-    {
-      "text": "\u001c``}\r\u001c \r'",
-      "expected": {}
-    },
-    {
-      "text": "\\\u001cér\té\tr \u001c\\r`'='{",
-      "expected": {}
-    },
-    {
-      "text": "\"  }{  -A  A#\t\\\t ",
-      "expected": {}
-    },
-    {
-      "text": "\n`A `:_ ﻿:{",
-      "expected": {}
-    },
-    {
-      "text": "`\n:ré\u000b\"b$b=_ ={ ..\rexport \u001c ",
-      "expected": {}
-    },
-    {
-      "text": "}'",
-      "expected": {}
-    },
-    {
-      "text": "`-`.",
-      "expected": {}
-    },
-    {
-      "text": "_'﻿-.r😀`\t'bb\u000b{\\\r_- 'né\r",
-      "expected": {}
-    },
-    {
-      "text": "A﻿_' '﻿#é\u000b#`{\n#.😀r ",
-      "expected": {}
-    },
-    {
-      "text": "\r\\={rb\n\n﻿.r\\export -\t{\r.`_\t﻿{\u001c",
-      "expected": {}
-    },
-    {
-      "text": "\r\r:\t=.\u000b\".",
-      "expected": {}
-    },
-    {
-      "text": "😀::😀$",
-      "expected": {}
-    },
-    {
-      "text": "bb:export \n \u000b\u001c",
-      "expected": {}
-    },
-    {
-      "text": " n`\t\"r😀",
-      "expected": {}
-    },
-    {
-      "text": "=\u000b.ré: é\t\r$\u001c.\r= #\u000b",
-      "expected": {}
-    },
-    {
-      "text": "A_} \r﻿}`﻿}A:﻿={\\#",
-      "expected": {}
-    },
-    {
-      "text": "#﻿\"\u000b \\\t\r_n}\t.\n\\_'rb\n \"",
-      "expected": {}
-    },
-    {
-      "text": "-",
-      "expected": {}
-    },
-    {
-      "text": "n$😀=.export #}",
-      "expected": {}
-    },
-    {
-      "text": " é}=\u000b_':\t.é",
-      "expected": {}
-    },
-    {
-      "text": ":\"b:_n﻿.export $ ﻿  \tA",
-      "expected": {}
-    },
-    {
-      "text": "é{:  \"",
-      "expected": {}
-    },
-    {
-      "text": "\r",
-      "expected": {}
-    },
-    {
-      "text": "- {﻿ }#A=:😀ébr_ 😀",
-      "expected": {}
-    },
-    {
-      "text": "{😀\r😀.export \u000bé\t.\t{😀é",
-      "expected": {}
-    },
-    {
-      "text": "-nb:.\" .é",
-      "expected": {}
-    },
-    {
-      "text": "_export }\r#\u000b﻿export `",
-      "expected": {}
-    },
-    {
-      "text": ":A\r\r\"b",
-      "expected": {}
-    },
-    {
-      "text": "__export #n",
-      "expected": {}
-    },
-    {
-      "text": "A\u000b#`n\u001c:\u001cné",
-      "expected": {}
-    },
-    {
-      "text": "\"A\u001c ",
-      "expected": {}
-    },
-    {
-      "text": "n﻿\"A{\\=\r}$\"b\rexport =\u001cr_\n\n\"\"",
-      "expected": {
-        "export": "\u001cr_"
-      }
-    },
-    {
-      "text": "$`",
-      "expected": {}
-    },
-    {
-      "text": "\\_",
-      "expected": {}
-    },
-    {
-      "text": "\tb",
-      "expected": {}
-    },
-    {
-      "text": "\":.:r}\r﻿",
-      "expected": {}
-    },
-    {
-      "text": "`\u001cé\t=$\r=😀\u000b: ",
-      "expected": {}
-    },
-    {
-      "text": "``",
-      "expected": {}
-    },
-    {
-      "text": "n:'én-\u000b\n=:\t.`﻿ export \n\\\n=﻿\u000b",
-      "expected": {}
-    },
-    {
-      "text": "😀",
-      "expected": {}
-    },
-    {
-      "text": "\n_\\export ",
-      "expected": {}
-    },
-    {
-      "text": "=😀\u001c\\A n#",
-      "expected": {}
-    },
-    {
-      "text": "$😀-= ﻿_$é﻿\u001cn` b",
-      "expected": {}
-    },
-    {
-      "text": " r😀bA😀A",
-      "expected": {}
-    },
-    {
-      "text": "\r é=﻿\u001c.export ﻿Aé${ \u000b ",
-      "expected": {}
-    },
-    {
-      "text": "\t.'export {-\n\\😀export \u000b",
-      "expected": {}
-    },
-    {
-      "text": " `export export  _{b'`",
-      "expected": {}
-    },
-    {
-      "text": "\"- \\#$$A-:_{😀{\u000b {:}n\n",
-      "expected": {}
-    },
-    {
-      "text": "} -ér",
-      "expected": {}
-    },
-    {
-      "text": " \" \u001cexport \"-\u001c:﻿\nr\\#﻿-",
-      "expected": {}
-    },
-    {
-      "text": "`\n﻿{\u000bexport ",
-      "expected": {}
-    },
-    {
-      "text": "_\u001c-😀A\t \t_export bA\u000b\u000b _=\n\texport \t\u001c\u001c",
-      "expected": {}
-    },
-    {
-      "text": "  ='=-`\r}n\\😀é\t$}{﻿export \\:b",
-      "expected": {}
-    },
-    {
-      "text": "\texport  \\\\`=A '`é#\texport \\= \"éexport b",
-      "expected": {}
-    },
-    {
-      "text": " 😀-$é\r\nexport \"rA\r_'A﻿",
-      "expected": {}
-    },
-    {
-      "text": "A😀﻿#.$",
-      "expected": {}
-    },
-    {
-      "text": "_Abn A.\t\u000b\" ﻿export `:}.\nexport ",
-      "expected": {}
-    },
-    {
-      "text": "\t",
-      "expected": {}
-    },
-    {
-      "text": "#- -n b{",
-      "expected": {}
-    },
-    {
-      "text": "_-A_é\t\\-$",
-      "expected": {}
-    },
-    {
-      "text": "A\t {﻿ \t \\\u001cé\n.éb \\`={n",
-      "expected": {}
-    },
-    {
-      "text": "\u001c$\n.",
-      "expected": {}
-    },
-    {
-      "text": "é\n }\u000bnn\r😀 😀export }#\u001c",
-      "expected": {}
-    },
-    {
-      "text": "n'export ",
-      "expected": {}
-    },
-    {
-      "text": "$",
-      "expected": {}
-    },
-    {
-      "text": "r\u001c",
-      "expected": {}
-    },
-    {
-      "text": "{`\n",
-      "expected": {}
-    },
-    {
-      "text": "`",
-      "expected": {}
-    },
-    {
-      "text": "\\\u001cn=A  \u001c`A_é\u000b\"#{ b-:\"-\u001c",
-      "expected": {}
-    },
-    {
-      "text": "\"\"#é 😀 _''#\r} rA\u000b#😀 =",
-      "expected": {}
-    },
-    {
-      "text": "😀='é\\\\ :😀\u001c _r= } =:'`-",
-      "expected": {}
-    },
-    {
-      "text": "\\`nexport ﻿ ﻿\té}b#\n_",
-      "expected": {}
-    },
-    {
-      "text": " .$\u001c-\"n'",
-      "expected": {}
-    },
-    {
-      "text": "AAn ={\n",
-      "expected": {}
-    },
-    {
-      "text": "\r`{\u000b.﻿﻿br\\:A=😀{export '$\r`_\t",
-      "expected": {}
-    },
-    {
-      "text": "  {_\"''\u000bbr\u001c\\\"'\u001c'n'b\r",
-      "expected": {}
-    },
-    {
-      "text": "n\rrAexport 'nexport =export _\\\\",
-      "expected": {}
-    },
-    {
-      "text": "﻿",
-      "expected": {}
-    },
-    {
-      "text": ".﻿\" \u000b\\n\"{\u000b_\t{:",
-      "expected": {}
-    },
-    {
-      "text": "﻿\u001cbé",
-      "expected": {}
-    },
-    {
-      "text": "_\t \u001c\r#: \tn ",
-      "expected": {}
-    },
-    {
-      "text": "##${ééexport \u000bexport \r  }`\n-\t.=﻿An",
-      "expected": {}
-    },
-    {
-      "text": "Aexport \u000b \téA==._\u000b﻿#b$ \u001c\\`",
-      "expected": {}
-    },
-    {
-      "text": "{$r n\" }r\t\rr﻿AA'$ \u000b#\u001c=",
-      "expected": {}
-    },
-    {
-      "text": "' é﻿AA`b }\"bexport b",
-      "expected": {}
-    },
-    {
-      "text": "é\\ :$``export :.rA\u001c`$ #`A'\\\r😀r",
-      "expected": {}
-    },
-    {
-      "text": "_\u001c`\n\n=",
-      "expected": {}
-    },
-    {
-      "text": " _﻿':\u000b}\t﻿}😀bA}",
-      "expected": {}
-    },
-    {
-      "text": "'﻿é😀\nAr😀\\ ",
-      "expected": {}
-    },
-    {
-      "text": " ${ `#",
-      "expected": {}
-    },
-    {
-      "text": "''}\u001c\\`\u000b",
-      "expected": {}
-    },
-    {
-      "text": ".#﻿\r#\nb:\u000b\u001c:#.b b\t`:\r",
-      "expected": {
-        "b": "\u001c:"
-      }
-    },
-    {
-      "text": "﻿ }  :\".b ﻿ =\u001c",
-      "expected": {}
-    },
-    {
-      "text": "#é:r-\"#= '}b`\u001c`",
-      "expected": {}
-    },
-    {
-      "text": "}\rr=﻿ =\\export =\t",
-      "expected": {
-        "r": "=\\export ="
-      }
-    },
-    {
-      "text": "n",
-      "expected": {}
-    },
-    {
-      "text": "A\u001c= -\r\n﻿export #$\n\ré",
-      "expected": {}
-    },
-    {
-      "text": "_\u000b##\" {\rA$",
-      "expected": {}
-    },
-    {
-      "text": "b",
-      "expected": {}
-    },
-    {
-      "text": "::\u001c\rr﻿é",
-      "expected": {}
-    },
-    {
-      "text": "\n${n'}#\t\"{:: {$\t\r__\u000b",
-      "expected": {}
-    },
-    {
-      "text": "_\u001c# ='\u001c\u001cn}- .=nb",
-      "expected": {}
-    },
-    {
-      "text": "_$-\\'\"{",
-      "expected": {}
-    },
-    {
-      "text": "Aexport   _=\rr\u000b`\u001c\rA'n\n 😀\"bA",
-      "expected": {}
-    },
-    {
-      "text": "\u000bé\r\"`",
-      "expected": {}
-    },
-    {
-      "text": "😀\\-={ ",
-      "expected": {}
-    },
-    {
-      "text": "{}= '{\u000b😀:\u000b.$",
-      "expected": {}
-    },
-    {
-      "text": "r😀b$",
-      "expected": {}
-    },
-    {
-      "text": "##",
-      "expected": {}
-    },
-    {
-      "text": "rr.\t$_.\u000b\"\u001c$",
-      "expected": {}
-    },
-    {
-      "text": "#😀\"=\u001c'\\#n-bA\u000b",
-      "expected": {}
-    },
-    {
-      "text": "rexport :=﻿n#\\='$\n\\=n'.'",
-      "expected": {}
-    },
-    {
-      "text": "\t\u000b😀 r A`A-",
-      "expected": {}
-    },
-    {
-      "text": "﻿#\t\r\u000b}=ééexport  A\n",
-      "expected": {}
-    },
-    {
-      "text": "é'-export `-b:_-n`#:rn\\bb\n\n{é",
-      "expected": {}
-    },
-    {
-      "text": "_{\n\u001cr'😀-r \"é",
-      "expected": {}
-    },
-    {
-      "text": "}:`\u000b\t \t\\}😀{  {😀.`'-{   \u000b",
-      "expected": {}
-    },
-    {
-      "text": ".\u001c﻿`}.\r'b#\r😀`ér\"}{\r-`\n",
-      "expected": {}
-    },
-    {
-      "text": "`r_`﻿",
-      "expected": {}
-    },
-    {
-      "text": "n}n﻿:.`é  : ",
+      "text": "{\u001cexport export r` _`",
       "expected": {}
     },
     {
-      "text": "} {\té\n\n_$\u000br\t",
+      "text": "﻿n.\"=\u000b\rrr}=\t.$\rérr`é_:\r\u001c",
       "expected": {}
     },
     {
-      "text": " #$\t.=:n-}export 😀😀 \n",
+      "text": "{==\té\n#_}\u000b` \r😀#",
       "expected": {}
     },
     {
-      "text": "😀`éexport -😀n﻿n:",
+      "text": "\"\"",
       "expected": {}
     },
     {
-      "text": "`﻿.$:\u000b\"n'\t\t`b=",
+      "text": "-{😀b.:}r#'r`\u000b#r.",
       "expected": {}
     },
     {
-      "text": " export \nb \r{",
+      "text": "A\nb`.é\tb}r\u001c\"'. \r",
       "expected": {}
     },
     {
-      "text": "_\t",
+      "text": "$  \u001c\\br$\u000bn= \r`=b\u000b",
       "expected": {}
     },
     {
-      "text": "\u000b='_\"'n﻿﻿.\u001cn\n }\t﻿_\u000b-n",
+      "text": "A$'= ",
       "expected": {}
     },
     {
-      "text": "r#\n`export \t} \n😀﻿",
+      "text": "=$\u001c#\t{.=\n",
       "expected": {}
     },
     {
-      "text": "\u001c_A{A\té \\-\u001c\u000b\u001c`}#\t:#_=é:",
+      "text": "}\\\"''-.b}b `r  =﻿{\":export \u001c",
       "expected": {}
-    },
-    {
-      "text": "\nr\\",
-      "expected": {}
-    },
-    {
-      "text": "\rnexport export \r\t`={`\u001cn=\u000b`=}-.${ ",
-      "expected": {}
-    },
-    {
-      "text": " b\r_\\\\\r:\u000b'$\u000b\r\t-b😀export \n\\",
-      "expected": {}
-    },
-    {
-      "text": "😀﻿-b}_A\u000b\u001c\"': `",
-      "expected": {}
-    },
-    {
-      "text": " ' :$\u000b\u000b=_nr_",
-      "expected": {}
-    },
-    {
-      "text": "}{\"{:-\u000bexport 😀.$  \u001c'export \tér#",
-      "expected": {}
-    },
-    {
-      "text": "r- #=r' \u000b\r é b",
-      "expected": {}
-    },
-    {
-      "text": "\n\r  n 😀n",
-      "expected": {}
-    },
-    {
-      "text": "-😀\téAéb\t",
-      "expected": {}
-    },
-    {
-      "text": ".b\rb\"bb_#",
-      "expected": {}
-    },
-    {
-      "text": "😀\u001c_n\\r",
-      "expected": {}
-    },
-    {
-      "text": "=\rér\n{b\"\u000b\r#\r\u001c='A # '\r﻿\u001cé",
-      "expected": {}
-    },
-    {
-      "text": "\r=\u001c﻿ \t\rr\nr",
-      "expected": {}
-    },
-    {
-      "text": "\u001cexport \"__béb-",
-      "expected": {}
-    },
-    {
-      "text": "'\\ \r﻿  ﻿`",
-      "expected": {}
-    },
-    {
-      "text": "A _'_\u000bexport \\`",
-      "expected": {}
-    },
-    {
-      "text": "é \n﻿{}'r_\u000b",
-      "expected": {}
-    },
-    {
-      "text": "﻿😀\\",
-      "expected": {}
-    },
-    {
-      "text": "\rb ﻿\u001c.",
-      "expected": {}
-    },
-    {
-      "text": "😀\\=",
-      "expected": {}
-    },
-    {
-      "text": "Aexport \".$-r:-é.} : '\r.n",
-      "expected": {}
-    },
-    {
-      "text": "bb\nb-$` rn#{-n",
-      "expected": {}
-    },
-    {
-      "text": "\\\"{.😀`﻿\r}}{export \n",
-      "expected": {}
-    },
-    {
-      "text": "-`\u000bexport b\tnn}{-={ré\u001c_",
-      "expected": {}
-    },
-    {
-      "text": "﻿",
-      "expected": {}
-    },
-    {
-      "text": ". ﻿\n-$\u000bné=﻿ }- A\"\"b'é ",
-      "expected": {}
-    },
-    {
-      "text": "\n`\"}$-\n--#\\é$n _-$-😀'﻿}_",
-      "expected": {}
-    },
-    {
-      "text": "😀\u001c\u000b\t",
-      "expected": {}
-    },
-    {
-      "text": " $﻿A\rr\t n\r`:\n\u000b#``\u000b\t",
-      "expected": {}
-    },
-    {
-      "text": "\\=﻿_#_😀﻿:",
-      "expected": {}
-    },
-    {
-      "text": "$} \n",
-      "expected": {}
-    },
-    {
-      "text": "_n#` r\n\n=é\u000b r$\tn'\t:\tAé\u001cA",
-      "expected": {}
-    },
-    {
-      "text": "` \n\u000b\u001c\\\t`é\u001cbn\t\n😀A\u000b- é- _",
-      "expected": {}
-    },
-    {
-      "text": "' 😀_ré\\\u000b\té-",
-      "expected": {}
-    },
-    {
-      "text": "..",
-      "expected": {}
-    },
-    {
-      "text": "\u001c.$:",
-      "expected": {}
-    },
-    {
-      "text": " =: Ar\r",
-      "expected": {}
-    },
-    {
-      "text": ".",
-      "expected": {}
-    },
-    {
-      "text": "ré.",
-      "expected": {}
-    },
-    {
-      "text": "rA😀\u000bé}}-$}'#}A\u001c\"",
-      "expected": {}
-    },
-    {
-      "text": "\u000br\t{ rn':  \r\r ﻿}=\u000b\u001c",
-      "expected": {}
-    },
-    {
-      "text": "_:.} ` :\u000b\u001c  $\\:\tn\u000b\\é",
-      "expected": {}
-    },
-    {
-      "text": "é\\\t\u001c {\r",
-      "expected": {}
-    },
-    {
-      "text": "nn:  .#\u000b- \\$\tr",
-      "expected": {
-        "nn": "."
-      }
-    },
-    {
-      "text": "{#b:\u001cb \\\rexport  \\r",
-      "expected": {}
-    },
-    {
-      "text": "- \r😀",
-      "expected": {}
-    },
-    {
-      "text": " export #.export b`export {A ﻿=A😀export =\u001c ",
-      "expected": {}
-    },
-    {
-      "text": "}{é{:=n",
-      "expected": {}
-    },
-    {
-      "text": "r_﻿\n 'r}\\ _\r\"bn} =\\",
-      "expected": {}
-    },
-    {
-      "text": "_'##\t export \r\\ _﻿\u000b\u000b {n\u000b``-nAn",
-      "expected": {}
-    },
-    {
-      "text": ".\\",
-      "expected": {}
-    },
-    {
-      "text": "\r Aexport _$_{#n ﻿\"#é😀-\u000b$",
-      "expected": {}
-    },
-    {
-      "text": "\r$`\u000b\\\"'\u000b",
-      "expected": {}
-    },
-    {
-      "text": "\"n ",
-      "expected": {}
-    },
-    {
-      "text": "\t\u001c\t😀\n😀-bn{=\u000b\t=\u001cé😀\"_\"\t",
-      "expected": {}
-    },
-    {
-      "text": "\u000b\"b-} 😀#\"A-\r\u001c😀}é'\n'\t",
-      "expected": {}
-    },
-    {
-      "text": "{\t #_﻿:= nr:r'",
-      "expected": {}
-    },
-    {
-      "text": "n\"\rn} '\r\\'\t﻿$\\ \n",
-      "expected": {}
-    },
-    {
-      "text": "r=$",
-      "expected": {
-        "r": "$"
-      }
-    },
-    {
-      "text": "- =😀`export  \u000b. A-",
-      "expected": {
-        "-": "😀`export  \u000b. A-"
-      }
-    },
-    {
-      "text": "rexport export bé:\"bré {\t$::\u001c#\"}' n",
-      "expected": {}
-    },
-    {
-      "text": "\t`':b}}",
-      "expected": {}
-    },
-    {
-      "text": "﻿r`😀$$bn\u000b\n\t#}_é\u001c=  'ré_ ",
-      "expected": {}
-    },
-    {
-      "text": "# '﻿.$.{n",
-      "expected": {}
-    },
-    {
-      "text": "\nexport ##n'A.\"Abnbexport \u000b 😀",
-      "expected": {}
-    },
-    {
-      "text": "$A\nr {\rb=-$\r b#\u001c`=}{ ",
-      "expected": {
-        "b": "-$"
-      }
-    },
-    {
-      "text": "😀 Ar-$😀#=😀\n'.}=:A=`A_r{export ",
-      "expected": {}
-    },
-    {
-      "text": "_=.\u001c﻿:b#\u000bexport  ",
-      "expected": {
-        "_": ".\u001c﻿:b"
-      }
-    },
-    {
-      "text": "né_'\n\u001c`=r}. r#-export $\r",
-      "expected": {}
-    },
-    {
-      "text": "\u001cexport :\u000b_{'é: A",
-      "expected": {}
-    },
-    {
-      "text": "_\r \t\t}\u001c\"﻿",
-      "expected": {}
-    },
-    {
-      "text": "\\\t\r'\"r.export rb\u000b\"   😀:{\u000b\r:",
-      "expected": {}
-    },
-    {
-      "text": "\u001c-export n😀{{\n ",
-      "expected": {}
-    },
-    {
-      "text": "`$export ",
-      "expected": {}
-    },
-    {
-      "text": "A:",
-      "expected": {}
-    },
-    {
-      "text": "A-- 😀A-﻿.# ",
-      "expected": {}
-    },
-    {
-      "text": ":\n\n=﻿b.- A \tA",
-      "expected": {}
-    },
-    {
-      "text": "`\t\"n{':",
-      "expected": {}
-    },
-    {
-      "text": "\r",
-      "expected": {}
-    },
-    {
-      "text": "A-} -$\t\u001c ",
-      "expected": {}
-    },
-    {
-      "text": "-b{😀b﻿ \"nnexport `﻿.#\nexport \r `\t-'",
-      "expected": {}
-    },
-    {
-      "text": "` \n\\.﻿} .#-#\t",
-      "expected": {}
-    },
-    {
-      "text": "-=\n{\n\n { n$.😀\u000bA\r`b:}$é",
-      "expected": {
-        "-": ""
-      }
-    },
-    {
-      "text": "\r`.export {\r.`-$\\\\b:\u001cA",
-      "expected": {}
-    },
-    {
-      "text": "é\u001c`=-#",
-      "expected": {}
-    },
-    {
-      "text": "\u000b-é$\n._export #r \"b né",
-      "expected": {}
-    },
-    {
-      "text": "`",
-      "expected": {}
-    },
-    {
-      "text": "éexport $##\n\nexport export -\n\\.\u001c`\n.={=",
-      "expected": {
-        ".": "{="
-      }
     },
     {
-      "text": "é n\u000b}$\t\\",
+      "text": "- \n A\u001c =éé\"",
       "expected": {}
     },
     {
-      "text": "b\u001c.r_}\\$_ér \\ .﻿ { \u001c\n\u000b ",
+      "text": "\t`}é=\"b` A. ",
       "expected": {}
     },
     {
-      "text": ":r{😀-An\u001c {\n{{\r \u001c'r}'$",
+      "text": "-{\n_",
       "expected": {}
     },
     {
-      "text": "\\\u000b \u000b\u000b_\u001c'export n{=\t'rexport #n\"export ",
+      "text": "-\r😀\r\u001cn`$`= =",
       "expected": {}
     },
     {
-      "text": "\\export =\r$﻿.é}.'r$}\n'=éexport A\u000bn.\\",
+      "text": "export {-\r 'é \"\"$ 😀﻿\n-AA",
       "expected": {}
     },
     {
-      "text": "﻿.-.'=export ",
+      "text": "r\u000br}=_-\t.'",
       "expected": {}
     },
     {
-      "text": "A\r:_\n\u001c\n",
+      "text": ":\u001c\t\u000b\\",
       "expected": {}
     },
     {
-      "text": "}'_",
+      "text": "  =` $ \rr\\ \\\\$\t$$\nA\u001c-`",
       "expected": {}
     },
     {
-      "text": "r-",
+      "text": "\\\u000bexport é\u000b  export 'A\t #`'\\{\n '\u000b",
       "expected": {}
     },
     {
-      "text": "\t\r\u000bb-.{\rexport .-A",
+      "text": " ",
       "expected": {}
     },
     {
-      "text": ".",
+      "text": "é\t}\u000bb\t_",
       "expected": {}
     },
     {
-      "text": " rAAexport \"",
+      "text": "\tb export r$é \\export ' .\u000b: `\\",
       "expected": {}
     },
     {
-      "text": "{\t\"\t",
+      "text": "\\A_\u000b\"A n\u000bexport _#{é-\"",
       "expected": {}
     },
     {
-      "text": "}",
+      "text": "#r:'\u001c😀\"n`A.{\nn.😀﻿\\😀",
       "expected": {}
     },
     {
@@ -1638,115 +438,467 @@
       "expected": {}
     },
     {
-      "text": "$bn{'=﻿_",
+      "text": "{ export \u000b\\'export {n{\té\n\t\r-r$",
       "expected": {}
     },
     {
-      "text": "=\\b``",
+      "text": "\"-",
       "expected": {}
     },
     {
-      "text": "\n .\\A:\n",
-      "expected": {}
-    },
-    {
-      "text": "﻿b\r é\u001c\t' \\",
-      "expected": {}
-    },
-    {
-      "text": "\t\\ n$-\"\\_#=",
-      "expected": {}
-    },
-    {
-      "text": "export \n-\\r{$#{# ",
-      "expected": {}
-    },
-    {
-      "text": " }$\u001c",
-      "expected": {}
-    },
-    {
-      "text": "{#\".=bA\\\r:😀$A'{ ",
-      "expected": {}
-    },
-    {
-      "text": "'\u000bexport -",
-      "expected": {}
-    },
-    {
-      "text": "_=",
-      "expected": {}
-    },
-    {
-      "text": " }{\u000bA : ",
-      "expected": {}
-    },
-    {
-      "text": "-{ br\".' ",
-      "expected": {}
-    },
-    {
-      "text": "$export ='😀",
-      "expected": {}
-    },
-    {
-      "text": "b=é:",
+      "text": "r=`_ }_} =\n{-# ",
       "expected": {
-        "b": "é:"
+        "r": "`_ }_} ="
       }
+    },
+    {
+      "text": "'=-=  .A\t:. _=n",
+      "expected": {}
+    },
+    {
+      "text": "😀\\bé#-\\'.\\\\#n\n ",
+      "expected": {}
+    },
+    {
+      "text": "\\=\"",
+      "expected": {}
+    },
+    {
+      "text": "{😀}\u001c\u000b_\t {:﻿'='",
+      "expected": {}
+    },
+    {
+      "text": "=}{n\t.='n",
+      "expected": {}
+    },
+    {
+      "text": "\r##",
+      "expected": {}
+    },
+    {
+      "text": ":\\﻿r",
+      "expected": {}
+    },
+    {
+      "text": "#é`\"bé }\r\nn\u000b\\\" \\\t\u001c\u000b--\n\t﻿",
+      "expected": {}
+    },
+    {
+      "text": "=:\u000bexport :=b{-`\rn'`A_A\u001c",
+      "expected": {}
+    },
+    {
+      "text": "\\:=\r \r",
+      "expected": {}
+    },
+    {
+      "text": " \r'$é'_\\-#\r\n   😀'_\n\té ",
+      "expected": {}
+    },
+    {
+      "text": "#nnA`\"- rb\n= }",
+      "expected": {
+        "rb": "}"
+      }
+    },
+    {
+      "text": "-$#=_`-:\"\"n\u000b",
+      "expected": {}
+    },
+    {
+      "text": "_é n#_é -export -\\\n\u001cAé.\u001c",
+      "expected": {}
+    },
+    {
+      "text": "{﻿:__\t=.=export \u000b\u000b\\﻿\r==﻿-r\n_",
+      "expected": {}
+    },
+    {
+      "text": "n﻿\r ",
+      "expected": {}
+    },
+    {
+      "text": "\r\nn=\r-.A\u000b.né ",
+      "expected": {}
+    },
+    {
+      "text": "A\rb😀'\\😀=br",
+      "expected": {}
+    },
+    {
+      "text": "'`}\u000b\\n-\n﻿.export __\t﻿ é\t﻿",
+      "expected": {}
+    },
+    {
+      "text": "\\A$A=",
+      "expected": {}
+    },
+    {
+      "text": "-﻿\t😀-\\_n\\",
+      "expected": {}
+    },
+    {
+      "text": "\rén:'`😀",
+      "expected": {}
+    },
+    {
+      "text": " .`A n",
+      "expected": {}
+    },
+    {
+      "text": "#\u001c`$é\u001c\u001c\n﻿ _=_ _",
+      "expected": {
+        "_": "_ _"
+      }
+    },
+    {
+      "text": "::😀\t\".b= 😀\t \t' -# \\_\u000b}",
+      "expected": {}
+    },
+    {
+      "text": "\\'n\"  A﻿n",
+      "expected": {}
+    },
+    {
+      "text": "b\u001c:'\r😀﻿\u000b}﻿`_:",
+      "expected": {}
+    },
+    {
+      "text": "\u000b\n-#_ export ﻿ '\r : '}export \u000b  }",
+      "expected": {}
+    },
+    {
+      "text": "#{:`_-n  }=}\t\\-\"A=\" ﻿ \u000b",
+      "expected": {}
+    },
+    {
+      "text": " ﻿n\"'_#=\"\r_}n\t.\"{$\t-",
+      "expected": {}
+    },
+    {
+      "text": " #\u000b# ﻿-😀$b{r﻿'",
+      "expected": {}
+    },
+    {
+      "text": "=r'b\t\u000b=\rA#{ \u001c﻿😀export n='é",
+      "expected": {}
+    },
+    {
+      "text": "é'",
+      "expected": {}
+    },
+    {
+      "text": "A\né{\\\\A#éé=😀 A# }\n ",
+      "expected": {}
+    },
+    {
+      "text": "A{\rnnb`#`{ \r.",
+      "expected": {}
+    },
+    {
+      "text": " \\export ﻿\u001c \t",
+      "expected": {}
+    },
+    {
+      "text": "  \u001c\"-\"\\r_b$",
+      "expected": {}
+    },
+    {
+      "text": "`é'A😀😀n\tAA_n.\u000bexport \"😀 ",
+      "expected": {}
+    },
+    {
+      "text": "'\"A:😀\"\n\u000b",
+      "expected": {}
+    },
+    {
+      "text": " \r\":\\﻿ 😀\n`😀# ",
+      "expected": {}
+    },
+    {
+      "text": "ér😀}\u001c_n_\u000br:\\r}export ",
+      "expected": {}
+    },
+    {
+      "text": "﻿ export #A😀A\"bn {\"\r'}\r\\  {\\",
+      "expected": {}
+    },
+    {
+      "text": "😀.:",
+      "expected": {}
+    },
+    {
+      "text": "😀`_ \u001c😀\r#",
+      "expected": {}
+    },
+    {
+      "text": " export  n `.\" é.$ ",
+      "expected": {}
+    },
+    {
+      "text": "b_{'=é",
+      "expected": {}
+    },
+    {
+      "text": " \r\\:#",
+      "expected": {}
+    },
+    {
+      "text": " $'😀 _\n\nn- \u001c#_}:n\u001c#",
+      "expected": {}
+    },
+    {
+      "text": "{bexport ",
+      "expected": {}
+    },
+    {
+      "text": "  n=_ _\né\u000bAb{{",
+      "expected": {
+        "n": "_ _"
+      }
+    },
+    {
+      "text": "\u001cr\r-\r rr",
+      "expected": {}
+    },
+    {
+      "text": "\tn_",
+      "expected": {}
+    },
+    {
+      "text": "$r}\t \t\\.='=\rr.`n",
+      "expected": {}
+    },
+    {
+      "text": ".n\r # ' \u001c'r\"A'''`\\-=",
+      "expected": {}
+    },
+    {
+      "text": "'\t'r",
+      "expected": {}
+    },
+    {
+      "text": "'\u001cexport \u000b$",
+      "expected": {}
+    },
+    {
+      "text": "## b`{Aexport  \nAA$'\".`",
+      "expected": {}
+    },
+    {
+      "text": ".﻿\t\n_\n\n'b: \n#$\u000b_",
+      "expected": {}
+    },
+    {
+      "text": "\r \u000b :\u000b",
+      "expected": {}
+    },
+    {
+      "text": "= \u000bexport \u000b\\$😀é .",
+      "expected": {}
+    },
+    {
+      "text": "}r\u000b . \u000b`}n{😀\"😀",
+      "expected": {}
+    },
+    {
+      "text": "export export rexport '$\n'export `\nAbexport '",
+      "expected": {}
+    },
+    {
+      "text": "b\u001c\n \n\u001c'b'\nb}}#}=} \u000bbexport bb",
+      "expected": {}
+    },
+    {
+      "text": "{-#`\t  ",
+      "expected": {}
+    },
+    {
+      "text": "\u001c$\"",
+      "expected": {}
+    },
+    {
+      "text": " \r}r}\" \u001c$'  {r\"A",
+      "expected": {}
+    },
+    {
+      "text": "A: ",
+      "expected": {
+        "A": ""
+      }
+    },
+    {
+      "text": "bexport A.b\r:😀_ A#\"export \n' A`-\\\"",
+      "expected": {}
+    },
+    {
+      "text": "=A:bn\\.-':",
+      "expected": {}
+    },
+    {
+      "text": "=:😀  😀\\\u001cb",
+      "expected": {}
+    },
+    {
+      "text": "- ",
+      "expected": {}
+    },
+    {
+      "text": "\u000br:\"😀\r\u000b=$😀 =",
+      "expected": {}
+    },
+    {
+      "text": "{=\u000b﻿.\u001c\\ n$",
+      "expected": {}
+    },
+    {
+      "text": "\r{ _'{#An\\ _A{.﻿",
+      "expected": {}
+    },
+    {
+      "text": "_{ $ \t",
+      "expected": {}
+    },
+    {
+      "text": "\t\u001c#",
+      "expected": {}
+    },
+    {
+      "text": "\tbb-\r ='",
+      "expected": {
+        "bb-": "'"
+      }
+    },
+    {
+      "text": "`-:}\"\u001c\u000b\n# b._export ",
+      "expected": {}
+    },
+    {
+      "text": "é'",
+      "expected": {}
+    },
+    {
+      "text": "n\n:\u001c {n\\{A:`\u000b n:r",
+      "expected": {}
+    },
+    {
+      "text": " `\\-=b\u000b`😀\\:\n:\\r rn ",
+      "expected": {}
+    },
+    {
+      "text": "\u001c\u001c=\n\u000b:_A=-﻿export ",
+      "expected": {}
+    },
+    {
+      "text": "b}=export { 'é\u000b\"\t-\t 😀{:😀 ",
+      "expected": {}
+    },
+    {
+      "text": "$b-{=\u001crexport r\u000bb.\t",
+      "expected": {}
+    },
+    {
+      "text": "=b",
+      "expected": {}
+    },
+    {
+      "text": "`.#export export A{ \u001c﻿é_ ",
+      "expected": {}
+    },
+    {
+      "text": "#}n\\\u000b_n{",
+      "expected": {}
+    },
+    {
+      "text": "A{\u000b .`\tb`.$ :`é{{﻿n\u001c#n",
+      "expected": {}
+    },
+    {
+      "text": "$\rnr:\"én{#{\n :export ﻿$_é # ",
+      "expected": {}
+    },
+    {
+      "text": "\u001c$\r\u000b}=n\u001c:é}$\t.é\n\"}😀_\n",
+      "expected": {}
+    },
+    {
+      "text": ".\"export \u001c \t=\t`{",
+      "expected": {}
+    },
+    {
+      "text": "\"A﻿-😀`export \\A:n\u000b﻿b:\r😀﻿-#\"\nn\t",
+      "expected": {}
+    },
+    {
+      "text": ".`=b\"-{😀'A\r\t",
+      "expected": {}
+    },
+    {
+      "text": "﻿\u001c' \rr",
+      "expected": {}
+    },
+    {
+      "text": "'=😀$AA",
+      "expected": {}
+    },
+    {
+      "text": "﻿\u001cb=={r\rr﻿",
+      "expected": {}
+    },
+    {
+      "text": "\\\\ \ré",
+      "expected": {}
+    },
+    {
+      "text": "#=-\\b-\r \\' ",
+      "expected": {}
+    },
+    {
+      "text": "A\r:",
+      "expected": {}
+    },
+    {
+      "text": "\r😀:-\t#\\\"b",
+      "expected": {}
     },
     {
       "text": "n",
       "expected": {}
     },
     {
-      "text": "\\export ",
+      "text": ":b#export  \u001c😀`'é﻿ \r\\\\:=rexport  _::`",
       "expected": {}
     },
     {
-      "text": "_   '.}`:_=",
+      "text": "\\_export \n$=#   \\export \t  b😀r\t",
       "expected": {}
     },
     {
-      "text": ":\u001c::.'😀_\r-{",
+      "text": "' #{ \"b\\:_\u000b= =}😀{export #",
       "expected": {}
     },
     {
-      "text": "é😀",
+      "text": "﻿``'\u000bn`",
       "expected": {}
     },
     {
-      "text": "é'_",
+      "text": "\r{A.r😀\"\" ",
       "expected": {}
     },
     {
-      "text": "}:😀=\\\nb`\\\u001cexport :\t\u001c\"b\"{ {",
+      "text": "#Ann }😀r",
       "expected": {}
     },
     {
-      "text": "\u000b\\_-{\u001crA",
+      "text": "$\nn😀 \u000b\nré",
       "expected": {}
     },
     {
-      "text": " _ }:\t\"\u000b﻿:-} \u001c",
+      "text": "\n_r\u000b_é{ -b:b\t_export n\r:",
       "expected": {}
     },
     {
-      "text": " A: _né ﻿_ \t\t#A😀\t\nb':",
-      "expected": {
-        "A": "_né ﻿_"
-      }
-    },
-    {
-      "text": "}\t\u001c-﻿é",
-      "expected": {}
-    },
-    {
-      "text": "\\{`_﻿}=",
-      "expected": {}
-    },
-    {
-      "text": "_😀\\{ :}_\tA﻿r_\u001c{A\"`\t b\"-",
+      "text": "n$}::-n﻿=:n",
       "expected": {}
     },
     {
@@ -1754,178 +906,1036 @@
       "expected": {}
     },
     {
-      "text": "r n    #b.`😀😀﻿\\n\\nexport ",
+      "text": " \"\"😀_.é'﻿}﻿\n}A😀}_#' ##\"`",
       "expected": {}
     },
     {
-      "text": "﻿﻿-\n\u000bb=b﻿﻿\u001c",
+      "text": " A{b`#",
+      "expected": {}
+    },
+    {
+      "text": "é\t\u000b.`\u000b\n\t\n{$'😀A$A\t",
+      "expected": {}
+    },
+    {
+      "text": "'n:$-é﻿_=\"",
+      "expected": {}
+    },
+    {
+      "text": " ",
+      "expected": {}
+    },
+    {
+      "text": "\u000b#:=:﻿.\u000b# : export \n\t\r :br} ",
+      "expected": {}
+    },
+    {
+      "text": "$'😀 n\u000bnr#﻿﻿éb\u000bb\t{bb😀 😀",
+      "expected": {}
+    },
+    {
+      "text": "bAexport \\.\u000b\\rn'{export .\t:\u001cA\r _",
+      "expected": {}
+    },
+    {
+      "text": ":export é.\rAb}\rA\\\"$\r export ",
+      "expected": {}
+    },
+    {
+      "text": "\\ `}\\\u000b:\\\" n'\\ -\n'",
+      "expected": {}
+    },
+    {
+      "text": "#{b",
+      "expected": {}
+    },
+    {
+      "text": "\r$",
+      "expected": {}
+    },
+    {
+      "text": "\\-b{..$﻿😀}export 😀",
+      "expected": {}
+    },
+    {
+      "text": " '::n😀$`{",
+      "expected": {}
+    },
+    {
+      "text": "\rA\\\rexport :A\t$\n\"A {\u000b\\:",
+      "expected": {}
+    },
+    {
+      "text": "}\u001c_",
+      "expected": {}
+    },
+    {
+      "text": "$éA`n\r$_. n-\u000b n =\t\nn =`😀",
       "expected": {
-        "b": "b﻿﻿\u001c"
+        "n": "`😀"
       }
     },
     {
-      "text": " }.  'n'",
+      "text": "`﻿=export \t:\r\u001c \"﻿$﻿é`\u001cé}",
       "expected": {}
     },
     {
-      "text": "\" _A#b\"-n.Aexport \\﻿Ab\u001c=bé",
+      "text": "A$é\t\"b#",
       "expected": {}
     },
     {
-      "text": "}r\u000b:\t\u000b$",
+      "text": "{\t.{'\r_:é",
       "expected": {}
     },
     {
-      "text": "{nbé\tn﻿\r=",
+      "text": "é ﻿\r`r😀 {",
       "expected": {}
     },
     {
-      "text": "-_:b _\u000b\u000bexport =",
+      "text": ".\"n'}nr",
       "expected": {}
     },
     {
-      "text": "\n.'",
+      "text": "{\u000b=﻿#_﻿r😀\n_é",
       "expected": {}
     },
     {
-      "text": "😀\t \n😀 é=\"#. 😀_`}}'\u001c\n:_",
+      "text": "#\n'_: r",
       "expected": {}
     },
     {
-      "text": "\"$`\t'#\r\"{",
+      "text": "={b#{_  \r}\\ #\\\t`{\"  '",
       "expected": {}
     },
     {
-      "text": "\"\"",
+      "text": "_`ébA",
       "expected": {}
     },
     {
-      "text": "\t \n ==\t`:\u001c :$\u001c#export \u001c",
+      "text": "_{﻿\r﻿\u001c\u000b=-#én",
       "expected": {}
     },
     {
-      "text": "\"=\\\" n \\\\-",
+      "text": "\u001c$\r`$😀bexport {-\r-r\u001c}\u001cé{'b\u000b😀b`",
       "expected": {}
     },
     {
-      "text": " export  :r':\u001c\n`$`\n:#``",
+      "text": ":-😀rexport {😀\u001cA== }",
       "expected": {}
     },
     {
-      "text": ".#😀\u000b:",
+      "text": "réé{\\-_$é{nn}-\rexport ﻿r{",
       "expected": {}
     },
     {
-      "text": "rA\"\n \\  _\"\u001c\"",
+      "text": "é﻿.'.n__`\t\u001c",
       "expected": {}
     },
     {
-      "text": "b﻿r$`﻿=\\{-\\A$_$n`:",
+      "text": "b \u001cn\u000br=:`😀\n._..\n\t\"{  \r",
       "expected": {}
     },
     {
-      "text": "\\=`",
+      "text": "$\u000b\u001c= é#😀 export - n\u000b",
       "expected": {}
     },
     {
-      "text": " n.\\\u000b#export $r_A\n\u001c=﻿",
+      "text": "#b\t.b é.\n",
       "expected": {}
     },
     {
-      "text": "A: .`r`=﻿b\n{.nb:`A$﻿",
+      "text": "A_\\",
+      "expected": {}
+    },
+    {
+      "text": "\u000b=\u001c'\"}$\"export }﻿- b😀\u000b`",
+      "expected": {}
+    },
+    {
+      "text": "{b﻿:$$\t\t-\\\" $#\u000bA-",
+      "expected": {}
+    },
+    {
+      "text": "}\"\u001c`\\$\t={   -\t\t\n",
+      "expected": {}
+    },
+    {
+      "text": " é\té\"}\\",
+      "expected": {}
+    },
+    {
+      "text": "\r",
+      "expected": {}
+    },
+    {
+      "text": "  ",
+      "expected": {}
+    },
+    {
+      "text": "b= \r#\\{ _",
       "expected": {
-        "A": ".`r`=﻿b"
+        "b": ""
       }
     },
     {
-      "text": "b",
+      "text": "﻿A_.A'export \\é `{\t\"\r${",
       "expected": {}
     },
     {
-      "text": "\u000b =export  {` : #b:b\"\"\\\t﻿",
+      "text": "bb",
       "expected": {}
     },
     {
-      "text": "\"Aé`r  -",
+      "text": " n'\"\\\u001c\u000b\t \"'😀 \r_=",
+      "expected": {
+        "_": ""
+      }
+    },
+    {
+      "text": "﻿ \\}\r",
       "expected": {}
     },
     {
-      "text": "\nr\"#}=}\u001c",
+      "text": "\tr_n",
       "expected": {}
     },
     {
-      "text": "﻿{\u000b😀-'_n`﻿$#\u001cn\u000b\u001c😀export n r",
+      "text": "\nexport \rr}\"export \"",
       "expected": {}
     },
     {
-      "text": "'﻿\u001c\tb`﻿\t'\r-\\-",
+      "text": "__\\.#\u001c - A'Aexport ﻿.-\n#export  \u001c",
       "expected": {}
     },
     {
-      "text": "\n ",
+      "text": "A\r`_export ",
       "expected": {}
     },
     {
-      "text": "😀﻿n\\\r\t\n\r\n:=_`_﻿é:$ \r-`}",
+      "text": "$$-:A\\😀export \":﻿é😀﻿\u000brn\r_\u001c} }",
       "expected": {}
     },
     {
-      "text": " export  n﻿-#\n$é{é'\u001c{r:\u000b\u001cA\u001c﻿😀",
+      "text": "A﻿{ -\rr\\\"\u001c\r}#:-\t:-",
       "expected": {}
     },
     {
-      "text": "\tn\u001c{﻿A.#export \r\t \"",
+      "text": " `{export =",
       "expected": {}
     },
     {
-      "text": "b $}r\u000b \tr-﻿Aé-﻿😀 \u000bnr",
+      "text": "`\n\néexport A#\n\"\u001c::b\u000bexport _A`#",
       "expected": {}
     },
     {
-      "text": "'\n\r 😀n\"",
+      "text": "`😀\nr.r_\u000b\n{😀",
       "expected": {}
     },
     {
-      "text": "-export export r\\ b\u000b\\😀export \\ $-\r`:",
+      "text": "nA\n-{r.' b﻿﻿}A",
       "expected": {}
     },
     {
-      "text": "\\\\A-# \t=\n: #ér}_",
+      "text": "{r",
+      "expected": {}
+    },
+    {
+      "text": "_-r\nAn-\" \r﻿ '\u000b}",
+      "expected": {}
+    },
+    {
+      "text": "\\\tb\u000b_$nr﻿\u000b`\u000bA}_export ﻿` ",
+      "expected": {}
+    },
+    {
+      "text": " \n:r😀\\A=A﻿",
+      "expected": {}
+    },
+    {
+      "text": "`{r\u000b'  ",
+      "expected": {}
+    },
+    {
+      "text": "$ export =",
+      "expected": {}
+    },
+    {
+      "text": "r",
+      "expected": {}
+    },
+    {
+      "text": " \n$'\u000b\"#$A'':}\t﻿ ",
+      "expected": {}
+    },
+    {
+      "text": "n\"{\t`﻿export AA\n\u000b .'r",
+      "expected": {}
+    },
+    {
+      "text": "\" export '=r`_export r-$export n' '\r",
+      "expected": {}
+    },
+    {
+      "text": "\u001cr\\-Ab\u000b 😀\u000b$ export \u001c .",
+      "expected": {}
+    },
+    {
+      "text": "Aexport \n",
+      "expected": {}
+    },
+    {
+      "text": "\"..﻿﻿#:",
+      "expected": {}
+    },
+    {
+      "text": "{.\né﻿\t:.'export \n.\t=😀-é{}",
+      "expected": {
+        ".": "😀-é{}"
+      }
+    },
+    {
+      "text": "  r: \r{",
+      "expected": {}
+    },
+    {
+      "text": "\u001cA{\n}\u001c##=' ",
+      "expected": {}
+    },
+    {
+      "text": "#`\t #'\\:A",
+      "expected": {}
+    },
+    {
+      "text": "\t\"_:$ _é`_export _\"b",
+      "expected": {}
+    },
+    {
+      "text": "-r\n_export \nexport ` ﻿😀`#",
+      "expected": {}
+    },
+    {
+      "text": "A #}\u000b_ =`n\u001c\tbexport  .b😀",
+      "expected": {}
+    },
+    {
+      "text": ".:﻿r#\u001c}n\u001c\t\\﻿b=\u000b= -'`",
+      "expected": {
+        ".": "r"
+      }
+    },
+    {
+      "text": "-",
+      "expected": {}
+    },
+    {
+      "text": "\n_{\\export #A ",
+      "expected": {}
+    },
+    {
+      "text": ". { ﻿'\u001c}$_ \ré$ r b#\"n\u000b{",
+      "expected": {}
+    },
+    {
+      "text": "😀n😀:﻿_\r'_\u000b",
+      "expected": {}
+    },
+    {
+      "text": "$'n\\{:.\n ",
+      "expected": {}
+    },
+    {
+      "text": "_😀\"export `\\",
+      "expected": {}
+    },
+    {
+      "text": "﻿#b é\u000b  -rexport A$",
+      "expected": {}
+    },
+    {
+      "text": "A\\\rrb-}r\n\u000bb-\u000b\u001c\u000b:export :nrb﻿_ ",
+      "expected": {}
+    },
+    {
+      "text": "-_`= $n{\rn😀A#\r'export #b\nbexport =#r",
+      "expected": {
+        "bexport": ""
+      }
+    },
+    {
+      "text": " export ﻿An`﻿\n\n",
+      "expected": {}
+    },
+    {
+      "text": "\t.",
+      "expected": {}
+    },
+    {
+      "text": " \u001c`r- A﻿\r﻿:bé",
+      "expected": {}
+    },
+    {
+      "text": "\u000b\u001c#\r\\$\"#\t#=.export :=\n\\r{  ",
+      "expected": {}
+    },
+    {
+      "text": "_..==nn#\tr\u001c",
+      "expected": {
+        "_..": "=nn"
+      }
+    },
+    {
+      "text": ":\"export A` export \"export \"A",
+      "expected": {}
+    },
+    {
+      "text": "n😀A 😀nr._\n=é ",
+      "expected": {}
+    },
+    {
+      "text": "_n -\u001c\nr_\r\t",
+      "expected": {}
+    },
+    {
+      "text": "\"\u000b n\"\t_export ' A'export A﻿export  \u000b#n#`=",
+      "expected": {}
+    },
+    {
+      "text": "😀$export ",
+      "expected": {}
+    },
+    {
+      "text": "\"b. {n#'#_\t",
+      "expected": {}
+    },
+    {
+      "text": "\"﻿\tA'bb_r\u000bb{\"\" b`\\bér#\\",
+      "expected": {}
+    },
+    {
+      "text": "`﻿`_$\u000bexport '$",
+      "expected": {}
+    },
+    {
+      "text": " r",
+      "expected": {}
+    },
+    {
+      "text": "\"é\t#é#é\u001c=\u000b\"A`\\{`:\u001c",
+      "expected": {}
+    },
+    {
+      "text": ":`\\$\u001cr }\n`\" é\".{",
+      "expected": {}
+    },
+    {
+      "text": "-:\\' `:_\nexport \\{$\" ",
+      "expected": {}
+    },
+    {
+      "text": ".# =`''",
+      "expected": {}
+    },
+    {
+      "text": "-é \r﻿",
+      "expected": {}
+    },
+    {
+      "text": "b\u001c}\t\" r﻿export .😀r\r}😀\u000br﻿Aé",
+      "expected": {}
+    },
+    {
+      "text": "😀export ",
+      "expected": {}
+    },
+    {
+      "text": " \\😀\\rb-\r\t.:r﻿=",
+      "expected": {}
+    },
+    {
+      "text": "n\u000b n﻿r''\"-b﻿n A# \u001c\t",
+      "expected": {}
+    },
+    {
+      "text": "`.`n={\nr\u000b b`b\rexport ﻿'\u001c=_",
+      "expected": {}
+    },
+    {
+      "text": "\r\\\u000b \u000b.\r\n- \u000b$",
+      "expected": {}
+    },
+    {
+      "text": "An  n\"\\",
+      "expected": {}
+    },
+    {
+      "text": "_ ﻿nrn`\t'{r",
+      "expected": {}
+    },
+    {
+      "text": ".-{\n`-#.é\nA.\\:-{: '😀😀=",
+      "expected": {}
+    },
+    {
+      "text": "\n: \"\t. r",
+      "expected": {}
+    },
+    {
+      "text": "`﻿A'\r_\\A b=-\tn\n#﻿",
+      "expected": {}
+    },
+    {
+      "text": "\n\u000b\u000b﻿=#\\﻿`\t\\\u001c \"{`",
+      "expected": {}
+    },
+    {
+      "text": "é\"_export }_{_ n\u000b: .=_-\\export ﻿_",
+      "expected": {}
+    },
+    {
+      "text": "-é}.$ ",
+      "expected": {}
+    },
+    {
+      "text": "\n-}nr\u001c\\r.#",
+      "expected": {}
+    },
+    {
+      "text": "$##A\r \"#n:'\u000b",
+      "expected": {}
+    },
+    {
+      "text": "\u001c\r`='😀\"r😀}b",
+      "expected": {}
+    },
+    {
+      "text": "}- \t\u001cexport $}#\\{  \ré",
+      "expected": {}
+    },
+    {
+      "text": "}}.A#",
+      "expected": {}
+    },
+    {
+      "text": "{#-{_\u001cr\u001c:b\texport -\"=export }\u000b\r\r\"",
+      "expected": {}
+    },
+    {
+      "text": ".\nexport :export {",
+      "expected": {}
+    },
+    {
+      "text": "\\é",
+      "expected": {}
+    },
+    {
+      "text": "$\\﻿$=nn\r-#\"\\b-",
+      "expected": {}
+    },
+    {
+      "text": "😀\r   =}n😀b} .export \u000b\u001c{",
+      "expected": {}
+    },
+    {
+      "text": "\t\n$} ",
+      "expected": {}
+    },
+    {
+      "text": "export -_-'\u001c\n'nn.n b=\n \t\r\n$\u000b",
+      "expected": {}
+    },
+    {
+      "text": "-\r-\u001c﻿b",
+      "expected": {}
+    },
+    {
+      "text": "_﻿ \n",
+      "expected": {}
+    },
+    {
+      "text": "$}:}\r\\\t\texport }export ",
+      "expected": {}
+    },
+    {
+      "text": "-'.'# -{export \u000bb\u001c -",
+      "expected": {}
+    },
+    {
+      "text": "\"r",
+      "expected": {}
+    },
+    {
+      "text": "{  _",
+      "expected": {}
+    },
+    {
+      "text": "export 😀export 😀$`#=\\export export b",
+      "expected": {}
+    },
+    {
+      "text": "\u000b#` _r",
+      "expected": {}
+    },
+    {
+      "text": "}export _`\u001cA =\"_.\\😀export $ export \t.:\"",
+      "expected": {}
+    },
+    {
+      "text": "# #}_",
+      "expected": {}
+    },
+    {
+      "text": ".\n'-.{ ",
+      "expected": {}
+    },
+    {
+      "text": "\u000bé=$\\\r-}=_﻿😀\u001c`né\t= ﻿\u000b}",
+      "expected": {}
+    },
+    {
+      "text": "\\\\'}-b\"n`'#😀$export ",
+      "expected": {}
+    },
+    {
+      "text": "\r.-`-:A:# $'=#_`.$.:😀",
+      "expected": {}
+    },
+    {
+      "text": "n\t﻿._{export $ n😀 nr\u000b_é﻿é=b`r\"",
+      "expected": {}
+    },
+    {
+      "text": "$- \\_#\r\\r\rr",
+      "expected": {}
+    },
+    {
+      "text": "#\u001c$\t é\u001c😀é#",
+      "expected": {}
+    },
+    {
+      "text": "﻿ \téexport ﻿} ",
+      "expected": {}
+    },
+    {
+      "text": "﻿} r\u001c\\export b\u001c\\b😀.\u001c.\r-'}\t",
+      "expected": {}
+    },
+    {
+      "text": "export nb'=A\\ .😀\r#=é\u000br\u001c :\u000b=",
+      "expected": {}
+    },
+    {
+      "text": "`\u001c﻿😀An\u000b\"né",
+      "expected": {}
+    },
+    {
+      "text": " \\",
+      "expected": {}
+    },
+    {
+      "text": "\r'\u001c\té` $\\\"Ab`#﻿",
+      "expected": {}
+    },
+    {
+      "text": "r=.$",
+      "expected": {
+        "r": ".$"
+      }
+    },
+    {
+      "text": "'\n_'# _é- .",
+      "expected": {}
+    },
+    {
+      "text": "\"#_=`#nexport \\ é",
+      "expected": {}
+    },
+    {
+      "text": "$r.}\u000b='é  '😀:bn$-\r\u001c",
+      "expected": {}
+    },
+    {
+      "text": "\"\u001c\n}br.",
+      "expected": {}
+    },
+    {
+      "text": "\\Aexport \"\\",
+      "expected": {}
+    },
+    {
+      "text": "-=-rb{=\u001cA`_﻿'.\r\u000b \t#\n",
+      "expected": {
+        "-": "-rb{=\u001cA`_﻿'."
+      }
+    },
+    {
+      "text": "é\u000b\\ -export export :}$$'b$_.{$",
+      "expected": {}
+    },
+    {
+      "text": "\u001cé::}\t_\"bb ﻿export 😀b#'\u000b😀 }n\u000b",
+      "expected": {}
+    },
+    {
+      "text": "é\r=﻿.:\nb\"\r",
+      "expected": {}
+    },
+    {
+      "text": "=\\_ ",
+      "expected": {}
+    },
+    {
+      "text": "b \u000b😀\t_😀\r\"-\t $😀`",
+      "expected": {}
+    },
+    {
+      "text": "😀é`bnr﻿ _==b}\u000b-r😀:\u001c",
+      "expected": {}
+    },
+    {
+      "text": " export { =.\r\r#\r﻿#",
+      "expected": {}
+    },
+    {
+      "text": ":\u000b\n`.﻿r\u001c﻿😀=",
+      "expected": {}
+    },
+    {
+      "text": "﻿\"﻿\u000br\u001c -\u000b#''  $﻿   #",
+      "expected": {}
+    },
+    {
+      "text": "`",
+      "expected": {}
+    },
+    {
+      "text": "b#A😀",
+      "expected": {}
+    },
+    {
+      "text": "\u000b\r\r\u001cA",
+      "expected": {}
+    },
+    {
+      "text": "\u000b#\u000b\nn-`_é﻿#é﻿{=:b =export `{",
+      "expected": {}
+    },
+    {
+      "text": "export ={\"\"$\\ébnA\"\n{:😀\"#`\" b \\",
+      "expected": {
+        "export": "{\"\"$\\ébnA\""
+      }
+    },
+    {
+      "text": ".export :Aé-# rA\u000bbn",
+      "expected": {}
+    },
+    {
+      "text": "\\#. #\\r",
+      "expected": {}
+    },
+    {
+      "text": "\t\"",
+      "expected": {}
+    },
+    {
+      "text": "Ar.\"\u000bb\r= =\t\"export \u000b",
+      "expected": {}
+    },
+    {
+      "text": "{{#\" n😀\u001c﻿é\nexport r#\\b",
+      "expected": {}
+    },
+    {
+      "text": "-=r ",
+      "expected": {
+        "-": "r"
+      }
+    },
+    {
+      "text": "\\\u001cn\u000b.#n_`-\u000b",
+      "expected": {}
+    },
+    {
+      "text": "{b `\rrr  r export  =#\u001c\u001c\n",
+      "expected": {}
+    },
+    {
+      "text": "_==.é':::-`\u000b\nr\r$é-'\\\u000b_\u001cexport ",
+      "expected": {
+        "_": "=.é':::-`"
+      }
+    },
+    {
+      "text": "\u001c\\",
+      "expected": {}
+    },
+    {
+      "text": "export \r=é\\A#\"b\r__",
+      "expected": {
+        "export": "é\\A"
+      }
+    },
+    {
+      "text": "- ::nA\"''\\\r ﻿$``b\"n\"n",
+      "expected": {}
+    },
+    {
+      "text": "A_=A#A",
+      "expected": {
+        "A_": "A"
+      }
+    },
+    {
+      "text": " \t   ",
+      "expected": {}
+    },
+    {
+      "text": "export :n#'",
+      "expected": {}
+    },
+    {
+      "text": "'bé#😀n'{ r ",
+      "expected": {}
+    },
+    {
+      "text": "😀",
+      "expected": {}
+    },
+    {
+      "text": "r`#{n{b-\r ",
+      "expected": {}
+    },
+    {
+      "text": "r_bé'é\u000bn{n\"\" \\\n",
+      "expected": {}
+    },
+    {
+      "text": " ",
+      "expected": {}
+    },
+    {
+      "text": ".export \rexport ={",
+      "expected": {
+        "export": "{"
+      }
+    },
+    {
+      "text": "﻿\t\\",
+      "expected": {}
+    },
+    {
+      "text": "n.`\r  \u001c\" =n\u000bn- r}`",
+      "expected": {}
+    },
+    {
+      "text": "bé'😀'\\#\t\u001cb",
+      "expected": {}
+    },
+    {
+      "text": "'}\\``:\"=`",
+      "expected": {}
+    },
+    {
+      "text": " \\\"`export export =export \t{b\t-_n",
+      "expected": {}
+    },
+    {
+      "text": "{ }-:nr\\",
+      "expected": {}
+    },
+    {
+      "text": "= \u000b\\\nA",
+      "expected": {}
+    },
+    {
+      "text": "﻿#_\"-",
+      "expected": {}
+    },
+    {
+      "text": "n\u000b😀﻿\tn. \u000b'}\"﻿`",
+      "expected": {}
+    },
+    {
+      "text": ":\"_-.😀:\\'A:",
+      "expected": {}
+    },
+    {
+      "text": "﻿😀export é_r}#:😀{n }'",
+      "expected": {}
+    },
+    {
+      "text": "#r:.\\.A\u001c﻿",
+      "expected": {}
+    },
+    {
+      "text": "-=_\n-\t{\\  A.\"\\\"=😀",
+      "expected": {
+        "-": "_"
+      }
+    },
+    {
+      "text": "#_\u000b{::\"\u000b\u000b={",
+      "expected": {}
+    },
+    {
+      "text": "}b\\\r#\t\u000b_--$",
+      "expected": {}
+    },
+    {
+      "text": "\u000bé\\`'\r",
+      "expected": {}
+    },
+    {
+      "text": "-é_export  {﻿export  b-\u000b-r\n",
+      "expected": {}
+    },
+    {
+      "text": "\\A",
+      "expected": {}
+    },
+    {
+      "text": "b\u001c",
+      "expected": {}
+    },
+    {
+      "text": "\"\u001c_{😀\u001c\u000b\nb  ",
+      "expected": {}
+    },
+    {
+      "text": "-`_-\u001cr=\u000b-=`b﻿ \t ",
+      "expected": {}
+    },
+    {
+      "text": ".b\u001cé:export ",
+      "expected": {}
+    },
+    {
+      "text": "\n😀\r\n \u000b\u000b\"",
+      "expected": {}
+    },
+    {
+      "text": "A'`\u001c\t n﻿\u000b﻿\r\u000b$=\u000b$",
+      "expected": {}
+    },
+    {
+      "text": "}_é\nn\u000b﻿n  -{\t{A .",
+      "expected": {}
+    },
+    {
+      "text": "\u000b{﻿é#n\n\t#'br\n:A'\\}\\",
+      "expected": {}
+    },
+    {
+      "text": "é_ { '}export .-",
+      "expected": {}
+    },
+    {
+      "text": "\"\"-.é=$.\\\"= $\n\rA$ ='n{A",
+      "expected": {}
+    },
+    {
+      "text": ":\r{:﻿n`` $ {﻿A\t -",
+      "expected": {}
+    },
+    {
+      "text": "\r#bér\tré-\u001c{``﻿$n",
+      "expected": {}
+    },
+    {
+      "text": "export }`\rb'\\\r={A\u000b\n",
+      "expected": {}
+    },
+    {
+      "text": "= export '`\u000bb:rA.nexport #",
+      "expected": {}
+    },
+    {
+      "text": "\"\u001c}{é\u000b_}:b ",
+      "expected": {}
+    },
+    {
+      "text": "nr:b'-'\n=\t.\\n .\r😀",
+      "expected": {}
+    },
+    {
+      "text": "$r\t }\tb\n`\n\"=export \t\r\u001cr\t: ' ",
+      "expected": {}
+    },
+    {
+      "text": "\n\\😀\t-\t😀#_#\\\t\n\\\n=😀﻿",
+      "expected": {}
+    },
+    {
+      "text": " export \u000bexport  :.}\n=﻿ -`}\u001c..`:\u000b\u001cr",
+      "expected": {}
+    },
+    {
+      "text": "-=A  ':A﻿\u000b\"é export ='é ",
+      "expected": {
+        "-": "A  ':A﻿\u000b\"é export ='é"
+      }
+    },
+    {
+      "text": "r:b:` 😀{-'\té  :",
+      "expected": {}
+    },
+    {
+      "text": "\n\u000b﻿\u000b\u001c-\nn_\"n😀\u000b_ \n`\\_ `\\",
+      "expected": {}
+    },
+    {
+      "text": "﻿#r':\n#\t\\`\\\"export \n\tn",
+      "expected": {}
+    },
+    {
+      "text": "._'$}\u000b'r.`\u001c_$-`😀bA\rr:",
+      "expected": {}
+    },
+    {
+      "text": " #}n\"\\ export 😀}.b﻿😀r",
+      "expected": {}
+    },
+    {
+      "text": "{=\u000b$",
+      "expected": {}
+    },
+    {
+      "text": "\u001c$é﻿`-_b\nb:\\\u001cn=`\u001c  -",
       "expected": {}
     }
   ],
   "keys": {
     "ssh": {
-      "private": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACDrxoXhq+gpdEw8cdL0OuY73CF7hbVzPOa0kFnQ3OlOngAAAJD8UjMp/FIz\nKQAAAAtzc2gtZWQyNTUxOQAAACDrxoXhq+gpdEw8cdL0OuY73CF7hbVzPOa0kFnQ3OlOng\nAAAECZ2gjzhxjX3uOH0nywjQD3oAlORu/0tzLduoT7b9BsYuvGheGr6Cl0TDxx0vQ65jvc\nIXuFtXM85rSQWdDc6U6eAAAAC3NzaEB2ZWN0b3JzAQI=\n-----END OPENSSH PRIVATE KEY-----\n",
-      "public": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e ssh@vectors"
+      "private": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACAVf89/VkWklxlFENCu9Zz31szJiqR8Xd5kffe2GblzmwAAAJBBkfHLQZHx\nywAAAAtzc2gtZWQyNTUxOQAAACAVf89/VkWklxlFENCu9Zz31szJiqR8Xd5kffe2Gblzmw\nAAAECLAqOo7vhAlVrtoIMV5n28BY8nQoPyl21b10aC+N+KlxV/z39WRaSXGUUQ0K71nPfW\nzMmKpHxd3mR997YZuXObAAAAC3NzaEB2ZWN0b3JzAQI=\n-----END OPENSSH PRIVATE KEY-----\n",
+      "public": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb ssh@vectors"
     },
     "ssh_passphrase": {
-      "private": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCd5VXnEk\n6bczSuZvT/4yomAAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNyk\nBZTYaKUXYZ5L329WG2v+U4fuyiuJAAAAoKeaA/HqTaF5nVZLhkYjykT9gsO4bCQW7MSGnh\nP8YHXC4K8wAvpCOKM/8B0P23ncHY3zGhDrVTXZrqrW8UUuVs+cDh890ibh0QlPmGPxWVA/\n8vB1yoLCqhiHpMCh4ZBqpleJTqQxqRXKVQiQdECNA5JyDXeKAqO+wdKDNOeXo7JafK7Xnn\nrT2X2E7yZgnZ1X59bIjeHr3V6xMHwWxiptZLE=\n-----END OPENSSH PRIVATE KEY-----\n",
-      "public": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ ssh_passphrase@vectors",
+      "private": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABAyFe67N7\nmpiBeLk/J72idyAAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY4\n7dQbR44bc/8ISMF7blu8y3zaINCEAAAAoFSGaKx0woJ7QjWkGh4yBne6Q3qIxpzC39Abx0\nz9FcPyR54hsmgNeskgKI6UA4jFijqUYncAAFGV7Dxpo1HDHvKa+Pl9H0YIbyHBI0q7WDGN\nsqOhyeyLJU/zrBAqiCuCcmidsPA6SgBJXGzgRz+csBh1wdyq92QJjEYDcCH9ECqofmKk4M\nmf3ab+vuouMNazC9ylN5/ad3F2VDsURikRrMc=\n-----END OPENSSH PRIVATE KEY-----\n",
+      "public": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE ssh_passphrase@vectors",
       "passphrase": "correct horse"
     },
     "age": {
-      "private": "AGE-SECRET-KEY-1Q2TYCSLNM7VW2VMA5NYDFKN7N04HXR6YDZUEENM7ZV9VH67NU32SMQ6RKA",
-      "public": "age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu"
+      "private": "AGE-SECRET-KEY-1YLXT0MFXKMW69VJU86MZTLURSA5JEXD0SFY256DTAR0T64LCM68SE89GEC",
+      "public": "age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8"
     },
     "agent": {
-      "private": "AGE-SECRET-KEY-123Y45EKZEFEPQQFSNUP4YJJKWD6GWDLCQZPSHEMVR960CQ00ENTQAF2PQ9",
-      "public": "age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3",
-      "agent_ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO agent@vectors"
+      "private": "AGE-SECRET-KEY-1RSGJ29X5YCLV5JXLSNKKMVJR62CD08V045ZSPX58T283QY7M2CFS0K0VYL",
+      "public": "age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw",
+      "agent_ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu agent@vectors"
     },
     "outsider_ssh": {
-      "private": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACB8hrUCqPJwoe3zDaaA6uxi10MgCMNlX5fCjLzTEMi/QwAAAJh1xf7ZdcX+\n2QAAAAtzc2gtZWQyNTUxOQAAACB8hrUCqPJwoe3zDaaA6uxi10MgCMNlX5fCjLzTEMi/Qw\nAAAEC9gSeDNUOcBJILzoX6YzmKa44x2gyc8t9us4wMDeQXzXyGtQKo8nCh7fMNpoDq7GLX\nQyAIw2Vfl8KMvNMQyL9DAAAAFG91dHNpZGVyX3NzaEB2ZWN0b3JzAQ==\n-----END OPENSSH PRIVATE KEY-----\n",
-      "public": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHyGtQKo8nCh7fMNpoDq7GLXQyAIw2Vfl8KMvNMQyL9D outsider_ssh@vectors"
+      "private": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACDftGHCcnPzryPJjixkAvPb8K9svyUhchr/A80Ep8cpnQAAAJiHkKk9h5Cp\nPQAAAAtzc2gtZWQyNTUxOQAAACDftGHCcnPzryPJjixkAvPb8K9svyUhchr/A80Ep8cpnQ\nAAAEA1dwqei+93sUTdTydVgMPlj+RSauide411SHX2feS/Vd+0YcJyc/OvI8mOLGQC89vw\nr2y/JSFyGv8DzQSnxymdAAAAFG91dHNpZGVyX3NzaEB2ZWN0b3JzAQ==\n-----END OPENSSH PRIVATE KEY-----\n",
+      "public": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN+0YcJyc/OvI8mOLGQC89vwr2y/JSFyGv8DzQSnxymd outsider_ssh@vectors"
     },
     "outsider_age": {
-      "private": "AGE-SECRET-KEY-1ETUHQ8ZCTP3Y6P98XPT4ER6E5G69VPX4CF2F370DJFTCP5XMG74S5SC45L",
-      "public": "age10j7j6gdqauhwmy28wu0h0tgaulwmllfyufr9lrc4rqw0jzya2faqrmmk2f"
+      "private": "AGE-SECRET-KEY-1PR0DZ3VQVWLJEH5N54Z7PLATMY3E9DZDMHLQHGTJ59TZ5XUHA93Q30ZUPT",
+      "public": "age1wwp23u57r725p4wf228jdtss4k4ngq9wkqpr03khke5g98fcn5qssk4m84"
     }
   },
   "files": [
     {
       "name": "every recipient type",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0Xq\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
       "expected": {
         "DATABASE_URL": "postgres://user:p@ss@db:5432/app",
         "EXPORTED": "exported value",
@@ -1958,61 +1968,67 @@
   "errors": [
     {
       "name": "key that is not a recipient",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0Xq\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
       "key": "outsider_age",
       "error": "not_a_recipient"
     },
     {
       "name": "ssh key that is not a recipient",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0Xq\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
       "key": "outsider_ssh",
       "error": "not_a_recipient"
     },
     {
       "name": "value moved to another variable",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
       "key": "age",
       "error": "decrypt"
     },
     {
       "name": "tampered value",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0AA\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrwAA\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
       "key": "age",
       "error": "decrypt"
     },
     {
       "name": "truncated value",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:AAAA\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:AAAA\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
       "key": "age",
       "error": "decrypt"
     },
     {
       "name": "unknown header line",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:future x\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0Xq\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:future x\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
+      "key": "age",
+      "error": "format"
+    },
+    {
+      "name": "newer format version",
+      "text": "#envseal:v10 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
       "key": "age",
       "error": "format"
     },
     {
       "name": "malformed recipient line",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0Xq\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n#envseal:recipient X25519 age1notakey AAAA AAAA\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n#envseal:recipient X25519 age1notakey AAAA AAAA\n",
       "key": "age",
       "error": "format"
     },
     {
       "name": "recipient line with too few fields",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0Xq\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n#envseal:recipient ssh-ed25519 AAAA\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n#envseal:recipient ssh-ed25519 AAAA\n",
       "key": "age",
       "error": "format"
     },
     {
       "name": "unknown recipient type",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvGheGr6Cl0TDxx0vQ65jvcIXuFtXM85rSQWdDc6U6e OyQeRA UboKCtzlHv+SfGSsi6Stge346u3vN1aTuF3HjjIZbkY P7q/S/ix06ALNh5xglnkpfZzDOTf+7l77jhKMvariRqJ0bgwNwY0mVG3XQTXILPs ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0bM1Scw72MhNykBZTYaKUXYZ5L329WG2v+U4fuyiuJ 5HL/5Q /93+V5w/vydvecq6t4oabK6jdjIv/t3mfA4EfKS8X1w S++Szhqb8/r0+flhHcQ+Huq7hD9Pbh+AayL0dFyfPoi0Ljm3S1lD0SWUMKmV6hjL ssh_passphrase@vectors\n#envseal:recipient X25519 age10hqzskt5lhws3zwrnraasp4vxwze03dfn04eefvfv5e9vxkk64psv8ecqu vXb3tg46UtZR5WaKlcLaF/7mk9NZJxoTaiEvh4fdsjY Brl/mTH2ds1uULAn8Y9oe87qGewZl2ihbbuF5nAvB44bs4DF7oUUxYJQ7pMnuGM5 ci\n#envseal:recipient ssh-agent age13xltfg8hazksp8wtz5flr5f3hep4ql4z7lqzjjdcu9jpz3fhfyvqt9alr3 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMsSzZEOAyxZEv5GV7SR14pKk3aCA5jP0JXyA9+oSzGO HCk0GH24mxT0EFaLgmDVsGvOA5x4sGDN5N+Suk7lAEc C6MrjUKhbhztWvVGvXxLjlyuPFQnl8UZAKb3kuv3MtNU8zH1xr+Z3bkLeybE6KZw agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0Xq\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n#envseal:recipient ssh-rsa AAAA AAAA AAAA AAAA\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBV/z39WRaSXGUUQ0K71nPfWzMmKpHxd3mR997YZuXOb 1O8qww ddZ1W3HnSanaffUHXW/wCo2OA2v8V6fKDAiPZ/01zVo 30EXuw1LEoFk+cZy8L5P5RKgCck4J1fTVSIQlEQNJtLy5bSVF0wpLzWzCZ7EPCwc ssh@vectors\n#envseal:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDb4H7dQhx6VmdY47dQbR44bc/8ISMF7blu8y3zaINCE EUZJSQ hXtITHqiDcalMD0hTCeGL7Q418Gz6kVOlq/CMKll2Ug W0wLxZnAJxMlTdGn+EpqPMljTZSwzL+wI8TufmMW/8qOjNr+jJKdjdTI4fG6sENH ssh_passphrase@vectors\n#envseal:recipient X25519 age1gpdfmmlk4k6fjdfe2rhptwnmc3n4j2d63kzvjacljkmwpjzl33dqrvglp8 gfjr/W9Qmwop/LIes7+0wcIEEoGxtDHnFx1GfphCkG0 MMiorKWUnSnEGADd3leg/rAAFNGLoEHAx2yfGZdNw4DP3kMDh3JvBnBe00hArI4h ci\n#envseal:recipient ssh-agent age1t6xz46aw78k0a724tkjrasrxkk08uej68833udqxy76mn89q8plq69xycw ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIndRx5xPwPRmayBBSjjGtUVJI0KUU6OJ0bkV+WTIWUu i4HPujlZ5yjbqgx1JUp1tdtFkypyevingv1PPaGQEgM U/OoXOKAUfHgK8N6RFp1kkcq//p/U+BQC9Dfgk3xxxN5htPt9R2Vc4HipEXpGblC agent@vectors\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n#envseal:recipient ssh-rsa AAAA AAAA AAAA AAAA\n",
       "key": "age",
       "error": "format"
     },
     {
       "name": "header without recipients",
-      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n# A comment stays as it is\nDATABASE_URL=envseal:v1:ZhjjxKmlxruCDyxnSm9ZZKv4jeyoPTl7zDZtXKl8R0wD_-EO_MeKa95t89iwG60_We8dBHLtV4aPI4N_OrLrkg\nexport EXPORTED=envseal:v1:oBmKAmT272ZD6uw5El8mt831IcFe0Imo3ooyfCcQyFOwHmvYRRYQfKp_Lq-bqQ\nEMPTY=envseal:v1:kjJYExcqgjEiA6yc8HQ0_EF_8cQ95uzNnFRjrxdh_lo\nSPACES=envseal:v1:jKJ-T_dCbHyn1gnupJtze4x37ufi7tnFjNjJ18qTO4r3F9vMC27nL0Xq\nMULTILINE=envseal:v1:zZAvjYEq3zjSCnLXJEL2JLGnp03wQC8jv93a8qIaU9apT24XJ1kVfgOhtH-N\nUNICODE=envseal:v1:WnatDOAe3vXJOCsDTnxz86RJlPw74pQ5jPFcpKIrchKmMkO0GVeHoO6HlY4OI91wYtZ8\nQUOTES=envseal:v1:TIdmhkYkMXmudPY5-VsLlpvD2aal3PMXRoEF1Kliezk_OhUDKnj_tCCDFpyN\nHASH=envseal:v1:cYDDOywcKck5wEyELd8x8BEh_19gIIJyMD2kmwLvSPb_DCTkIg\nDUP=envseal:v1:Ym_HNEkRs4jQBn9yUSgJwdFkN39rM8BsDzRyPZXULel1csPPpg\nDUP=envseal:v1:C9VF_Pr_1rpa3Rn3ay4DcI1A32FPet6xAlYmkhV1kI8cOcSj2Ss\nPLAIN_PORT=8000\n",
+      "text": "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.\n# A comment stays as it is\nDATABASE_URL=envseal:v1:K3xAQQ-wM6ndzE2r4wyGx_UhquN3eN2nHOl-rMmO52kvlHiH0B0xSwggsk54yy9WPzOtZFfWWzGdUziwdUPNgw\nexport EXPORTED=envseal:v1:ga3kxoPrL7WpiGyWCQmDr3A2y9_yNipeRN2cosmlfiFvxPHy8BuuieRxuEJKfA\nEMPTY=envseal:v1:ut52yTSyqm2wCnIm171YlbwD3IaQ_aQwjLqd8O5ydoo\nSPACES=envseal:v1:nNCbEFOrX8inpBVVtPth1nz_pN7JAlELCwWDmpa6PWefNn6BLEaNrw9D\nMULTILINE=envseal:v1:Hd-p28dFNYnbCz6DzUpQg3mZfOE3lX4a67wwrnh1dDI6c9Xjb8cShJG4qqr2\nUNICODE=envseal:v1:Gz1lvrnLqvCdKS42N6AC3W84vIrBNqsgL6AZKEIXQgywvGDRvgSj22sH208326YvYnm7\nQUOTES=envseal:v1:4w6xX40Itis8SpWRhFFK3WEmdLaBODpjVZplIMHcPn3xzfyfPHkBRRAKIUgZ\nHASH=envseal:v1:PQxS8gzJaNc9_EOemxQ_iqRsexxmJWHTeb0SRm1-BM6esHJN_g\nDUP=envseal:v1:SCb132bEwNY_lvYBICz2cQt8nouhjK_ZJg83z3_lFP8E1UCq2A\nDUP=envseal:v1:S_0hRHcDJjfsSuWCtYnLkQJcTVpCt4KMLeFt3s3XUsILh43TQgg\nPLAIN_PORT=8000\n",
       "key": "age",
       "error": "format"
     }

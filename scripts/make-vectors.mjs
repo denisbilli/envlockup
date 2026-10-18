@@ -160,6 +160,7 @@ const errors = [
   { name: "tampered value", text: replaceLine("SPACES", tampered), key: "age", error: "decrypt" },
   { name: "truncated value", text: replaceLine("SPACES", "envseal:v1:AAAA"), key: "age", error: "decrypt" },
   { name: "unknown header line", text: sealed.replace("#envseal:recipient", "#envseal:future x\n#envseal:recipient"), key: "age", error: "format" },
+  { name: "newer format version", text: sealed.replace("#envseal:v1 ", "#envseal:v10 "), key: "age", error: "format" },
   { name: "malformed recipient line", text: `${sealed}#envseal:recipient X25519 age1notakey AAAA AAAA\n`, key: "age", error: "format" },
   { name: "recipient line with too few fields", text: `${sealed}#envseal:recipient ssh-ed25519 AAAA\n`, key: "age", error: "format" },
   { name: "unknown recipient type", text: `${sealed}#envseal:recipient ssh-rsa AAAA AAAA AAAA AAAA\n`, key: "age", error: "format" },
