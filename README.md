@@ -135,6 +135,23 @@ provider. That is the only secret it needs, however many variables the file has.
     ENVSEAL_PRIVATE_KEY: ${{ secrets.ENVSEAL_PRIVATE_KEY }}
 ```
 
+## Python apps
+
+A Python app can read the file without Node.js, with
+[envseal-python](python/README.md):
+
+```sh
+pip install envseal-python
+```
+
+```python
+import envseal
+envseal.config()  # before anything reads settings (works with python-decouple)
+```
+
+or `python -m envseal run -- gunicorn app.wsgi`. It only reads files; edit them
+with the CLI above.
+
 ## Where the private key comes from
 
 In order:
@@ -182,6 +199,7 @@ As in dotenv, variables that are already set are not overwritten, unless you pas
 It protects secrets **at rest and in transit**: in the repository, in backups, in
 forks, in screenshots of your editor, in a `.env` sent over chat. Without a
 matching private key, the file reveals variable names and nothing else.
+Comments are not encrypted: don't keep old secrets in commented-out lines.
 
 It does **not** protect a running process. Once decrypted, values are ordinary
 environment variables, visible to the process, its children and anyone who can

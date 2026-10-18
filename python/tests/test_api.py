@@ -1,0 +1,151 @@
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+import envseal
+from envseal import EnvsealError, NoKeyError, PassphraseRequiredError
+
+VECTORS = json.loads((Path(__file__).parents[2] / "test" / "vectors.json").read_text(encoding="utf-8"))
+SEALED = VECTORS["files"][0]
+KEYS = VECTORS["keys"]
+
+
+@pytest.fixture
+def env_file(tmp_path, monkeypatch):
+    for name in ("ENVSEAL_PRIVATE_KEY", "ENVSEAL_IDENTITY", "ENVSEAL_SSH_PASSPHRASE", "ENVSEAL_FILE"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("HOME", str(tmp_path))  # no ~/.ssh/id_ed25519
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
+    path = tmp_path / ".env"
+    path.write_text(SEALED["text"], encoding="utf-8")
+    return path
+
+
+def test_load_with_inline_key(env_file, monkeypatch):
+    monkeypatch.setenv("ENVSEAL_PRIVATE_KEY", KEYS["age"]["private"])
+    assert envseal.load(env_file) == SEALED["expected"]
+
+
+def test_inline_key_with_flattened_newlines(env_file, monkeypatch):
+    monkeypatch.setenv("ENVSEAL_PRIVATE_KEY", KEYS["ssh"]["private"].strip().replace("\n", "\\n"))
+    assert envseal.load(env_file) == SEALED["expected"]
+
+
+def test_identity_file_and_passphrase(env_file, tmp_path, monkeypatch):
+    key = tmp_path / "key"
+    key.write_text(KEYS["ssh_passphrase"]["private"])
+    monkeypatch.setenv("ENVSEAL_IDENTITY", str(key))
+    with pytest.raises(PassphraseRequiredError):
+        envseal.load(env_file)
+    with pytest.raises(EnvsealError, match="wrong passphrase"):
+        envseal.load(env_file, passphrase="nope")
+    monkeypatch.setenv("ENVSEAL_SSH_PASSPHRASE", KEYS["ssh_passphrase"]["passphrase"])
+    assert envseal.load(env_file) == SEALED["expected"]
+
+
+def test_default_ssh_key(env_file, tmp_path):
+    (tmp_path / ".ssh").mkdir()
+    (tmp_path / ".ssh" / "id_ed25519").write_text(KEYS["ssh"]["private"])
+    assert envseal.load(env_file) == SEALED["expected"]
+
+
+def test_explicit_key_wins_over_default(env_file, tmp_path, monkeypatch):
+    (tmp_path / ".ssh").mkdir()
+    (tmp_path / ".ssh" / "id_ed25519").write_text(KEYS["ssh"]["private"])
+    monkeypatch.setenv("ENVSEAL_PRIVATE_KEY", KEYS["outsider_age"]["private"])
+    with pytest.raises(envseal.NotARecipientError):
+        envseal.load(env_file)
+
+
+def test_no_key(env_file):
+    with pytest.raises(NoKeyError, match="ssh-agent is not supported"):
+        envseal.load(env_file)
+
+
+def test_plain_file_needs_no_key(tmp_path, env_file):
+    plain = tmp_path / "plain.env"
+    plain.write_text("A=1\nB='two'\n")
+    assert envseal.load(plain) == {"A": "1", "B": "two"}
+
+
+def test_config(env_file, monkeypatch):
+    monkeypatch.setenv("ENVSEAL_PRIVATE_KEY", KEYS["age"]["private"])
+    monkeypatch.setenv("ENVSEAL_SSH_PASSPHRASE", "unused")
+    target = {"EMPTY": "already set"}
+    parsed = envseal.config(env_file, environ=target)
+    assert parsed == SEALED["expected"]
+    assert target["EMPTY"] == "already set"
+    assert target["DATABASE_URL"] == SEALED["expected"]["DATABASE_URL"]
+    assert "ENVSEAL_PRIVATE_KEY" not in os.environ
+    assert "ENVSEAL_SSH_PASSPHRASE" not in os.environ
+
+    monkeypatch.setenv("ENVSEAL_PRIVATE_KEY", KEYS["age"]["private"])
+    envseal.config(env_file, environ=target, override=True)
+    assert target["EMPTY"] == ""
+
+
+def test_config_default_path_and_missing_file(env_file, monkeypatch):
+    monkeypatch.chdir(env_file.parent)
+    monkeypatch.setenv("ENVSEAL_PRIVATE_KEY", KEYS["age"]["private"])
+    assert envseal.config(environ={}) == SEALED["expected"]
+    assert envseal.config("missing.env", environ={}) == {}
+
+
+def cli(*args, env, cwd):
+    return subprocess.run(
+        [sys.executable, "-m", "envseal", *args], env=env, cwd=cwd, capture_output=True, text=True, encoding="utf-8"
+    )
+
+
+@pytest.fixture
+def cli_env(env_file):
+    env = {k: v for k, v in os.environ.items() if not k.startswith("ENVSEAL_")}
+    env["ENVSEAL_PRIVATE_KEY"] = KEYS["age"]["private"]
+    env["PYTHONIOENCODING"] = "utf-8"
+    return env
+
+
+def test_cli_get_and_decrypt(env_file, cli_env):
+    r = cli("get", "UNICODE", env=cli_env, cwd=env_file.parent)
+    assert (r.returncode, r.stdout) == (0, SEALED["expected"]["UNICODE"] + "\n")
+    r = cli("get", "NOPE", env=cli_env, cwd=env_file.parent)
+    assert r.returncode == 1 and "not set" in r.stderr
+    r = cli("-f", str(env_file), "decrypt", env=cli_env, cwd=env_file.parent)
+    lines = dict(line.split("=", 1) for line in r.stdout.splitlines())
+    assert {k: json.loads(v) for k, v in lines.items()} == SEALED["expected"]
+
+
+def test_cli_run(env_file, cli_env):
+    script = (
+        "import json, os; "
+        "print(json.dumps({k: os.environ.get(k) for k in ['MULTILINE', 'EMPTY', 'ENVSEAL_PRIVATE_KEY']}))"
+    )
+    cli_env["EMPTY"] = "from parent"
+    r = cli("run", "--", sys.executable, "-c", script, env=cli_env, cwd=env_file.parent)
+    assert r.returncode == 0, r.stderr
+    assert json.loads(r.stdout) == {
+        "MULTILINE": SEALED["expected"]["MULTILINE"],
+        "EMPTY": "from parent",
+        "ENVSEAL_PRIVATE_KEY": None,
+    }
+    r = cli("run", "--override", "--", sys.executable, "-c", script, env=cli_env, cwd=env_file.parent)
+    assert json.loads(r.stdout)["EMPTY"] == ""
+
+
+def test_cli_run_exit_code_and_missing_command(env_file, cli_env):
+    r = cli("run", "--", sys.executable, "-c", "raise SystemExit(7)", env=cli_env, cwd=env_file.parent)
+    assert r.returncode == 7
+    r = cli("run", "--", "envseal-no-such-command", env=cli_env, cwd=env_file.parent)
+    assert r.returncode == 127
+
+
+def test_cli_error(env_file, cli_env):
+    cli_env["ENVSEAL_PRIVATE_KEY"] = KEYS["outsider_age"]["private"]
+    r = cli("get", "UNICODE", env=cli_env, cwd=env_file.parent)
+    assert r.returncode == 1 and "not encrypted for your key" in r.stderr
