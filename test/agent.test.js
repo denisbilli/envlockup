@@ -62,8 +62,8 @@ test("agent signatures match ssh-keygen -Y sign (SSHSIG framing)", { skip }, asy
   const { wire } = parseSSHPublicKey(ed.public);
   const fromAgent = await client.sign(wire, signedData());
   const msg = join(dir, "msg");
-  writeFileSync(msg, "envseal.org/v1/agent-identity");
-  execFileSync("ssh-keygen", ["-q", "-Y", "sign", "-n", "envseal.org", "-f", ed.path, msg]);
+  writeFileSync(msg, "github.com/denisbilli/envseal/v1/agent-identity");
+  execFileSync("ssh-keygen", ["-q", "-Y", "sign", "-n", "github.com/denisbilli/envseal", "-f", ed.path, msg]);
   const armored = readFileSync(`${msg}.sig`, "utf8").replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
   const sshsig = Buffer.from(armored, "base64");
   // The SSHSIG file ends with string(signature); compare it with the agent's.

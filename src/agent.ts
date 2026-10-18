@@ -4,9 +4,10 @@
 // ssh-ed25519 stanza. Instead we ask the agent to sign a fixed, envseal-specific
 // message and derive an X25519 age identity from the signature:
 //
-//   message   = SSHSIG blob, namespace "envseal.org", over "envseal.org/v1/agent-identity"
+//   message   = SSHSIG blob, namespace "github.com/denisbilli/envseal",
+//               over "github.com/denisbilli/envseal/v1/agent-identity"
 //   signature = agent.sign(key, message)       // Ed25519, or RSA with rsa-sha2-512
-//   secret    = HKDF-SHA-256(ikm = signature, salt = ssh_key, info = "envseal.org/v1/agent-identity")
+//   secret    = HKDF-SHA-256(ikm = signature, salt = ssh_key, info = "github.com/denisbilli/envseal/v1/agent-identity")
 //
 // This only works because these signatures are deterministic, which we check by
 // signing twice before handing out a recipient. The derived `age1...` public key
@@ -20,9 +21,9 @@ import { createPublicKey, verify } from "node:crypto";
 import { hkdf, sha512, x25519Base } from "./crypto.js";
 import { type Identity, type Recipient, fingerprint, sshKeyType, x25519Identity } from "./keys.js";
 
-export const AGENT_NAMESPACE = "envseal.org";
-const AGENT_MESSAGE = "envseal.org/v1/agent-identity";
-const AGENT_INFO = "envseal.org/v1/agent-identity";
+export const AGENT_NAMESPACE = "github.com/denisbilli/envseal";
+const AGENT_MESSAGE = "github.com/denisbilli/envseal/v1/agent-identity";
+const AGENT_INFO = "github.com/denisbilli/envseal/v1/agent-identity";
 
 const SSH_AGENT_FAILURE = 5;
 const SSH_AGENTC_REQUEST_IDENTITIES = 11;

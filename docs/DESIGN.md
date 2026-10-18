@@ -64,7 +64,7 @@ decrypts them with the `age` CLI, and the other way around.
 
 ```
 salt  = random(16)
-key   = HKDF-SHA-256(ikm = data_key, salt = salt, info = "envseal.org/v1/value")
+key   = HKDF-SHA-256(ikm = data_key, salt = salt, info = "github.com/denisbilli/envseal/v1/value")
 aad   = "envseal:v1:" || NAME
 value = "envseal:v1:" || base64url(salt || ChaCha20-Poly1305(key, nonce = 0, value, aad))
 ```
@@ -107,10 +107,10 @@ signature instead:
 
 ```
 data      = SSHSIG signed-data blob (as in `ssh-keygen -Y sign`):
-            "SSHSIG" || string("envseal.org") || string("") || string("sha512")
-                     || string(SHA-512("envseal.org/v1/agent-identity"))
+            "SSHSIG" || string("github.com/denisbilli/envseal") || string("") || string("sha512")
+                     || string(SHA-512("github.com/denisbilli/envseal/v1/agent-identity"))
 signature = agent.sign(ssh_key, data)            # Ed25519, or RSA with rsa-sha2-512
-secret    = HKDF-SHA-256(ikm = raw signature, salt = ssh_key, info = "envseal.org/v1/agent-identity")
+secret    = HKDF-SHA-256(ikm = raw signature, salt = ssh_key, info = "github.com/denisbilli/envseal/v1/agent-identity")
 recipient = X25519(secret, basepoint)            # shared as age1...
 ```
 
@@ -122,9 +122,10 @@ recipient = X25519(secret, basepoint)            # shared as age1...
   so an agent returning garbage can't produce a silently different identity.
 - **Domain separation.** The SSHSIG framing starts with the raw bytes `SSHSIG`,
   which cannot be the start of the data signed during SSH user authentication
-  (a length-prefixed session identifier), and the namespace `envseal.org` keeps it
-  apart from other SSHSIG uses such as git commit signing. The test suite checks
-  that `ssh-keygen -Y sign -n envseal.org` produces the same signature.
+  (a length-prefixed session identifier), and the namespace
+  `github.com/denisbilli/envseal` keeps it apart from other SSHSIG uses such as
+  git commit signing. The test suite checks that
+  `ssh-keygen -Y sign -n github.com/denisbilli/envseal` produces the same signature.
 - **One identity per key.** The message is fixed, not per file, so a key has the
   same `age1...` recipient in every project; `pubkey --agent` can be shared once.
 - **No proof of binding.** Nothing proves to a teammate that an `ssh-agent` line's

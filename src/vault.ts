@@ -29,7 +29,7 @@ const HEADER = "#envseal:";
 const VERSION_LINE = "#envseal:v1";
 const RECIPIENT_LINE = "#envseal:recipient ";
 const VALUE_PREFIX = "envseal:v1:";
-const VALUE_INFO = "envseal.org/v1/value";
+const VALUE_INFO = "github.com/denisbilli/envseal/v1/value";
 
 export const HEADER_COMMENT =
   "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.";
