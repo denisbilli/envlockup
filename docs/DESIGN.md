@@ -101,21 +101,31 @@ value = "envseal:v1:" || base64url(salt || ChaCha20-Poly1305(key, nonce = 0, val
 
 ### Decrypting a file
 
-A reader tries each recipient line with its private key until one unwraps (a
-data key that is not 32 bytes is an error), then decrypts **every** encrypted
-value, including ones a later definition overrides. If any value fails, the whole file fails: a tampered or
-half-merged file is an error, never a partial set of variables.
+A reader tries each recipient line with its private key. When one unwraps (a
+data key that is not 32 bytes is an error), it decrypts **every** encrypted
+value with that key, including ones a later definition overrides. If any value
+fails, it goes on with the next line that unwraps, since anyone can write a line
+for a public key and put it first; if none works, the whole file fails. A
+tampered or half-merged file is an error, never a partial set of variables.
 
 ### Adding and removing recipients
 
-`add` unwraps the data key and wraps it for the new recipient. Existing values do
-not change.
+`add` unwraps the data key, wraps it for the new recipient and appends one line.
+Existing values and existing recipient lines do not change, byte for byte: two
+`add`s on different branches merge cleanly, and a recipient line that someone
+added without being able to decrypt the file stays useless (re-wrapping every
+line would turn it into a working one).
 
-`remove` generates a new data key, re-encrypts every value and re-wraps it for the
-remaining recipients, so the old key no longer opens the current file. It cannot
-take back what the removed person already decrypted, or old versions of the file
-in git history; those secrets must be rotated at their source. The CLI says so on
-every `remove`.
+`remove` generates a new data key, re-encrypts every value and re-wraps it for
+**every remaining line**, so the old key no longer opens the current file. A line
+added by someone without the key would get the new data key too, so the CLI
+lists everyone who will be able to read the file and asks for confirmation
+(`--yes` when there is no terminal). A selector that matches several recipients
+(for example `@user`, whose GitHub keys share that label) removes all of them.
+
+`remove` cannot take back what the removed person already decrypted, or old
+versions of the file in git history; those secrets must be rotated at their
+source. The CLI says so on every `remove`.
 
 ### Domain separation
 
@@ -229,15 +239,24 @@ and the recipients' public keys and labels.
 - **A running process.** Decrypted values are normal environment variables, and the
   operating system lets the process owner (and root) read them.
 - **Write access to the file.** Encryption hides values; it does not say who wrote
-  them. Recipients' public keys are public, so anyone who can change the file can
-  wrap a data key of their own for every recipient and replace all the values: the
-  file then decrypts cleanly to values they chose (say, a `DATABASE_URL` pointing
-  at their server). They can also put back a value, or the whole file, from an
-  older commit. A partial change is caught (values left under the old data key no
-  longer decrypt, so the file fails as a whole), and a new value set on a tampered
-  file could be readable by the attacker. Review changes to `#envseal:` lines and
-  values like code; if someone can change your code, they can also just print your
-  secrets.
+  them, and nothing authenticates the file as a whole. Someone who can change the
+  file, without any private key, can:
+  - append a plaintext definition after an encrypted one (`DATABASE_URL=` pointing
+    at their server): the last definition wins, as in dotenv;
+  - replace an encrypted value with a plaintext one, or delete a variable;
+  - put back an older ciphertext of the same variable (say, a revoked API key), or
+    the whole file from an older commit;
+  - add a recipient line for their own key. It cannot decrypt anything by itself,
+    but the next `remove` wraps the new data key for it, unless the person running
+    `remove` notices it in the list the CLI shows;
+  - wrap a data key of their own for every recipient (public keys are public) and
+    replace every value: the file decrypts cleanly to values they chose, and new
+    values set on it afterwards are readable by them.
+
+  What *is* caught: a value moved to another variable, a modified ciphertext, and
+  values left under a different data key (the file then fails as a whole).
+  Review changes to `#envseal:` lines and values like code; if someone can change
+  your code, they can also just print your secrets.
 - **A compromised developer machine.** The SSH key is the key to everything it can
   decrypt, as with any key-based scheme.
 - **Other users of your agent.** Any process that can talk to your agent can

@@ -52,10 +52,10 @@ test("formatValue round-trips through dotenv", () => {
   const samples = [
     "", "simple", "with space", " padded ", "a#b", "quote'single", 'quote"double', "both ' and \"",
     "back`tick", "new\nline", "literal \\n backslash-n", "it's \"all\" `here`".replace("`here`", "here"),
-    "tab\there", "unicode ✓ àèì", "$VAR ${VAR}", "=equals=", "trailing\\",
+    "tab\there", "cr\r\nlf", "cr\r'single", "unicode ✓ àèì", "$VAR ${VAR}", "=equals=", "trailing\\",
   ];
   for (let i = 0; i < 300; i++) {
-    const alphabet = "ab #'\"`\\\n=$ ";
+    const alphabet = "ab #'\"`\\\n\r=$ ";
     samples.push(Array.from(randomBytes(8), (b) => alphabet[b % alphabet.length]).join(""));
   }
   for (const value of samples) {

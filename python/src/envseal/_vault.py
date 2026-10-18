@@ -128,14 +128,24 @@ class SealedFile:
 
     def unlock(self, identity: Identity) -> None:
         """Recover the data key with `identity` and check that every value decrypts."""
+        # Anyone can write a stanza for a public key, so a key that unwraps but does
+        # not decrypt the values may be a forgery placed before the real stanza.
+        failure: Exception | None = None
         for stanza in self.stanzas:
             key = identity.unwrap(stanza)
-            if key is not None:
+            if key is None:
+                continue
+            try:
                 if len(key) != 32:
                     raise FormatError("malformed data key")
                 self._data_key = key
                 self.decrypt_all()
                 return
+            except (FormatError, DecryptError) as err:
+                self._data_key = None
+                failure = failure or err
+        if failure is not None:
+            raise failure
         raise NotARecipientError(identity.fingerprint)
 
     def decrypt_all(self) -> dict[str, str]:

@@ -1,8 +1,23 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
-import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { randomBytes } from "node:crypto";
+import {
+  closeSync,
+  existsSync,
+  fchmodSync,
+  fchownSync,
+  fsyncSync,
+  openSync,
+  readFileSync,
+  realpathSync,
+  renameSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { createRequire } from "node:module";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
+import { createInterface } from "node:readline/promises";
 import { AgentClient, agentIdentityFor, agentRecipient, agentSocket, selectAgentKey } from "./agent.js";
 import { type IdentitySource, SECRET_ENV_VARS, explicitIdentity, findIdentity, loadIdentity, publicRecipient } from "./identity.js";
 import {
@@ -14,7 +29,9 @@ import {
   isEncryptedSSHKey,
   parseRecipient,
   recipientKey,
+  sameRecipient,
 } from "./keys.js";
+import { formatValue } from "./dotenv.js";
 import { SealedEnv } from "./vault.js";
 
 const HELP = `envseal — encrypted .env files you can commit
@@ -33,7 +50,9 @@ Commands:
   unset NAME             Remove a variable.
   ls                     List variable names, marking which are encrypted.
   encrypt [NAME]...      Encrypt plaintext values (all, or the ones named).
-  decrypt                Print the whole file decrypted, in dotenv format.
+  decrypt [--format json]
+                         Print the whole file decrypted, in dotenv format
+                         (or as a JSON object).
   run [--override] -- COMMAND [ARGS]...
                          Run COMMAND with the variables in its environment.
                          Nothing decrypted is written to disk.
@@ -47,8 +66,10 @@ Commands:
   pubkey [--agent [--key K]]
                          Print your public key, to send to someone who will
                          \`envseal add\` it. With --agent, your ssh-agent key.
-  remove WHO...          Revoke access (fingerprint, label or number from
-                         \`recipients\`) and rotate the data key.
+  remove WHO... [--yes]  Revoke access (fingerprint, label or number from
+                         \`recipients\`) and rotate the data key. Every
+                         recipient matching WHO is removed. Asks before
+                         changing anything, unless --yes.
   keygen [--label TEXT]  Create a dedicated key (e.g. for CI), add it as a
                          recipient and print the private key once.
 
@@ -70,8 +91,8 @@ interface Args {
   rest: string[];
 }
 
-const VALUE_FLAGS = new Set(["file", "identity", "recipient", "label", "key"]);
-const ALIASES: Record<string, string> = { f: "file", i: "identity", h: "help", v: "version" };
+const VALUE_FLAGS = new Set(["file", "identity", "recipient", "label", "key", "format"]);
+const ALIASES: Record<string, string> = { f: "file", i: "identity", h: "help", v: "version", y: "yes" };
 
 function parseArgs(argv: string[]): Args {
   const args: Args = { positional: [], flags: new Map(), rest: [] };
@@ -102,8 +123,13 @@ function parseArgs(argv: string[]): Args {
 const out = (s: string) => process.stdout.write(s + "\n");
 const info = (s: string) => process.stderr.write(s + "\n");
 
+/** Escape control characters (except newlines) in text that may come from the file. */
+function printable(s: string): string {
+  return s.replace(/[^\P{Cc}\n]/gu, (c) => `\\x${c.charCodeAt(0).toString(16).padStart(2, "0")}`);
+}
+
 function describe(r: Recipient): string {
-  return `${fingerprint(r)}  ${r.type === "X25519" ? "age" : r.type}${r.label ? `  ${r.label}` : ""}`;
+  return printable(`${fingerprint(r)}  ${r.type === "X25519" ? "age" : r.type}${r.label ? `  ${r.label}` : ""}`);
 }
 
 function agentClient(): AgentClient {
@@ -139,6 +165,15 @@ async function promptHidden(question: string): Promise<string> {
     };
     stdin.on("data", onData);
   });
+}
+
+async function promptLine(question: string): Promise<string> {
+  const rl = createInterface({ input: process.stdin, output: process.stderr });
+  try {
+    return await rl.question(question);
+  } finally {
+    rl.close();
+  }
 }
 
 async function readStdin(): Promise<string> {
@@ -244,10 +279,40 @@ class Session {
     return env;
   }
 
+  /**
+   * Replace the file atomically. A symlinked file is updated through the link;
+   * the file keeps its permissions (and its owner, when running as root).
+   */
   write(env: SealedEnv): void {
-    const tmp = join(dirname(this.path), `.${Date.now()}.envseal.tmp`);
-    writeFileSync(tmp, env.toString());
-    renameSync(tmp, this.path);
+    const target = existsSync(this.path) ? realpathSync(this.path) : this.path;
+    const old = existsSync(target) ? statSync(target) : undefined;
+    const tmp = join(dirname(target), `.${basename(target)}.${randomBytes(6).toString("hex")}.envseal.tmp`);
+    // "wx" fails if anything, a symlink included, already exists at that name.
+    const fd = openSync(tmp, "wx", old ? old.mode & 0o7777 : 0o666);
+    try {
+      try {
+        writeFileSync(fd, env.toString());
+        if (old) {
+          fchmodSync(fd, old.mode & 0o7777);
+          if (process.getuid?.() === 0) fchownSync(fd, old.uid, old.gid);
+        }
+        fsyncSync(fd);
+      } finally {
+        closeSync(fd);
+      }
+      renameSync(tmp, target);
+    } catch (err) {
+      rmSync(tmp, { force: true });
+      throw err;
+    }
+    if (process.platform !== "win32") {
+      const dir = openSync(dirname(target), "r");
+      try {
+        fsyncSync(dir);
+      } finally {
+        closeSync(dir);
+      }
+    }
   }
 }
 
@@ -257,7 +322,7 @@ async function resolveRecipients(specs: string[], label?: string): Promise<Recip
     if (spec.startsWith("@")) {
       const user = spec.slice(1);
       if (!/^[A-Za-z0-9-]+$/.test(user)) throw new Error(`invalid GitHub user name: ${spec}`);
-      const url = (process.env.ENVSEAL_GITHUB_KEYS_URL ?? "https://github.com/{user}.keys").replace("{user}", user);
+      const url = githubKeysUrl().replace("{user}", user);
       const res = await fetch(url);
       if (!res.ok) throw new Error(`cannot fetch keys for ${spec}: HTTP ${res.status}`);
       const keys = (await res.text()).split("\n").filter((l) => l.startsWith("ssh-ed25519 "));
@@ -272,16 +337,39 @@ async function resolveRecipients(specs: string[], label?: string): Promise<Recip
   return result;
 }
 
+/** github.com, or a local server for tests: a repository must not be able to redirect `add @user`. */
+function githubKeysUrl(): string {
+  const custom = process.env.ENVSEAL_GITHUB_KEYS_URL;
+  if (!custom) return "https://github.com/{user}.keys";
+  const host = URL.canParse(custom) ? new URL(custom).hostname : "";
+  if (!["127.0.0.1", "localhost", "[::1]"].includes(host)) {
+    throw new Error("ENVSEAL_GITHUB_KEYS_URL is only for tests and must point to localhost");
+  }
+  return custom;
+}
+
+/** Every recipient matching any of `who` (a number, fingerprint, label or key). */
 function findRecipients(env: SealedEnv, who: string[]): Recipient[] {
-  return who.map((w) => {
-    const all = env.recipients.map((r) => r.recipient);
+  const all = env.recipients.map((r) => r.recipient);
+  const found: Recipient[] = [];
+  for (const w of who) {
     const n = Number(w);
-    if (Number.isInteger(n) && n >= 1 && n <= all.length) return all[n - 1]!;
-    const matches = all.filter((r) => fingerprint(r) === w || fingerprint(r) === `SHA256:${w}` || r.label === w || recipientKey(r) === w);
+    const matches =
+      Number.isInteger(n) && n >= 1 && n <= all.length
+        ? [all[n - 1]!]
+        : all.filter((r) => fingerprint(r) === w || fingerprint(r) === `SHA256:${w}` || r.label === w || recipientKey(r) === w);
     if (matches.length === 0) throw new Error(`no recipient matches "${w}"`);
-    if (matches.length > 1 && !w.startsWith("@")) throw new Error(`"${w}" matches more than one recipient; use its number`);
-    return matches[0]!;
-  });
+    for (const r of matches) if (!found.some((f) => sameRecipient(f, r))) found.push(r);
+  }
+  return found;
+}
+
+function dotenvLine(name: string, value: string): string {
+  try {
+    return `${name}=${formatValue(value)}`;
+  } catch {
+    throw new Error(`${name} cannot be written in dotenv syntax (it mixes ', " and \`); use --format json`);
+  }
 }
 
 async function run(argv: string[]): Promise<number> {
@@ -356,8 +444,14 @@ async function run(argv: string[]): Promise<number> {
       return 0;
     }
     case "decrypt": {
+      const format = args.flags.get("format")?.at(-1) ?? "dotenv";
+      if (format !== "dotenv" && format !== "json") throw new UsageError(`unknown format "${format}" (expected dotenv or json)`);
       const values = (await s.open()).decryptAll();
-      for (const [name, value] of Object.entries(values)) out(`${name}=${JSON.stringify(value)}`);
+      if (format === "json") out(JSON.stringify(values, null, 2));
+      else {
+        const lines = Object.entries(values).map(([name, value]) => dotenvLine(name, value));
+        if (lines.length) out(lines.join("\n"));
+      }
       return 0;
     }
     case "run": {
@@ -397,10 +491,24 @@ async function run(argv: string[]): Promise<number> {
       if (args.positional.length === 0) throw new UsageError("usage: envseal remove WHO...");
       const env = await s.openSealed();
       const removed = findRecipients(env, args.positional);
+      const remaining = env.recipients.map((r) => r.recipient).filter((r) => !removed.some((x) => sameRecipient(x, r)));
+      if (remaining.length === 0) throw new Error("cannot remove the last recipient");
+      // Every remaining line gets the new data key, including any line someone
+      // added to the file without being able to decrypt it: show who that is.
+      info("Removing:");
+      for (const r of removed) info(`  ${describe(r)}`);
+      info("The new data key will be readable by:");
+      for (const r of remaining) info(`  ${describe(r)}`);
+      if (!args.flags.has("yes")) {
+        if (!process.stdin.isTTY) throw new UsageError("check the lists above, then run again with --yes");
+        if (!/^y(es)?$/i.test((await promptLine("Continue? [y/N] ")).trim())) {
+          info("Nothing changed.");
+          return 1;
+        }
+      }
       env.removeRecipients(removed);
       s.write(env);
-      for (const r of removed) info(`Removed ${describe(r)}`);
-      info("The data key was rotated. Anyone removed may still know the values they could read: rotate those secrets too.");
+      info("Done. The data key was rotated. Anyone removed may still know the values they could read: rotate those secrets too.");
       return 0;
     }
     case "pubkey": {
@@ -453,7 +561,7 @@ function signalNumber(signal: NodeJS.Signals): number | undefined {
 run(process.argv.slice(2)).then(
   (code) => process.exit(code),
   (err: Error) => {
-    info(`envseal: ${err.message}`);
+    info(`envseal: ${printable(err.message)}`);
     process.exit(err instanceof UsageError ? 2 : 1);
   },
 );

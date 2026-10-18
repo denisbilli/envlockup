@@ -112,7 +112,7 @@ test("pubkey --agent output can be added by someone else", { skip }, () => {
   assert.match(line.stdout, /^ssh-agent age1\S+ ssh-rsa \S+ rsa@test\n$/);
   assert.equal(cli(["add", line.stdout.trim()]).code, 0);
   // Remove the ed25519 agent recipient: only the RSA agent key can open it now.
-  assert.equal(cli(["remove", "1"]).code, 0);
+  assert.equal(cli(["remove", "1", "--yes"]).code, 0);
   assert.equal(cli(["get", "TOKEN"]).stdout, "t0ps3cret\n");
   assert.match(cli(["recipients"]).stdout, /^1\. SHA256:\S+  ssh-agent  rsa@test\n$/);
 });

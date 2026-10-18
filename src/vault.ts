@@ -106,7 +106,9 @@ function parseRecipientLine(line: string): RecipientEntry {
 function formatRecipientLine({ recipient, stanza }: RecipientEntry): string {
   const key = recipientKey(recipient);
   const parts = [recipient.type === "X25519" ? `X25519 ${key}` : key, ...stanza.args, encodeBase64(stanza.body)];
-  if (recipient.label) parts.push(recipient.label.replace(/\s+/g, " "));
+  // Labels are free text from .pub comments and --label: one line, no control characters.
+  const label = recipient.label.replace(/\s+/g, " ").replace(/\p{Cc}/gu, "");
+  if (label) parts.push(label);
   return RECIPIENT_LINE + parts.join(" ");
 }
 
@@ -139,16 +141,23 @@ export class SealedEnv {
 
   /** Recover the data key with `identity` and check that every value decrypts. */
   unlock(identity: Identity): void {
+    // Anyone can write a stanza for a public key, so a key that unwraps but does
+    // not decrypt the values may be a forgery placed before the real stanza.
+    let failure: Error | undefined;
     for (const { stanza } of this.recipients) {
       const key = identity.unwrap(stanza);
-      if (key) {
+      if (!key) continue;
+      try {
         if (key.length !== 32) throw new Error("malformed data key");
         this.dataKey = key;
         this.decryptAll();
         return;
+      } catch (err) {
+        this.dataKey = null;
+        failure ??= err as Error;
       }
     }
-    throw new NotARecipientError(identity.recipient);
+    throw failure ?? new NotARecipientError(identity.recipient);
   }
 
   /** All variables, decrypted. Later definitions win, as in dotenv. */
@@ -176,10 +185,14 @@ export class SealedEnv {
   set(name: string, value: string, { plain = false } = {}): void {
     if (!/^[\w.-]+$/.test(name)) throw new Error(`invalid variable name: ${name}`);
     const raw = plain ? formatValue(value) : encryptValue(this.requireKey(), name, value);
-    const existing = this.entries().filter((e) => e.name === name).pop();
-    if (existing) {
-      const exported = /^\s*export\s/.test(this.lines[existing.start]!) ? "export " : "";
-      this.lines.splice(existing.start, existing.end - existing.start + 1, `${exported}${name}=${raw}`);
+    const [last, ...earlier] = this.entries()
+      .filter((e) => e.name === name)
+      .reverse();
+    if (last) {
+      const exported = /^\s*export\s/.test(this.lines[last.start]!) ? "export " : "";
+      this.lines.splice(last.start, last.end - last.start + 1, `${exported}${name}=${raw}`);
+      // Earlier definitions are overridden anyway, but may still hold an old value in plaintext.
+      for (const e of earlier) this.lines.splice(e.start, e.end - e.start + 1);
     } else {
       this.lines.push(`${name}=${raw}`);
     }
@@ -207,11 +220,23 @@ export class SealedEnv {
     return done;
   }
 
+  /**
+   * Wrap the data key for one more recipient. Existing recipient lines are left
+   * byte for byte: re-wrapping them would change every line (noisy diffs, merge
+   * conflicts), and would turn a line added by someone without the key into one
+   * that works.
+   */
   addRecipient(recipient: Recipient): void {
     if (this.recipients.some((r) => sameRecipient(r.recipient, recipient))) {
       throw new Error(`already a recipient: ${fingerprint(recipient)}`);
     }
-    this.setRecipients([...this.recipients.map((r) => r.recipient), recipient]);
+    const entry = { recipient, stanza: wrap(recipient, this.requireKey()) };
+    let after = -1;
+    this.lines.forEach((l, i) => {
+      if (l.startsWith(RECIPIENT_LINE)) after = i;
+    });
+    this.lines.splice(after + 1, 0, formatRecipientLine(entry));
+    this.recipients.push(entry);
   }
 
   /**

@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from envseal import DecryptError, FormatError, NotARecipientError
-from envseal._dotenv import parse
+from envseal._dotenv import format_value, parse
 from envseal._keys import parse_identity
 from envseal._vault import SealedFile
 
@@ -41,3 +41,19 @@ def test_decrypts(file):
 def test_rejects(case):
     with pytest.raises(ERRORS[case["error"]]):
         SealedFile(case["text"]).unlock(identity(case["key"]))
+
+
+_VALUES = sorted({v for case in VECTORS["parse"] for v in case["expected"].values()})
+
+
+@pytest.mark.parametrize("value", _VALUES, ids=lambda v: json.dumps(v)[:40])
+def test_format_value_round_trips(value):
+    # What `decrypt` prints must read back as the same value.
+    unrepresentable = all(q in value for q in "'\"`") or (
+        "\r" in value and ('"' in value or "\\n" in value or "\\r" in value)
+    )
+    if unrepresentable:
+        with pytest.raises(ValueError):
+            format_value(value)
+    else:
+        assert parse(f"K={format_value(value)}") == {"K": value}

@@ -64,6 +64,11 @@ export function parseEntries(lines: string[]): Entry[] {
  */
 export function formatValue(value: string): string {
   if (/^[A-Za-z0-9_./:@%+,=~-]*$/.test(value)) return value;
+  // dotenv turns every \r\n or \r into \n before parsing; only the \r escape inside double quotes survives.
+  if (value.includes("\r")) {
+    if (!value.includes('"') && !/\\[nr]/.test(value)) return `"${value.replace(/\r/g, "\\r")}"`;
+    throw new Error("this value cannot be written as a plain dotenv value (it has a carriage return and a \" or \\n); store it encrypted");
+  }
   if (!value.includes("'")) return `'${value}'`;
   if (!value.includes('"') && !/\\[nr]/.test(value)) return `"${value}"`;
   if (!value.includes("`")) return `\`${value}\``;

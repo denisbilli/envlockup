@@ -78,12 +78,14 @@ npx envseal add @octocat                 # their ssh-ed25519 keys from github.co
 npx envseal add ~/Downloads/mario.pub    # or a .pub file
 npx envseal add "ssh-ed25519 AAAA... mario@laptop"
 npx envseal recipients                   # who can decrypt
-npx envseal remove @octocat              # revoke and rotate the data key
+npx envseal remove @octocat              # revoke all their keys and rotate the data key
 ```
 
 Keys fetched from GitHub are trusted as published: confirm the fingerprint with
-their owner. After `remove`, the person removed still knows every value they could
-read before. **Rotate those secrets**; envseal can't do that part for you.
+their owner. `remove` lists everyone who will still be able to read the file and
+asks before changing anything (`--yes` in scripts). After `remove`, the person
+removed still knows every value they could read before. **Rotate those
+secrets**; envseal can't do that part for you.
 
 ## Using ssh-agent
 
@@ -168,7 +170,10 @@ a prompt when you use the CLI in a terminal. `import "envseal/config"` cannot
 prompt: load the key in ssh-agent and run `envseal add --agent` once instead.
 
 envseal removes `ENVSEAL_PRIVATE_KEY` and `ENVSEAL_SSH_PASSPHRASE` from the
-environment of the commands it runs, and from `process.env` after `config()`.
+environment of the commands it runs, and from `process.env` after `config()`, so
+child processes don't inherit them. The process itself started with them: on
+Linux they stay readable in `/proc/<pid>/environ` by the same user, so prefer
+`ENVSEAL_IDENTITY` (a file path) or ssh-agent where you can.
 
 ## Commands
 
@@ -180,13 +185,13 @@ environment of the commands it runs, and from `process.env` after `config()`.
 | `unset NAME` | Remove a variable |
 | `ls` | List names; 🔒 marks encrypted ones |
 | `encrypt [NAME]...` | Encrypt values that are still plaintext |
-| `decrypt` | Print the whole file decrypted (dotenv format) |
+| `decrypt [--format json]` | Print the whole file decrypted (dotenv format, or JSON) |
 | `run [--override] -- CMD...` | Run a command with the variables set |
 | `recipients` | List who can decrypt |
 | `add KEY... [--label TEXT]` | Give access to a key, `.pub` file, `age1...`, `ssh-agent ...` line or `@github-user` |
 | `add --agent [--key K]` | Give access to your own ssh-agent key |
 | `pubkey [--agent] [--key K]` | Print your public key, to send to whoever will `add` you |
-| `remove WHO...` | Revoke access (fingerprint, label or number) and rotate the data key |
+| `remove WHO... [--yes]` | Revoke access (fingerprint, label or number; every match) and rotate the data key |
 | `keygen [--label TEXT]` | Create a dedicated key for CI/servers |
 
 Global options: `-f FILE` (default `$ENVSEAL_FILE` or `.env`), `-i KEY`, `--key K` (which agent key).

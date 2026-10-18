@@ -68,3 +68,28 @@ def parse_entries(lines: list[str]) -> list[tuple[str, str]]:
 
 def parse(text: str) -> dict[str, str]:
     return dict(parse_entries(split_lines(text)))
+
+
+_BARE = re.compile(r"[A-Za-z0-9_./:@%+,=~-]*")
+
+
+def format_value(value: str) -> str:
+    """Serialize a value so that dotenv (and this parser) read it back unchanged.
+
+    Same rules as formatValue in the Node implementation. Raises ValueError for
+    the rare values dotenv's syntax cannot represent.
+    """
+    if _BARE.fullmatch(value):
+        return value
+    # dotenv turns every \r\n or \r into \n before parsing; only the \r escape inside double quotes survives.
+    if "\r" in value:
+        if '"' not in value and not re.search(r"\\[nr]", value):
+            return '"' + value.replace("\r", "\\r") + '"'
+        raise ValueError("this value cannot be written as a dotenv value (it has a carriage return and a \" or \\n)")
+    if "'" not in value:
+        return f"'{value}'"
+    if '"' not in value and not re.search(r"\\[nr]", value):
+        return f'"{value}"'
+    if "`" not in value:
+        return f"`{value}`"
+    raise ValueError("this value cannot be written as a dotenv value (it mixes ', \" and `)")
