@@ -2,7 +2,14 @@
   "name": "envseal",
   "version": "0.2.0",
   "description": "Encrypted .env files you can commit. Decrypt with the SSH key you already have.",
-  "keywords": ["dotenv", "env", "secrets", "encryption", "ssh", "age"],
+  "keywords": [
+    "dotenv",
+    "env",
+    "secrets",
+    "encryption",
+    "ssh",
+    "age"
+  ],
   "license": "MIT",
   "author": "denisbilli",
   "repository": {
@@ -23,7 +30,11 @@
       "default": "./dist/config.js"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "engines": {
     "node": ">=22.12"
   },
@@ -38,6 +49,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "dotenv": "^16.6.1",
     "typescript": "^5.7.0"
   }
 }

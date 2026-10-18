@@ -173,7 +173,7 @@ export class SealedEnv {
   }
 
   set(name: string, value: string, { plain = false } = {}): void {
-    if (!/^[A-Za-z_][A-Za-z0-9_.-]*$/.test(name)) throw new Error(`invalid variable name: ${name}`);
+    if (!/^[\w.-]+$/.test(name)) throw new Error(`invalid variable name: ${name}`);
     const raw = plain ? formatValue(value) : encryptValue(this.requireKey(), name, value);
     const existing = this.entries().filter((e) => e.name === name).pop();
     if (existing) {

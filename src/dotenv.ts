@@ -1,5 +1,11 @@
-// A small dotenv parser that keeps the original text, so that editing one
-// variable leaves every other line (comments, blank lines, order) untouched.
+// A dotenv parser that keeps the original text, so that editing one variable
+// leaves every other line (comments, blank lines, order) untouched.
+//
+// Values are read with the exact algorithm of dotenv 16/17 (same regex, same
+// unquoting), so a file means the same thing to envseal and to dotenv. That
+// includes dotenv's quirks: an unquoted value ends at the first `#`, and in
+// double quotes only `\n` and `\r` are unescaped. test/dotenv-compat.test.js
+// checks this against the real dotenv package.
 
 export interface Entry {
   name: string;
@@ -9,64 +15,63 @@ export interface Entry {
   end: number;
 }
 
-const ASSIGNMENT = /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_.-]*)\s*=\s?(.*)$/;
+// Verbatim from dotenv's lib/main.js.
+const LINE =
+  /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/gm;
 
-function parseDoubleQuoted(body: string): string {
-  return body.replace(/\\([nrt"\\])/g, (_, c: string) => ({ n: "\n", r: "\r", t: "\t" })[c] ?? c);
+function unquote(raw: string): string {
+  let value = raw.trim();
+  const quote = value[0];
+  value = value.replace(/^(['"`])([\s\S]*)\1$/gm, "$2");
+  if (quote === '"') value = value.replace(/\\n/g, "\n").replace(/\\r/g, "\r");
+  return value;
 }
 
 export function parseEntries(lines: string[]): Entry[] {
-  const entries: Entry[] = [];
-  for (let i = 0; i < lines.length; i++) {
-    const m = lines[i]!.match(ASSIGNMENT);
-    if (!m) continue;
-    const name = m[1]!;
-    let rest = m[2]!.trimStart();
-    const start = i;
-    const quote = rest[0];
-    let value: string;
-    if (quote === '"' || quote === "'" || quote === "`") {
-      // Find the closing quote, possibly on a later line (multi-line values).
-      let text = rest.slice(1);
-      let close = findClose(text, quote);
-      while (close === -1 && i + 1 < lines.length) {
-        text += "\n" + lines[++i];
-        close = findClose(text, quote);
-      }
-      if (close === -1) {
-        // Unterminated quote: treat the first line as a bare value, like dotenv.
-        i = start;
-        value = rest.trim();
-      } else {
-        const body = text.slice(0, close);
-        value = quote === '"' ? parseDoubleQuoted(body) : body;
-      }
-    } else {
-      const hash = rest.search(/\s#/);
-      value = (hash === -1 ? rest : rest.slice(0, hash)).trim();
+  const text = lines.join("\n");
+  // Offsets of the start of each line, to map matches back to line numbers.
+  const lineStarts = [0];
+  for (let i = 0; i < text.length; i++) if (text[i] === "\n") lineStarts.push(i + 1);
+  const lineAt = (offset: number) => {
+    let lo = 0;
+    let hi = lineStarts.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (lineStarts[mid]! <= offset) lo = mid;
+      else hi = mid - 1;
     }
-    entries.push({ name, value, start, end: i });
+    return lo;
+  };
+
+  const entries: Entry[] = [];
+  for (const m of text.matchAll(LINE)) {
+    const matched = m[0];
+    const first = matched.search(/\S/);
+    const last = matched.trimEnd().length - 1;
+    entries.push({
+      name: m[1]!,
+      value: unquote(m[2] ?? ""),
+      start: lineAt(m.index + first),
+      end: lineAt(m.index + last),
+    });
   }
   return entries;
 }
 
-function findClose(text: string, quote: string): number {
-  for (let j = 0; j < text.length; j++) {
-    if (text[j] === "\\" && quote === '"') j++;
-    else if (text[j] === quote) return j;
-  }
-  return -1;
-}
-
-/** Serialize a value so that dotenv (and this parser) read it back unchanged. */
+/**
+ * Serialize a value so that dotenv (and this parser) read it back unchanged.
+ * Throws for the rare values dotenv's syntax cannot represent.
+ */
 export function formatValue(value: string): string {
   if (/^[A-Za-z0-9_./:@%+,=~-]*$/.test(value)) return value;
-  if (!value.includes("'") && !value.includes("\n")) return `'${value}'`;
-  return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n").replace(/\r/g, "\\r")}"`;
+  if (!value.includes("'")) return `'${value}'`;
+  if (!value.includes('"') && !/\\[nr]/.test(value)) return `"${value}"`;
+  if (!value.includes("`")) return `\`${value}\``;
+  throw new Error("this value cannot be written as a plain dotenv value (it mixes ', \" and `); store it encrypted");
 }
 
 export function splitLines(text: string): string[] {
-  const lines = text.split(/\r?\n/);
+  const lines = text.split(/\r\n?|\n/);
   if (lines.length && lines[lines.length - 1] === "") lines.pop();
   return lines;
 }

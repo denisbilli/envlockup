@@ -60,6 +60,17 @@ npx envseal run -- node server.js
 
 No SSH key yet? `ssh-keygen -t ed25519` creates one.
 
+### Trying it on an existing .env first
+
+`scripts/dry-run.sh` encrypts a *copy* of a real file with a throwaway key, in a
+temporary folder, and checks that envseal reads it exactly like dotenv, that every
+value is encrypted, and that everything decrypts back unchanged. It prints only
+variable names, never values, and leaves the original untouched.
+
+```sh
+./scripts/dry-run.sh /srv/app/.env
+```
+
 ## Sharing with someone else
 
 ```sh
