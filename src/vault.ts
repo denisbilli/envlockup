@@ -55,6 +55,14 @@ export function isEncryptedValue(value: string): boolean {
   return value.startsWith(VALUE_PREFIX);
 }
 
+function plaintextOverrideError(name: string): Error {
+  return new Error(
+    `${name} is encrypted, then set again in plaintext further down the file. ` +
+      "Anyone who can edit the file can add such a line, so it is not used. " +
+      `Delete the line you don't want, or run \`envseal set ${name}\`.`,
+  );
+}
+
 function valueAad(name: string): Buffer {
   return Buffer.from(`${VALUE_PREFIX}${name}`, "utf8");
 }
@@ -150,7 +158,7 @@ export class SealedEnv {
       try {
         if (key.length !== 32) throw new Error("malformed data key");
         this.dataKey = key;
-        this.decryptAll();
+        for (const e of this.entries()) if (e.encrypted) decryptValue(key, e.name, e.value);
         return;
       } catch (err) {
         this.dataKey = null;
@@ -160,13 +168,29 @@ export class SealedEnv {
     throw failure ?? new NotARecipientError(identity.recipient);
   }
 
-  /** All variables, decrypted. Later definitions win, as in dotenv. */
+  /**
+   * All variables, decrypted. Later definitions win, as in dotenv, except that a
+   * plaintext definition after an encrypted one is refused: it needs no key to write.
+   */
   decryptAll(): Record<string, string> {
+    const [name] = this.plaintextOverrides();
+    if (name) throw plaintextOverrideError(name);
     const out: Record<string, string> = {};
     for (const e of this.entries()) {
       out[e.name] = e.encrypted ? decryptValue(this.requireKey(), e.name, e.value) : e.value;
     }
     return out;
+  }
+
+  /** Names defined in plaintext after an encrypted definition of the same name. */
+  plaintextOverrides(): string[] {
+    const encrypted = new Set<string>();
+    const found = new Set<string>();
+    for (const e of this.entries()) {
+      if (e.encrypted) encrypted.add(e.name);
+      else if (encrypted.has(e.name)) found.add(e.name);
+    }
+    return [...found];
   }
 
   get(name: string): string | undefined {
@@ -207,6 +231,9 @@ export class SealedEnv {
   /** Encrypt plaintext values (all of them, or only `names`). Returns the names encrypted. */
   encrypt(names?: string[]): string[] {
     const key = this.requireKey();
+    // Encrypting such a value would turn an unauthenticated line into a trusted one.
+    const override = this.plaintextOverrides().find((n) => !names || names.includes(n));
+    if (override) throw plaintextOverrideError(override);
     const done: string[] = [];
     const missing = new Set(names);
     for (const e of this.entries().reverse()) {
@@ -247,12 +274,13 @@ export class SealedEnv {
     const remaining = this.recipients.map((r) => r.recipient).filter((r) => !toRemove.some((x) => sameRecipient(x, r)));
     if (remaining.length === this.recipients.length) throw new Error("no such recipient");
     if (remaining.length === 0) throw new Error("cannot remove the last recipient");
-    const values = this.decryptAll();
+    const oldKey = this.requireKey();
     const encrypted = this.entries().filter((e) => e.encrypted);
+    const values = encrypted.map((e) => decryptValue(oldKey, e.name, e.value));
     this.dataKey = randomBytes(32);
-    for (const e of encrypted.reverse()) {
+    for (const [i, e] of [...encrypted.entries()].reverse()) {
       const exported = /^\s*export\s/.test(this.lines[e.start]!) ? "export " : "";
-      this.lines.splice(e.start, e.end - e.start + 1, `${exported}${e.name}=${encryptValue(this.dataKey, e.name, values[e.name]!)}`);
+      this.lines.splice(e.start, e.end - e.start + 1, `${exported}${e.name}=${encryptValue(this.dataKey, e.name, values[i]!)}`);
     }
     this.setRecipients(remaining);
   }

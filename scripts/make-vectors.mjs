@@ -164,6 +164,7 @@ const errors = [
   { name: "malformed recipient line", text: `${sealed}#envseal:recipient X25519 age1notakey AAAA AAAA\n`, key: "age", error: "format" },
   { name: "recipient line with too few fields", text: `${sealed}#envseal:recipient ssh-ed25519 AAAA\n`, key: "age", error: "format" },
   { name: "unknown recipient type", text: `${sealed}#envseal:recipient ssh-rsa AAAA AAAA AAAA AAAA\n`, key: "age", error: "format" },
+  { name: "plaintext definition after an encrypted one", text: `${sealed}SPACES=attacker\n`, key: "age", error: "format" },
   { name: "header without recipients", text: [header[0], ...lines.filter((l) => !l.startsWith("#envseal:"))].join("\n"), key: "age", error: "format" },
 ];
 

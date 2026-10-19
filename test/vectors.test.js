@@ -34,7 +34,11 @@ for (const file of vectors.files) {
 
 for (const { name, text, key, error } of vectors.errors) {
   test(`vectors: ${name} fails (${error})`, () => {
-    const attempt = () => new SealedEnv(text).unlock(identity(key));
+    const attempt = () => {
+      const env = new SealedEnv(text);
+      env.unlock(identity(key));
+      env.decryptAll();
+    };
     if (error === "not_a_recipient") assert.throws(attempt, NotARecipientError);
     else if (error === "decrypt") assert.throws(attempt, /cannot decrypt|malformed encrypted value/);
     else assert.throws(attempt, (err) => !(err instanceof NotARecipientError) && !/cannot decrypt/.test(err.message));

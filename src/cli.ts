@@ -434,6 +434,9 @@ async function run(argv: string[]): Promise<number> {
     case "ls": {
       const env = s.read();
       for (const e of env.entries()) out(`${e.encrypted ? "🔒" : "  "} ${e.name}`);
+      for (const name of env.plaintextOverrides()) {
+        info(`envseal: warning: ${name} is encrypted, then set again in plaintext; reading the file will fail until one is removed`);
+      }
       return 0;
     }
     case "encrypt": {

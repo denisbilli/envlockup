@@ -192,3 +192,40 @@ test("control characters are dropped from labels", () => {
   env.addRecipient(ci.recipient);
   assert.match(env.toString(), /^#envseal:recipient X25519 age1\S+ \S+ \S+ ci\[2K\[1A$/m);
 });
+
+test("a plaintext definition after an encrypted one is refused", () => {
+  const env = new SealedEnv(sealed().toString() + "API_KEY=attacker\n");
+  assert.deepEqual(env.plaintextOverrides(), ["API_KEY"]);
+  env.unlock(aliceId);
+  assert.throws(() => env.decryptAll(), /API_KEY is encrypted, then set again in plaintext/);
+  // Encrypting it would make the attacker's value look legitimate.
+  assert.throws(() => env.encrypt(), /API_KEY is encrypted/);
+  assert.throws(() => env.encrypt(["API_KEY"]), /API_KEY is encrypted/);
+  // Revocation still works on such a file.
+  env.addRecipient(parseRecipient(bob.public));
+  env.removeRecipients([parseRecipient(bob.public)]);
+  // set replaces every definition, which repairs the file.
+  env.set("API_KEY", "real");
+  assert.deepEqual(env.plaintextOverrides(), []);
+  assert.equal(env.get("API_KEY"), "real");
+});
+
+test("a plaintext definition before an encrypted one is fine", () => {
+  const env = sealed();
+  env.unlock(aliceId);
+  const text = "API_KEY=old\n" + env.toString();
+  const reread = new SealedEnv(text);
+  reread.unlock(aliceId);
+  assert.equal(reread.get("API_KEY"), "abc 123");
+});
+
+test("remove re-encrypts every definition with its own value", () => {
+  const env = new SealedEnv("DUP=first\nDUP=second\n");
+  env.init([parseRecipient(alice.public), parseRecipient(bob.public)]);
+  env.removeRecipients([parseRecipient(bob.public)]);
+  const reread = new SealedEnv(env.toString());
+  reread.unlock(aliceId);
+  assert.equal(reread.get("DUP"), "second");
+  reread.unset("DUP");
+  assert.equal(reread.get("DUP"), undefined);
+});
