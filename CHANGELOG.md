@@ -29,6 +29,10 @@ First release under the name envlockup. File format v1 (`#envlockup:v1`).
   and asks for confirmation (`--yes` otherwise).
 - File writes keep permissions and owner, follow symlinks and use an exclusive
   temporary file.
+- Error messages say what to do next: the exact `add` command for someone who
+  isn't a recipient, why RSA and ECDSA keys don't work and what to use instead,
+  how to avoid the passphrase prompt, unknown GitHub users, and the closest
+  command for a typo.
 - Strict base64 everywhere; `ssh-ed25519` recipients must be points on the curve;
   `set --plain` refuses values that start with `envlockup:v1:`.
 

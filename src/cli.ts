@@ -19,7 +19,7 @@ import { createRequire } from "node:module";
 import { basename, dirname, join, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { AgentClient, agentIdentityFor, agentRecipient, agentSocket, selectAgentKey } from "./agent.js";
-import { type IdentitySource, SECRET_ENV_VARS, explicitIdentity, findIdentity, loadIdentity, publicRecipient } from "./identity.js";
+import { type IdentitySource, SECRET_ENV_VARS, explicitIdentity, findIdentity, loadIdentity, noKeyMessage, publicRecipient } from "./identity.js";
 import {
   type Identity,
   PassphraseRequiredError,
@@ -208,7 +208,7 @@ class Session {
   identitySource(): IdentitySource {
     if (this.source === undefined) this.source = findIdentity(process.env, this.args.flags.get("identity")?.at(-1));
     if (!this.source) {
-      throw new Error("no private key found. Create one with `ssh-keygen -t ed25519`, or set ENVLOCKUP_PRIVATE_KEY or ENVLOCKUP_IDENTITY.");
+      throw new Error(noKeyMessage(agentSocket() !== null));
     }
     return this.source;
   }
@@ -339,9 +339,17 @@ async function resolveRecipients(specs: string[], label?: string): Promise<Recip
       if (!/^[A-Za-z0-9-]+$/.test(user)) throw new Error(`invalid GitHub user name: ${spec}`);
       const url = githubKeysUrl().replace("{user}", user);
       const res = await fetch(url);
+      if (res.status === 404) throw new Error(`GitHub user ${spec} not found`);
       if (!res.ok) throw new Error(`cannot fetch keys for ${spec}: HTTP ${res.status}`);
-      const keys = (await res.text()).split("\n").filter((l) => l.startsWith("ssh-ed25519 "));
-      if (keys.length === 0) throw new Error(`${spec} has no ssh-ed25519 keys on GitHub`);
+      const published = (await res.text()).split("\n").filter(Boolean);
+      const keys = published.filter((l) => l.startsWith("ssh-ed25519 "));
+      if (keys.length === 0) {
+        const types = [...new Set(published.map((l) => l.split(" ")[0]))];
+        throw new Error(
+          `${spec} has no ssh-ed25519 keys on GitHub${types.length ? ` (only ${types.join(", ")})` : ""}. ` +
+            "Ask them to run `npx envlockup pubkey --agent` and add the line it prints, or to add an ssh-ed25519 key to their GitHub account.",
+        );
+      }
       result.push(...keys.map((k) => parseRecipient(k, label ?? spec)));
     } else if (existsSync(spec)) {
       result.push(parseRecipient(readFileSync(spec, "utf8"), label));
@@ -561,9 +569,23 @@ async function run(argv: string[]): Promise<number> {
       out(secret);
       return 0;
     }
-    default:
-      throw new UsageError(`unknown command "${args.command}". Run \`envlockup --help\`.`);
+    default: {
+      const guess = COMMANDS.find((c) => editDistance(c, args.command!) <= 2);
+      throw new UsageError(`unknown command "${args.command}".${guess ? ` Did you mean "${guess}"?` : ""} Run \`envlockup --help\`.`);
+    }
   }
+}
+
+const COMMANDS = ["init", "set", "get", "unset", "ls", "check", "encrypt", "decrypt", "run", "recipients", "add", "remove", "pubkey", "keygen"];
+
+function editDistance(a: string, b: string): number {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const row = [i];
+    for (let j = 1; j <= b.length; j++) row[j] = Math.min(prev[j]! + 1, row[j - 1]! + 1, prev[j - 1]! + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = row;
+  }
+  return prev[b.length]!;
 }
 
 /** The file as committed in `ref`, or null if git, the commit or the file isn't there. */

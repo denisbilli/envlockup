@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { agentSocket } from "./agent.js";
-import { SECRET_ENV_VARS, defaultIdentity, explicitIdentity, loadIdentity } from "./identity.js";
+import { SECRET_ENV_VARS, defaultIdentity, explicitIdentity, loadIdentity, noKeyMessage } from "./identity.js";
 import { type Identity, recipientKey, x25519Identity } from "./keys.js";
 import { SealedEnv } from "./vault.js";
 
@@ -55,7 +55,7 @@ export function load(options: Omit<ConfigOptions, "override" | "processEnv"> = {
       throw new Error(
         agentError
           ? `${path}: ${agentError.message}`
-          : `${path} contains encrypted values but no private key was found. Use ~/.ssh/id_ed25519 or ssh-agent, or set ENVLOCKUP_PRIVATE_KEY or ENVLOCKUP_IDENTITY.`,
+          : `${path} contains encrypted values, but ${noKeyMessage(agentSocket() !== null)}`,
       );
     }
     env.unlock(loadIdentity(src, options.passphrase));
