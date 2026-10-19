@@ -29,6 +29,8 @@ First release under the name envlockup. File format v1 (`#envlockup:v1`).
   and asks for confirmation (`--yes` otherwise).
 - File writes keep permissions and owner, follow symlinks and use an exclusive
   temporary file.
+- Strict base64 everywhere; `ssh-ed25519` recipients must be points on the curve;
+  `set --plain` refuses values that start with `envlockup:v1:`.
 
 ### PyPI
 

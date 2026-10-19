@@ -92,6 +92,20 @@ function modPow(base: bigint, exp: bigint): bigint {
   return result;
 }
 
+const D = (P - ((121665n * modPow(121666n, P - 2n)) % P)) % P; // -121665/121666
+
+/** Whether 32 bytes decode to a point on the Ed25519 curve (RFC 8032, 5.1.3). */
+export function isEd25519Point(publicKey: Uint8Array): boolean {
+  if (publicKey.length !== 32) return false;
+  let y = 0n;
+  for (let i = 31; i >= 0; i--) y = (y << 8n) | BigInt(i === 31 ? publicKey[i]! & 0x7f : publicKey[i]!);
+  if (y >= P) return false;
+  const y2 = (y * y) % P;
+  const x2 = (((y2 - 1n + P) % P) * modPow((D * y2 + 1n) % P, P - 2n)) % P;
+  if (x2 === 0n) return publicKey[31]! >> 7 === 0;
+  return modPow(x2, (P - 1n) / 2n) === 1n;
+}
+
 /** Birational map from an Ed25519 public key to its Curve25519 u-coordinate. */
 export function ed25519PublicToX25519(publicKey: Uint8Array): Buffer {
   if (publicKey.length !== 32) throw new Error("Ed25519 public key must be 32 bytes");

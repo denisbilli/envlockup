@@ -38,14 +38,19 @@ OTHER=plain value
   re-wrapped (on `add` and `remove`) without knowing anyone's private key. Fields
   are separated by whitespace; the label is everything after the wrapped key.
   Stanza fields are standard base64 without padding, as in age; the `ssh-ed25519`
-  key on the line is the base64 of its SSH wire encoding.
+  key on the line is the base64 of its SSH wire encoding, and must be a point on
+  the Ed25519 curve.
 - A file with a version line but no recipient lines is malformed.
 - `#envlockup:mac` signs the recipient lines with a key derived from the data key
   (see [The recipient list](#the-recipient-list)). Writers put it right after the
   last recipient line; readers accept it anywhere, and reject a file with more
   than one.
 - Values may be encrypted (`envlockup:v1:` prefix, then unpadded base64url) or plain.
-  Plain values are written in dotenv syntax.
+  Plain values are written in dotenv syntax, and may not start with `envlockup:v1:`.
+- All base64 is decoded strictly: only the alphabet, no padding, and only the
+  canonical encoding (unused bits in the last character are zero). Anything else
+  is malformed, so every ciphertext has exactly one spelling and every
+  implementation agrees on what is valid.
 - **Comments are not encrypted**, and neither are variable names. When a value is
   encrypted its line is rewritten as `NAME=envlockup:v1:...` (keeping `export`), so
   an inline comment on that line is dropped; comment lines are kept as they are.
