@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "envlockup"
-version = "0.1.0"
+version = "0.2.0"
 description = "Read envlockup files from Python: encrypted .env files you can commit, decrypted with your SSH or age key."
 readme = "README.md"
 license = "MIT"

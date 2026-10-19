@@ -8,7 +8,9 @@ released.
 
 ## Unreleased
 
-First release under the name envlockup. File format v1 (`#envlockup:v1`).
+## 0.2.0
+
+First release under the name envlockup, for both packages. File format v1 (`#envlockup:v1`).
 
 ### npm
 
