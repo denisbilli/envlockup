@@ -660,13 +660,61 @@ async function check(s: Session, args: Args): Promise<number> {
   return 0;
 }
 
+// cmd.exe metacharacters, escaped with ^ (the same rules as cross-spawn).
+const CMD_META = /([()\][%!^"`<>&|;, *?])/g;
+
+function cmdEscapeArgument(arg: string, twice: boolean): string {
+  // Backslashes before a quote, or at the end (before the closing quote), are doubled.
+  let quoted = `"${arg.replace(/(\\*)"/g, '$1$1\\"').replace(/(\\*)$/, "$1$1")}"`.replace(CMD_META, "^$1");
+  // A node_modules/.bin shim runs cmd.exe again, which removes one level of escaping.
+  if (twice) quoted = quoted.replace(CMD_META, "^$1");
+  return quoted;
+}
+
+/** `command` resolved on PATH with PATHEXT, as cmd.exe would; undefined if it isn't a file. */
+function whichWindows(command: string, env: Record<string, string | undefined>): string | undefined {
+  const pathVar = Object.entries(env).find(([k]) => k.toUpperCase() === "PATH")?.[1] ?? "";
+  const extVar = Object.entries(env).find(([k]) => k.toUpperCase() === "PATHEXT")?.[1] ?? ".COM;.EXE;.BAT;.CMD";
+  const exts = ["", ...extVar.split(";").filter(Boolean)];
+  const dirs = /[\\/]/.test(command) ? [""] : [process.cwd(), ...pathVar.split(";").filter(Boolean)];
+  for (const dir of dirs) {
+    for (const ext of exts) {
+      const candidate = dir ? join(dir, command + ext) : command + ext;
+      if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * How to start `command` on Windows so that its arguments arrive unchanged.
+ * Executables are started directly, without a shell. Batch files (npm, npx and
+ * other .cmd shims) can only run through cmd.exe, so their arguments are
+ * escaped for it; anything not found on PATH (a cmd.exe built-in) goes the same way.
+ */
+function windowsInvocation(
+  command: string[],
+  env: Record<string, string | undefined>,
+): { file: string; args: string[]; verbatim: boolean } {
+  const [name, ...args] = command as [string, ...string[]];
+  const resolved = whichWindows(name, env);
+  if (resolved && !/\.(cmd|bat)$/i.test(resolved)) return { file: resolved, args, verbatim: false };
+  const target = resolved ?? name;
+  const shim = /node_modules[\\/]\.bin[\\/][^\\/]+\.cmd$/i.test(target);
+  const line = [target.replace(CMD_META, "^$1"), ...args.map((a) => cmdEscapeArgument(a, shim))].join(" ");
+  const comspec = Object.entries(env).find(([k]) => k.toUpperCase() === "COMSPEC")?.[1] ?? "cmd.exe";
+  return { file: comspec, args: ["/d", "/s", "/c", `"${line}"`], verbatim: true };
+}
+
 function spawnChild(command: string[], env: Record<string, string | undefined>): Promise<number> {
   return new Promise((resolveExit) => {
-    // On Windows, npm, npx and friends are .cmd scripts that need a shell.
-    const windows = process.platform === "win32";
-    const child = windows
-      ? spawn(command.map((c) => (/[\s"]/.test(c) ? `"${c.replace(/"/g, '\\"')}"` : c)).join(" "), { stdio: "inherit", env, shell: true })
-      : spawn(command[0]!, command.slice(1), { stdio: "inherit", env });
+    let child;
+    if (process.platform === "win32") {
+      const { file, args, verbatim } = windowsInvocation(command, env);
+      child = spawn(file, args, { stdio: "inherit", env, windowsVerbatimArguments: verbatim });
+    } else {
+      child = spawn(command[0]!, command.slice(1), { stdio: "inherit", env });
+    }
     const forward = (signal: NodeJS.Signals) => () => child.kill(signal);
     const signals: NodeJS.Signals[] = ["SIGINT", "SIGTERM", "SIGHUP"];
     const handlers = signals.map((sig) => [sig, forward(sig)] as const);

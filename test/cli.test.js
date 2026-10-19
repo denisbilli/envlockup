@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createServer } from "node:http";
-import { chmodSync, lstatSync, readFileSync, readdirSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, lstatSync, mkdirSync, readFileSync, readdirSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -47,6 +47,26 @@ test("run injects variables and hides the private key from the child", () => {
 
 test("run propagates the exit code", () => {
   assert.equal(cli(["run", "--", process.execPath, "-e", "process.exit(7)"]).code, 7);
+});
+
+// What cmd.exe would otherwise change: metacharacters, variables, quotes, carets,
+// trailing backslashes and empty arguments.
+const TRICKY_ARGS = ["a&b", "50%", "%PATH%", "x^y", 'say "hi"', 'q"&"q', "back\\slash\\", "with space", "", "!bang!", "(p)", "a|b", "<lt>", "semi;colon", "comma,", "star*", "q?"];
+
+test("run passes arguments unchanged on Windows: programs, .cmd scripts, npm shims", { skip: process.platform !== "win32" && "Windows only" }, () => {
+  const printer = join(dir, "argv.js");
+  writeFileSync(printer, "console.log(JSON.stringify(process.argv.slice(2)))\n");
+  const direct = cli(["run", "--", process.execPath, printer, ...TRICKY_ARGS]);
+  assert.deepEqual(JSON.parse(direct.stdout), TRICKY_ARGS, direct.stderr);
+  for (const sub of ["scripts", join("node_modules", ".bin")]) {
+    mkdirSync(join(dir, sub), { recursive: true });
+    const script = join(dir, sub, "argv.cmd");
+    writeFileSync(script, `@"${process.execPath}" "${printer}" %*\r\n`);
+    const r = cli(["run", "--", script, ...TRICKY_ARGS]);
+    assert.deepEqual(JSON.parse(r.stdout), TRICKY_ARGS, `${sub}: ${r.stderr}`);
+  }
+  // A cmd.exe built-in still works.
+  assert.match(cli(["run", "--", "echo", "hello"]).stdout, /hello/);
 });
 
 test("import 'envlockup/config' loads the file", () => {
