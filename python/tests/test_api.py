@@ -141,6 +141,24 @@ def test_cli_run(env_file, cli_env):
     assert json.loads(r.stdout)["EMPTY"] == ""
 
 
+TRICKY_ARGS = ["a&b", "50%", "%PATH%", "x^y", 'say "hi"', 'q"&"q', "back\\slash\\", "with space", "", "!bang!", "(p)", "a|b", "<lt>"]
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows only")
+def test_cli_run_passes_arguments_unchanged_to_cmd_scripts(env_file, cli_env, tmp_path):
+    printer = tmp_path / "argv.py"
+    printer.write_text("import json, sys\nprint(json.dumps(sys.argv[1:]))\n", encoding="utf-8")
+    for sub in ("scripts", os.path.join("node_modules", ".bin")):
+        (tmp_path / sub).mkdir(parents=True, exist_ok=True)
+        script = tmp_path / sub / "argv.cmd"
+        script.write_text(f'@"{sys.executable}" "{printer}" %*\r\n', encoding="utf-8")
+        r = cli("run", "--", str(script), *TRICKY_ARGS, env=cli_env, cwd=env_file.parent)
+        assert r.returncode == 0, r.stderr
+        assert json.loads(r.stdout) == TRICKY_ARGS, sub
+    r = cli("run", "--", sys.executable, str(printer), *TRICKY_ARGS, env=cli_env, cwd=env_file.parent)
+    assert json.loads(r.stdout) == TRICKY_ARGS
+
+
 def test_cli_run_exit_code_and_missing_command(env_file, cli_env):
     r = cli("run", "--", sys.executable, "-c", "raise SystemExit(7)", env=cli_env, cwd=env_file.parent)
     assert r.returncode == 7
