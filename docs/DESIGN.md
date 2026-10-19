@@ -1,4 +1,4 @@
-# envseal design (format v1)
+# envlockup design (format v1)
 
 ## Goals
 
@@ -14,35 +14,35 @@ Non-goals: protecting secrets inside a running process, access control finer tha
 
 ## File format
 
-An envseal file is a valid dotenv file. All envseal metadata lives in comment lines
-starting with `#envseal:`, so any dotenv parser still reads it (seeing encrypted
+An envlockup file is a valid dotenv file. All envlockup metadata lives in comment lines
+starting with `#envlockup:`, so any dotenv parser still reads it (seeing encrypted
 values as opaque strings).
 
 ```
-#envseal:v1 <free text>
-#envseal:recipient ssh-ed25519 <base64 SSH public key> <tag> <ephemeral share> <wrapped data key> [label]
-#envseal:recipient X25519 <age1... recipient> <ephemeral share> <wrapped data key> [label]
-#envseal:recipient ssh-agent <age1... recipient> <ssh key type> <base64 SSH public key> <ephemeral share> <wrapped data key> [label]
-NAME=envseal:v1:<base64url(salt[16] || ciphertext || tag[16])>
+#envlockup:v1 <free text>
+#envlockup:recipient ssh-ed25519 <base64 SSH public key> <tag> <ephemeral share> <wrapped data key> [label]
+#envlockup:recipient X25519 <age1... recipient> <ephemeral share> <wrapped data key> [label]
+#envlockup:recipient ssh-agent <age1... recipient> <ssh key type> <base64 SSH public key> <ephemeral share> <wrapped data key> [label]
+NAME=envlockup:v1:<base64url(salt[16] || ciphertext || tag[16])>
 OTHER=plain value
 ```
 
-- `#envseal:v1`, alone or followed by a space, marks the file and its format
+- `#envlockup:v1`, alone or followed by a space, marks the file and its format
   version. An implementation must reject every other line starting with
-  `#envseal:`, including `#envseal:v10` or `#envseal:v1x`, rather than ignore it:
+  `#envlockup:`, including `#envlockup:v10` or `#envlockup:v1x`, rather than ignore it:
   a reader that skipped a newer header would hand ciphertext to the application
   as if it were the value.
-- There is one `#envseal:recipient` line per public key that can decrypt the file.
+- There is one `#envlockup:recipient` line per public key that can decrypt the file.
   The line carries the public key itself, so that the recipient set can be
   re-wrapped (on `add` and `remove`) without knowing anyone's private key. Fields
   are separated by whitespace; the label is everything after the wrapped key.
   Stanza fields are standard base64 without padding, as in age; the `ssh-ed25519`
   key on the line is the base64 of its SSH wire encoding.
 - A file with a version line but no recipient lines is malformed.
-- Values may be encrypted (`envseal:v1:` prefix, then unpadded base64url) or plain.
+- Values may be encrypted (`envlockup:v1:` prefix, then unpadded base64url) or plain.
   Plain values are written in dotenv syntax.
 - **Comments are not encrypted**, and neither are variable names. When a value is
-  encrypted its line is rewritten as `NAME=envseal:v1:...` (keeping `export`), so
+  encrypted its line is rewritten as `NAME=envlockup:v1:...` (keeping `export`), so
   an inline comment on that line is dropped; comment lines are kept as they are.
   Secrets left in commented-out lines stay readable by anyone with the file.
 
@@ -56,7 +56,7 @@ than once, the last definition wins.
 
 Other parsers read some files differently. In particular python-dotenv,
 python-decouple and Docker Compose differ on inline comments, escapes, `export`
-and `$` expansion. The envseal implementations do not follow them; the dry-run
+and `$` expansion. The envlockup implementations do not follow them; the dry-run
 scripts (`scripts/dry-run.sh`, `scripts/dry-run-python.sh`) report the variables
 an application would see differently after switching.
 
@@ -81,16 +81,16 @@ exactly as specified at https://age-encryption.org/v1:
   below). The SSH public key on the line only says which agent key to ask.
 
 The only difference from an age file is that the wrapped key is 32 bytes rather
-than 16. `test/interop.test.js` builds real age files with envseal's stanzas and
+than 16. `test/interop.test.js` builds real age files with envlockup's stanzas and
 decrypts them with the `age` CLI, and the other way around.
 
 ### Encrypting a value
 
 ```
 salt  = random(16)
-key   = HKDF-SHA-256(ikm = data_key, salt = salt, info = "github.com/denisbilli/envseal/v1/value")
-aad   = "envseal:v1:" || NAME
-value = "envseal:v1:" || base64url(salt || ChaCha20-Poly1305(key, nonce = 0, value, aad))
+key   = HKDF-SHA-256(ikm = data_key, salt = salt, info = "github.com/denisbilli/envlockup/v1/value")
+aad   = "envlockup:v1:" || NAME
+value = "envlockup:v1:" || base64url(salt || ChaCha20-Poly1305(key, nonce = 0, value, aad))
 ```
 
 - Each value gets a fresh key, so the zero nonce is never reused under one key.
@@ -129,15 +129,15 @@ source. The CLI says so on every `remove`.
 
 ### Domain separation
 
-Every string envseal feeds into a KDF or a signature is namespaced with
-`github.com/denisbilli/envseal`, an identifier the project controls:
+Every string envlockup feeds into a KDF or a signature is namespaced with
+`github.com/denisbilli/envlockup`, an identifier the project controls:
 
 | Use | String |
 |-----|--------|
-| Value keys (HKDF info) | `github.com/denisbilli/envseal/v1/value` |
-| ssh-agent message (hashed into the SSHSIG blob) | `github.com/denisbilli/envseal/v1/agent-identity` |
-| ssh-agent secret (HKDF info) | `github.com/denisbilli/envseal/v1/agent-identity` |
-| SSHSIG namespace | `github.com/denisbilli/envseal` |
+| Value keys (HKDF info) | `github.com/denisbilli/envlockup/v1/value` |
+| ssh-agent message (hashed into the SSHSIG blob) | `github.com/denisbilli/envlockup/v1/agent-identity` |
+| ssh-agent secret (HKDF info) | `github.com/denisbilli/envlockup/v1/agent-identity` |
+| SSHSIG namespace | `github.com/denisbilli/envlockup` |
 
 The age stanzas use age's own labels. Changing any of these strings is a new
 format version.
@@ -148,17 +148,17 @@ Lookup order:
 
 1. An explicit key: the CLI's `-i`, or the API's `privateKey` / `private_key` /
    `identity` option.
-2. `ENVSEAL_PRIVATE_KEY`: the key text. CI systems often flatten multi-line
+2. `ENVLOCKUP_PRIVATE_KEY`: the key text. CI systems often flatten multi-line
    secrets, so a value without newlines has its literal `\n` sequences turned
    into newlines.
-3. `ENVSEAL_IDENTITY`: a key file path.
+3. `ENVLOCKUP_IDENTITY`: a key file path.
 4. ssh-agent (Node.js only), when the file has an `ssh-agent` recipient and an
    agent is reachable.
 5. `~/.ssh/id_ed25519`.
 
 When 1, 2 or 3 is set, nothing else is tried, so a misconfigured server fails
 instead of quietly falling back to someone's personal key. `config()` and `run`
-remove `ENVSEAL_PRIVATE_KEY` and `ENVSEAL_SSH_PASSPHRASE` from the environment once
+remove `ENVLOCKUP_PRIVATE_KEY` and `ENVLOCKUP_SSH_PASSPHRASE` from the environment once
 the file is decrypted, so the application and its children never see them.
 
 An age identity file may hold other lines (as `age-keygen` writes it); the first
@@ -166,7 +166,7 @@ line starting with `AGE-SECRET-KEY-1` is used.
 
 OpenSSH private keys are parsed directly (`openssh-key-v1`). Encrypted keys use
 bcrypt-pbkdf with aes256-ctr, the `ssh-keygen` default; the passphrase comes from
-`ENVSEAL_SSH_PASSPHRASE` or an interactive prompt. The public part of an encrypted
+`ENVLOCKUP_SSH_PASSPHRASE` or an interactive prompt. The public part of an encrypted
 key can be read without the passphrase, so `init` never needs it.
 
 The Ed25519 seed is turned into an X25519 scalar as age does:
@@ -175,30 +175,30 @@ The Ed25519 seed is turned into an X25519 scalar as age does:
 ### ssh-agent identities
 
 An ssh-agent can sign with a key but never reveals it and cannot decrypt, so it
-cannot open an `ssh-ed25519` stanza. envseal derives an X25519 age identity from a
+cannot open an `ssh-ed25519` stanza. envlockup derives an X25519 age identity from a
 signature instead:
 
 ```
 data      = SSHSIG signed-data blob (as in `ssh-keygen -Y sign`):
-            "SSHSIG" || string("github.com/denisbilli/envseal") || string("") || string("sha512")
-                     || string(SHA-512("github.com/denisbilli/envseal/v1/agent-identity"))
+            "SSHSIG" || string("github.com/denisbilli/envlockup") || string("") || string("sha512")
+                     || string(SHA-512("github.com/denisbilli/envlockup/v1/agent-identity"))
 signature = agent.sign(ssh_key, data)            # Ed25519, or RSA with rsa-sha2-512
-secret    = HKDF-SHA-256(ikm = raw signature, salt = ssh_key, info = "github.com/denisbilli/envseal/v1/agent-identity")
+secret    = HKDF-SHA-256(ikm = raw signature, salt = ssh_key, info = "github.com/denisbilli/envlockup/v1/agent-identity")
 recipient = X25519(secret, basepoint)            # shared as age1...
 ```
 
 - **Determinism.** This works only because Ed25519 (RFC 8032) and RSA PKCS#1 v1.5
   signatures are deterministic. Before a recipient is handed out (`init --agent`,
-  `add --agent`, `pubkey --agent`) envseal signs twice and refuses the key if the
+  `add --agent`, `pubkey --agent`) envlockup signs twice and refuses the key if the
   results differ. ECDSA and FIDO `sk-` keys are refused up front.
 - **Validation.** Every signature is verified against the public key before use,
   so an agent returning garbage can't produce a silently different identity.
 - **Domain separation.** The SSHSIG framing starts with the raw bytes `SSHSIG`,
   which cannot be the start of the data signed during SSH user authentication
   (a length-prefixed session identifier), and the namespace
-  `github.com/denisbilli/envseal` keeps it apart from other SSHSIG uses such as
+  `github.com/denisbilli/envlockup` keeps it apart from other SSHSIG uses such as
   git commit signing. The test suite checks that
-  `ssh-keygen -Y sign -n github.com/denisbilli/envseal` produces the same signature.
+  `ssh-keygen -Y sign -n github.com/denisbilli/envlockup` produces the same signature.
 - **One identity per key.** The message is fixed, not per file, so a key has the
   same `age1...` recipient in every project; `pubkey --agent` can be shared once.
 - **No proof of binding.** Nothing proves to a teammate that an `ssh-agent` line's
@@ -210,13 +210,13 @@ recipient = X25519(secret, basepoint)            # shared as age1...
 
 ## Implementations
 
-- **Node.js** (`envseal` on npm, `src/`): the CLI and the library. Creates and edits
+- **Node.js** (`envlockup` on npm, `src/`): the CLI and the library. Creates and edits
   files, and reads them with every key type, ssh-agent included.
-- **Python** (`envseal-python` on PyPI, imported as `envseal`; `python/`): reads
+- **Python** (`envlockup` on PyPI, imported as `envlockup`; `python/`): reads
   files only, with age keys and `ssh-ed25519` key files. No ssh-agent yet. It
   uses the `cryptography` package for X25519, ChaCha20-Poly1305 and OpenSSH keys;
   the dotenv parser is a hand translation of dotenv's regex, since JavaScript and
-  Python disagree on what `\s`, `\w`, `^`, `$` and `.` match. `python -m envseal
+  Python disagree on what `\s`, `\w`, `^`, `$` and `.` match. `python -m envlockup
   run` replaces its own process with the command on POSIX systems (same PID,
   signals go straight to it).
 
@@ -255,14 +255,14 @@ and the recipients' public keys and labels.
   What *is* caught: a value moved to another variable, a modified ciphertext,
   values left under a different data key (the file then fails as a whole), and a
   plaintext definition after an encrypted one of the same name. dotenv would let
-  the last one win; envseal refuses to read the file, and `encrypt` refuses to
+  the last one win; envlockup refuses to read the file, and `encrypt` refuses to
   encrypt that value, until one of the two lines is removed (`set` replaces both).
-  Review changes to `#envseal:` lines and values like code; if someone can change
+  Review changes to `#envlockup:` lines and values like code; if someone can change
   your code, they can also just print your secrets.
 - **A compromised developer machine.** The SSH key is the key to everything it can
   decrypt, as with any key-based scheme.
 - **Other users of your agent.** Any process that can talk to your agent can
-  derive your envseal identity, offline and for good, not just while it has
+  derive your envlockup identity, offline and for good, not just while it has
   access. That includes root on a server you forwarded your agent to (`ssh -A`).
   Agents that confirm each signature (`ssh-add -c`, 1Password's prompts) help.
 - **Lost keys.** If every recipient loses their private key, the values are gone.

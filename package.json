@@ -1,5 +1,5 @@
 {
-  "name": "envseal",
+  "name": "envlockup",
   "version": "0.2.0",
   "description": "Encrypted .env files you can commit. Decrypt with the SSH key you already have.",
   "keywords": [
@@ -14,11 +14,11 @@
   "author": "denisbilli",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/denisbilli/envseal.git"
+    "url": "git+https://github.com/denisbilli/envlockup.git"
   },
   "type": "module",
   "bin": {
-    "envseal": "dist/cli.js"
+    "envlockup": "dist/cli.js"
   },
   "exports": {
     ".": {

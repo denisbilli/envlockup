@@ -3,9 +3,9 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "envseal-python"
+name = "envlockup"
 version = "0.1.0"
-description = "Read envseal files from Python: encrypted .env files you can commit, decrypted with your SSH or age key."
+description = "Read envlockup files from Python: encrypted .env files you can commit, decrypted with your SSH or age key."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -25,10 +25,10 @@ classifiers = [
 test = ["pytest>=8"]
 
 [project.urls]
-Homepage = "https://github.com/denisbilli/envseal"
+Homepage = "https://github.com/denisbilli/envlockup"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/envseal"]
+packages = ["src/envlockup"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

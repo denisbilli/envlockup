@@ -8,10 +8,10 @@ from pathlib import Path
 
 import pytest
 
-from envseal import DecryptError, FormatError, NotARecipientError
-from envseal._dotenv import format_value, parse
-from envseal._keys import parse_identity
-from envseal._vault import SealedFile
+from envlockup import DecryptError, FormatError, NotARecipientError
+from envlockup._dotenv import format_value, parse
+from envlockup._keys import parse_identity
+from envlockup._vault import SealedFile
 
 VECTORS = json.loads((Path(__file__).parents[2] / "test" / "vectors.json").read_text(encoding="utf-8"))
 ERRORS = {"not_a_recipient": NotARecipientError, "decrypt": DecryptError, "format": FormatError}

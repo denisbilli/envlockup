@@ -2,7 +2,7 @@
 // leaves every other line (comments, blank lines, order) untouched.
 //
 // Values are read with the exact algorithm of dotenv 16/17 (same regex, same
-// unquoting), so a file means the same thing to envseal and to dotenv. That
+// unquoting), so a file means the same thing to envlockup and to dotenv. That
 // includes dotenv's quirks: an unquoted value ends at the first `#`, and in
 // double quotes only `\n` and `\r` are unescaped. test/dotenv-compat.test.js
 // checks this against the real dotenv package.

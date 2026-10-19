@@ -34,14 +34,14 @@ import {
 import { formatValue } from "./dotenv.js";
 import { SealedEnv } from "./vault.js";
 
-const HELP = `envseal — encrypted .env files you can commit
+const HELP = `envlockup — encrypted .env files you can commit
 
-Usage: envseal [-f FILE] [-i KEY] <command> [args]
+Usage: envlockup [-f FILE] [-i KEY] <command> [args]
 
 Commands:
   init [--recipient KEY]... [--agent [--key K]] [--keep-plain]
-                         Start using envseal in FILE, encrypted for your SSH key
-                         (or your ssh-agent key, or the given public keys).
+                         Start using envlockup in FILE, encrypted for your SSH
+                         key (or your ssh-agent key, or the given public keys).
                          Existing values get encrypted.
   set NAME [VALUE] [--plain]
                          Set a variable. Without VALUE it is read from stdin or
@@ -60,12 +60,12 @@ Commands:
   add KEY... [--label TEXT]
                          Give access to a public key: "ssh-ed25519 AAAA...",
                          a .pub file, an age1... key, an "ssh-agent ..." line
-                         from \`envseal pubkey --agent\`, or @github-user.
+                         from \`envlockup pubkey --agent\`, or @github-user.
   add --agent [--key K]  Give access to your own ssh-agent key, so you can
                          decrypt without a key file or passphrase prompt.
   pubkey [--agent [--key K]]
                          Print your public key, to send to someone who will
-                         \`envseal add\` it. With --agent, your ssh-agent key.
+                         \`envlockup add\` it. With --agent, your ssh-agent key.
   remove WHO... [--yes]  Revoke access (fingerprint, label or number from
                          \`recipients\`) and rotate the data key. Every
                          recipient matching WHO is removed. Asks before
@@ -74,9 +74,9 @@ Commands:
                          recipient and print the private key once.
 
 Options:
-  -f, --file FILE        File to use (default: $ENVSEAL_FILE or .env)
-  -i, --identity KEY     Private key file (default: $ENVSEAL_PRIVATE_KEY,
-                         $ENVSEAL_IDENTITY, ssh-agent, or ~/.ssh/id_ed25519)
+  -f, --file FILE        File to use (default: $ENVLOCKUP_FILE or .env)
+  -i, --identity KEY     Private key file (default: $ENVLOCKUP_PRIVATE_KEY,
+                         $ENVLOCKUP_IDENTITY, ssh-agent, or ~/.ssh/id_ed25519)
   --key K                Which ssh-agent key: fingerprint or comment
   -h, --help             Show this help
   -v, --version          Show the version
@@ -187,13 +187,13 @@ class Session {
   private source: IdentitySource | null | undefined;
 
   constructor(private readonly args: Args) {
-    this.path = resolve(args.flags.get("file")?.at(-1) ?? process.env.ENVSEAL_FILE ?? ".env");
+    this.path = resolve(args.flags.get("file")?.at(-1) ?? process.env.ENVLOCKUP_FILE ?? ".env");
   }
 
   identitySource(): IdentitySource {
     if (this.source === undefined) this.source = findIdentity(process.env, this.args.flags.get("identity")?.at(-1));
     if (!this.source) {
-      throw new Error("no private key found. Create one with `ssh-keygen -t ed25519`, or set ENVSEAL_PRIVATE_KEY or ENVSEAL_IDENTITY.");
+      throw new Error("no private key found. Create one with `ssh-keygen -t ed25519`, or set ENVLOCKUP_PRIVATE_KEY or ENVLOCKUP_IDENTITY.");
     }
     return this.source;
   }
@@ -251,7 +251,7 @@ class Session {
       if (!isEncryptedSSHKey(this.identitySource().text, this.identitySource().source)) return;
       const keys = await new AgentClient(socket).keys();
       if (keys.some((k) => k.wire.equals(wire))) {
-        info("Tip: this key is loaded in ssh-agent. Run `envseal add --agent` to stop typing its passphrase here.");
+        info("Tip: this key is loaded in ssh-agent. Run `envlockup add --agent` to stop typing its passphrase here.");
       }
     } catch {
       // Only a hint.
@@ -262,11 +262,11 @@ class Session {
     return new SealedEnv(existsSync(this.path) ? readFileSync(this.path, "utf8") : "");
   }
 
-  /** Read the file and unlock it, if it uses envseal. */
+  /** Read the file and unlock it, if it uses envlockup. */
   async open(): Promise<SealedEnv> {
     const env = this.read();
     if (!env.sealed) {
-      if (!existsSync(this.path)) throw new Error(`${this.path} not found. Run \`envseal init\` first.`);
+      if (!existsSync(this.path)) throw new Error(`${this.path} not found. Run \`envlockup init\` first.`);
       return env;
     }
     await this.unlock(env);
@@ -275,7 +275,7 @@ class Session {
 
   async openSealed(): Promise<SealedEnv> {
     const env = await this.open();
-    if (!env.sealed) throw new Error(`${this.path} does not use envseal yet. Run \`envseal init\` first.`);
+    if (!env.sealed) throw new Error(`${this.path} does not use envlockup yet. Run \`envlockup init\` first.`);
     return env;
   }
 
@@ -286,7 +286,7 @@ class Session {
   write(env: SealedEnv): void {
     const target = existsSync(this.path) ? realpathSync(this.path) : this.path;
     const old = existsSync(target) ? statSync(target) : undefined;
-    const tmp = join(dirname(target), `.${basename(target)}.${randomBytes(6).toString("hex")}.envseal.tmp`);
+    const tmp = join(dirname(target), `.${basename(target)}.${randomBytes(6).toString("hex")}.envlockup.tmp`);
     // "wx" fails if anything, a symlink included, already exists at that name.
     const fd = openSync(tmp, "wx", old ? old.mode & 0o7777 : 0o666);
     try {
@@ -339,11 +339,11 @@ async function resolveRecipients(specs: string[], label?: string): Promise<Recip
 
 /** github.com, or a local server for tests: a repository must not be able to redirect `add @user`. */
 function githubKeysUrl(): string {
-  const custom = process.env.ENVSEAL_GITHUB_KEYS_URL;
+  const custom = process.env.ENVLOCKUP_GITHUB_KEYS_URL;
   if (!custom) return "https://github.com/{user}.keys";
   const host = URL.canParse(custom) ? new URL(custom).hostname : "";
   if (!["127.0.0.1", "localhost", "[::1]"].includes(host)) {
-    throw new Error("ENVSEAL_GITHUB_KEYS_URL is only for tests and must point to localhost");
+    throw new Error("ENVLOCKUP_GITHUB_KEYS_URL is only for tests and must point to localhost");
   }
   return custom;
 }
@@ -396,14 +396,14 @@ async function run(argv: string[]): Promise<number> {
       if (recipients.length === 0) recipients.push(publicRecipient(s.identitySource()));
       const encrypted = env.init(recipients, { keepPlain: args.flags.has("keep-plain") });
       s.write(env);
-      info(`envseal: ${s.path} is now encrypted for:`);
+      info(`envlockup: ${s.path} is now encrypted for:`);
       for (const r of recipients) info(`  ${describe(r)}`);
       if (encrypted.length) info(`Encrypted ${encrypted.length} existing value(s): ${encrypted.join(", ")}`);
       info("It is safe to commit. Check your .gitignore no longer excludes it.");
       return 0;
     }
     case "set": {
-      if (!first) throw new UsageError("usage: envseal set NAME [VALUE]");
+      if (!first) throw new UsageError("usage: envlockup set NAME [VALUE]");
       let value = second;
       if (value === undefined) value = process.stdin.isTTY ? await promptHidden(`Value for ${first}: `) : await readStdin();
       const env = await s.openSealed();
@@ -412,20 +412,20 @@ async function run(argv: string[]): Promise<number> {
       return 0;
     }
     case "get": {
-      if (!first) throw new UsageError("usage: envseal get NAME");
+      if (!first) throw new UsageError("usage: envlockup get NAME");
       const value = (await s.open()).get(first);
       if (value === undefined) {
-        info(`envseal: ${first} is not set`);
+        info(`envlockup: ${first} is not set`);
         return 1;
       }
       out(value);
       return 0;
     }
     case "unset": {
-      if (!first) throw new UsageError("usage: envseal unset NAME");
+      if (!first) throw new UsageError("usage: envlockup unset NAME");
       const env = s.read();
       if (!env.unset(first)) {
-        info(`envseal: ${first} is not set`);
+        info(`envlockup: ${first} is not set`);
         return 1;
       }
       s.write(env);
@@ -435,7 +435,7 @@ async function run(argv: string[]): Promise<number> {
       const env = s.read();
       for (const e of env.entries()) out(`${e.encrypted ? "🔒" : "  "} ${e.name}`);
       for (const name of env.plaintextOverrides()) {
-        info(`envseal: warning: ${name} is encrypted, then set again in plaintext; reading the file will fail until one is removed`);
+        info(`envlockup: warning: ${name} is encrypted, then set again in plaintext; reading the file will fail until one is removed`);
       }
       return 0;
     }
@@ -458,7 +458,7 @@ async function run(argv: string[]): Promise<number> {
       return 0;
     }
     case "run": {
-      if (args.rest.length === 0) throw new UsageError("usage: envseal run -- COMMAND [ARGS]...");
+      if (args.rest.length === 0) throw new UsageError("usage: envlockup run -- COMMAND [ARGS]...");
       const values = (await s.open()).decryptAll();
       const childEnv: Record<string, string | undefined> = { ...process.env };
       for (const name of SECRET_ENV_VARS) delete childEnv[name];
@@ -469,12 +469,12 @@ async function run(argv: string[]): Promise<number> {
     }
     case "recipients": {
       const env = s.read();
-      if (!env.sealed) throw new Error(`${s.path} does not use envseal yet`);
+      if (!env.sealed) throw new Error(`${s.path} does not use envlockup yet`);
       env.recipients.forEach((r, i) => out(`${i + 1}. ${describe(r.recipient)}`));
       return 0;
     }
     case "add": {
-      if (args.positional.length === 0 && !args.flags.has("agent")) throw new UsageError("usage: envseal add KEY... | --agent");
+      if (args.positional.length === 0 && !args.flags.has("agent")) throw new UsageError("usage: envlockup add KEY... | --agent");
       const recipients = await resolveRecipients(args.positional, label);
       const env = await s.openSealed();
       if (args.flags.has("agent")) {
@@ -491,7 +491,7 @@ async function run(argv: string[]): Promise<number> {
       return 0;
     }
     case "remove": {
-      if (args.positional.length === 0) throw new UsageError("usage: envseal remove WHO...");
+      if (args.positional.length === 0) throw new UsageError("usage: envlockup remove WHO...");
       const env = await s.openSealed();
       const removed = findRecipients(env, args.positional);
       const remaining = env.recipients.map((r) => r.recipient).filter((r) => !removed.some((x) => sameRecipient(x, r)));
@@ -526,12 +526,12 @@ async function run(argv: string[]): Promise<number> {
       env.addRecipient(recipient);
       s.write(env);
       info(`Added ${describe(recipient)}`);
-      info("Store this private key as the secret ENVSEAL_PRIVATE_KEY in your CI or server. It is shown only once:");
+      info("Store this private key as the secret ENVLOCKUP_PRIVATE_KEY in your CI or server. It is shown only once:");
       out(secret);
       return 0;
     }
     default:
-      throw new UsageError(`unknown command "${args.command}". Run \`envseal --help\`.`);
+      throw new UsageError(`unknown command "${args.command}". Run \`envlockup --help\`.`);
   }
 }
 
@@ -547,7 +547,7 @@ function spawnChild(command: string[], env: Record<string, string | undefined>):
     const handlers = signals.map((sig) => [sig, forward(sig)] as const);
     for (const [sig, h] of handlers) process.on(sig, h);
     child.on("error", (err) => {
-      info(`envseal: cannot run ${command[0]}: ${err.message}`);
+      info(`envlockup: cannot run ${command[0]}: ${err.message}`);
       resolveExit(127);
     });
     child.on("exit", (code, signal) => {
@@ -564,7 +564,7 @@ function signalNumber(signal: NodeJS.Signals): number | undefined {
 run(process.argv.slice(2)).then(
   (code) => process.exit(code),
   (err: Error) => {
-    info(`envseal: ${printable(err.message)}`);
+    info(`envlockup: ${printable(err.message)}`);
     process.exit(err instanceof UsageError ? 2 : 1);
   },
 );

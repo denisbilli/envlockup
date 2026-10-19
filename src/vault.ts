@@ -1,8 +1,8 @@
-// An envseal file is a normal .env file with a few extra comment lines:
+// An envlockup file is a normal .env file with a few extra comment lines:
 //
-//   #envseal:v1 ...
-//   #envseal:recipient <type> <public key> <stanza args...> <wrapped key> [label]
-//   API_KEY=envseal:v1:<base64url>
+//   #envlockup:v1 ...
+//   #envlockup:recipient <type> <public key> <stanza args...> <wrapped key> [label]
+//   API_KEY=envlockup:v1:<base64url>
 //   PORT=3000
 //
 // A random 32-byte data key encrypts every value. Each recipient line holds
@@ -25,14 +25,14 @@ import {
   wrap,
 } from "./keys.js";
 
-const HEADER = "#envseal:";
-const VERSION_LINE = "#envseal:v1";
-const RECIPIENT_LINE = "#envseal:recipient ";
-const VALUE_PREFIX = "envseal:v1:";
-const VALUE_INFO = "github.com/denisbilli/envseal/v1/value";
+const HEADER = "#envlockup:";
+const VERSION_LINE = "#envlockup:v1";
+const RECIPIENT_LINE = "#envlockup:recipient ";
+const VALUE_PREFIX = "envlockup:v1:";
+const VALUE_INFO = "github.com/denisbilli/envlockup/v1/value";
 
 export const HEADER_COMMENT =
-  "#envseal:v1 This file is encrypted with envseal and safe to commit. Edit it with `npx envseal set NAME`.";
+  "#envlockup:v1 This file is encrypted with envlockup and safe to commit. Edit it with `npx envlockup set NAME`.";
 
 export interface RecipientEntry {
   recipient: Recipient;
@@ -41,7 +41,7 @@ export interface RecipientEntry {
 
 export class NotARecipientError extends Error {
   constructor(public readonly identity: Recipient) {
-    super(`this file is not encrypted for your key (${fingerprint(identity)}). Ask someone who can open it to run \`envseal add\` with your public key.`);
+    super(`this file is not encrypted for your key (${fingerprint(identity)}). Ask someone who can open it to run \`envlockup add\` with your public key.`);
   }
 }
 
@@ -59,7 +59,7 @@ function plaintextOverrideError(name: string): Error {
   return new Error(
     `${name} is encrypted, then set again in plaintext further down the file. ` +
       "Anyone who can edit the file can add such a line, so it is not used. " +
-      `Delete the line you don't want, or run \`envseal set ${name}\`.`,
+      `Delete the line you don't want, or run \`envlockup set ${name}\`.`,
   );
 }
 
@@ -82,7 +82,7 @@ function decryptValue(dataKey: Buffer, name: string, value: string): string {
     return open(key, raw.subarray(16), valueAad(name)).toString("utf8");
   } catch {
     throw new Error(
-      `${name}: cannot decrypt (the value was changed, or moved from another variable). Set it again with \`envseal set ${name}\`.`,
+      `${name}: cannot decrypt (the value was changed, or moved from another variable). Set it again with \`envlockup set ${name}\`.`,
     );
   }
 }
@@ -98,13 +98,13 @@ function parseRecipientLine(line: string): RecipientEntry {
   const parts = line.slice(RECIPIENT_LINE.length).trim().split(/\s+/);
   const type = parts[0] as keyof typeof LINE_LAYOUT;
   const layout = Object.hasOwn(LINE_LAYOUT, type) ? LINE_LAYOUT[type] : undefined;
-  if (!layout || parts.length < 2 + layout.keyTokens + layout.args) throw new Error(`malformed envseal recipient line: ${line}`);
+  if (!layout || parts.length < 2 + layout.keyTokens + layout.args) throw new Error(`malformed envlockup recipient line: ${line}`);
   const keyEnd = 1 + layout.keyTokens;
   const stanzaEnd = keyEnd + layout.args;
   const keyTokens = parts.slice(1, keyEnd).join(" ");
   const label = parts.slice(stanzaEnd + 1).join(" ");
   const recipient = parseRecipient(type === "X25519" ? keyTokens : `${type} ${keyTokens}`, label);
-  if (recipient.type !== type) throw new Error(`malformed envseal recipient line: ${line}`);
+  if (recipient.type !== type) throw new Error(`malformed envlockup recipient line: ${line}`);
   return {
     recipient,
     stanza: { type: layout.stanza, args: parts.slice(keyEnd, stanzaEnd), body: decodeBase64(parts[stanzaEnd]!) },
@@ -133,10 +133,10 @@ export class SealedEnv {
     for (const line of this.lines) {
       if (line.startsWith(RECIPIENT_LINE)) this.recipients.push(parseRecipientLine(line));
       else if (line.startsWith(HEADER) && !isVersionLine(line)) {
-        throw new Error(`unsupported envseal header line (is your envseal up to date?): ${line}`);
+        throw new Error(`unsupported envlockup header line (is your envlockup up to date?): ${line}`);
       }
     }
-    if (this.sealed && this.recipients.length === 0) throw new Error("envseal file has no recipients");
+    if (this.sealed && this.recipients.length === 0) throw new Error("envlockup file has no recipients");
   }
 
   get unlocked(): boolean {
@@ -197,9 +197,9 @@ export class SealedEnv {
     return this.decryptAll()[name];
   }
 
-  /** Initialize a new envseal file for `recipients`, encrypting existing values unless `keepPlain`. */
+  /** Initialize a new envlockup file for `recipients`, encrypting existing values unless `keepPlain`. */
   init(recipients: Recipient[], { keepPlain = false } = {}): string[] {
-    if (this.sealed) throw new Error("this file already uses envseal");
+    if (this.sealed) throw new Error("this file already uses envlockup");
     if (recipients.length === 0) throw new Error("at least one recipient is required");
     this.dataKey = randomBytes(32);
     this.setRecipients(recipients);

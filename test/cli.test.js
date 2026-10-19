@@ -13,8 +13,8 @@ const dir = tempDir();
 const me = sshKey(dir, "me");
 const locked = sshKey(dir, "locked", "pw");
 const file = join(dir, ".env");
-const inherited = Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith("ENVSEAL_")));
-const baseEnv = { ...inherited, HOME: dir, ENVSEAL_IDENTITY: me.path };
+const inherited = Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith("ENVLOCKUP_")));
+const baseEnv = { ...inherited, HOME: dir, ENVLOCKUP_IDENTITY: me.path };
 
 function cli(args, { env = {}, input } = {}) {
   const r = spawnSync(process.execPath, [CLI, "-f", file, ...args], { env: { ...baseEnv, ...env }, input, encoding: "utf8" });
@@ -35,9 +35,9 @@ test("init, set, get, ls, decrypt", () => {
 });
 
 test("run injects variables and hides the private key from the child", () => {
-  const script = "console.log(JSON.stringify([process.env.TOKEN, process.env.PORT, process.env.ENVSEAL_PRIVATE_KEY ?? null]))";
+  const script = "console.log(JSON.stringify([process.env.TOKEN, process.env.PORT, process.env.ENVLOCKUP_PRIVATE_KEY ?? null]))";
   const keyText = readFileSync(me.path, "utf8");
-  const r = cli(["run", "--", process.execPath, "-e", script], { env: { ENVSEAL_IDENTITY: "", ENVSEAL_PRIVATE_KEY: keyText, PORT: "9999" } });
+  const r = cli(["run", "--", process.execPath, "-e", script], { env: { ENVLOCKUP_IDENTITY: "", ENVLOCKUP_PRIVATE_KEY: keyText, PORT: "9999" } });
   assert.equal(r.code, 0, r.stderr);
   // Existing variables win unless --override.
   assert.deepEqual(JSON.parse(r.stdout), ["plain-secret", "9999", null]);
@@ -49,10 +49,10 @@ test("run propagates the exit code", () => {
   assert.equal(cli(["run", "--", process.execPath, "-e", "process.exit(7)"]).code, 7);
 });
 
-test("import 'envseal/config' loads the file", () => {
-  const r = spawnSync(process.execPath, ["--input-type=module", "-e", `import ${JSON.stringify(new URL("../dist/config.js", import.meta.url).href)}; console.log(process.env.PASSWORD, process.env.ENVSEAL_PRIVATE_KEY ?? "gone")`], {
+test("import 'envlockup/config' loads the file", () => {
+  const r = spawnSync(process.execPath, ["--input-type=module", "-e", `import ${JSON.stringify(new URL("../dist/config.js", import.meta.url).href)}; console.log(process.env.PASSWORD, process.env.ENVLOCKUP_PRIVATE_KEY ?? "gone")`], {
     cwd: dir,
-    env: { ...baseEnv, ENVSEAL_IDENTITY: "", ENVSEAL_PRIVATE_KEY: readFileSync(me.path, "utf8").replace(/\n/g, "\\n") },
+    env: { ...baseEnv, ENVLOCKUP_IDENTITY: "", ENVLOCKUP_PRIVATE_KEY: readFileSync(me.path, "utf8").replace(/\n/g, "\\n") },
     encoding: "utf8",
   });
   assert.equal(r.stdout, "from stdin gone\n", r.stderr);
@@ -60,14 +60,14 @@ test("import 'envseal/config' loads the file", () => {
 
 test("add from a .pub file, keygen for CI, remove", () => {
   assert.equal(cli(["add", `${locked.path}.pub`]).code, 0);
-  assert.equal(cli(["get", "TOKEN"], { env: { ENVSEAL_IDENTITY: locked.path, ENVSEAL_SSH_PASSPHRASE: "pw" } }).stdout, "plain-secret\n");
-  assert.match(cli(["get", "TOKEN"], { env: { ENVSEAL_IDENTITY: locked.path } }).stderr, /passphrase/);
+  assert.equal(cli(["get", "TOKEN"], { env: { ENVLOCKUP_IDENTITY: locked.path, ENVLOCKUP_SSH_PASSPHRASE: "pw" } }).stdout, "plain-secret\n");
+  assert.match(cli(["get", "TOKEN"], { env: { ENVLOCKUP_IDENTITY: locked.path } }).stderr, /passphrase/);
 
   const kg = cli(["keygen", "--label", "github-actions"]);
   assert.equal(kg.code, 0, kg.stderr);
   const secret = kg.stdout.trim();
   assert.match(secret, /^AGE-SECRET-KEY-1/);
-  assert.equal(cli(["get", "PORT"], { env: { ENVSEAL_IDENTITY: "", ENVSEAL_PRIVATE_KEY: secret, HOME: "/nonexistent" } }).stdout, "3000\n");
+  assert.equal(cli(["get", "PORT"], { env: { ENVLOCKUP_IDENTITY: "", ENVLOCKUP_PRIVATE_KEY: secret, HOME: "/nonexistent" } }).stdout, "3000\n");
 
   assert.match(cli(["recipients"]).stdout, /^1\. SHA256:\S+  ssh-ed25519  me@test\n2\. .*locked@test\n3\. .*age  github-actions\n$/);
   const refused = cli(["remove", "github-actions"]);
@@ -75,7 +75,7 @@ test("add from a .pub file, keygen for CI, remove", () => {
   assert.match(refused.stderr, /will be readable by:\n.*me@test\n.*locked@test\n/);
   assert.match(cli(["recipients"]).stdout, /github-actions/);
   assert.equal(cli(["remove", "github-actions", "--yes"]).code, 0);
-  assert.match(cli(["get", "PORT"], { env: { ENVSEAL_IDENTITY: "", ENVSEAL_PRIVATE_KEY: secret, HOME: "/nonexistent" } }).stderr, /not encrypted for your key/);
+  assert.match(cli(["get", "PORT"], { env: { ENVLOCKUP_IDENTITY: "", ENVLOCKUP_PRIVATE_KEY: secret, HOME: "/nonexistent" } }).stderr, /not encrypted for your key/);
 });
 
 test("add @github-user fetches ed25519 keys", async () => {
@@ -88,14 +88,14 @@ test("add @github-user fetches ed25519 keys", async () => {
   const url = `http://127.0.0.1:${server.address().port}/{user}.keys`;
   const run = (args) => new Promise((resolve) => {
     import("node:child_process").then(({ execFile }) =>
-      execFile(process.execPath, [CLI, "-f", file, ...args], { env: { ...baseEnv, ENVSEAL_GITHUB_KEYS_URL: url } }, (err, stdout, stderr) =>
+      execFile(process.execPath, [CLI, "-f", file, ...args], { env: { ...baseEnv, ENVLOCKUP_GITHUB_KEYS_URL: url } }, (err, stdout, stderr) =>
         resolve({ code: err ? err.code : 0, stdout, stderr })));
   });
   const r = await run(["add", "@friend"]);
   server.close();
   assert.equal(r.code, 0, r.stderr);
   assert.match(r.stderr, /Added SHA256:\S+  ssh-ed25519  @friend/);
-  assert.equal(cli(["get", "PORT"], { env: { ENVSEAL_IDENTITY: friend.path } }).stdout, "3000\n");
+  assert.equal(cli(["get", "PORT"], { env: { ENVLOCKUP_IDENTITY: friend.path } }).stdout, "3000\n");
 });
 
 test("remove @user removes every key of that user", async () => {
@@ -106,18 +106,18 @@ test("remove @user removes every key of that user", async () => {
   const url = `http://127.0.0.1:${server.address().port}/{user}.keys`;
   const r = await new Promise((resolve) =>
     import("node:child_process").then(({ execFile }) =>
-      execFile(process.execPath, [CLI, "-f", file, "add", "@two"], { env: { ...baseEnv, ENVSEAL_GITHUB_KEYS_URL: url } }, (err, stdout, stderr) =>
+      execFile(process.execPath, [CLI, "-f", file, "add", "@two"], { env: { ...baseEnv, ENVLOCKUP_GITHUB_KEYS_URL: url } }, (err, stdout, stderr) =>
         resolve({ code: err ? err.code : 0, stderr }))));
   server.close();
   assert.equal(r.code, 0, r.stderr);
   assert.equal(cli(["recipients"]).stdout.match(/@two/g).length, 2);
   assert.equal(cli(["remove", "@two", "--yes"]).code, 0);
   assert.doesNotMatch(cli(["recipients"]).stdout, /@two/);
-  for (const k of [k1, k2]) assert.match(cli(["get", "PORT"], { env: { ENVSEAL_IDENTITY: k.path } }).stderr, /not encrypted for your key/);
+  for (const k of [k1, k2]) assert.match(cli(["get", "PORT"], { env: { ENVLOCKUP_IDENTITY: k.path } }).stderr, /not encrypted for your key/);
 });
 
-test("ENVSEAL_GITHUB_KEYS_URL must point to localhost", () => {
-  const r = cli(["add", "@someone"], { env: { ENVSEAL_GITHUB_KEYS_URL: "https://evil.example/{user}.keys" } });
+test("ENVLOCKUP_GITHUB_KEYS_URL must point to localhost", () => {
+  const r = cli(["add", "@someone"], { env: { ENVLOCKUP_GITHUB_KEYS_URL: "https://evil.example/{user}.keys" } });
   assert.equal(r.code, 1);
   assert.match(r.stderr, /only for tests/);
 });
@@ -146,7 +146,7 @@ test("writes keep permissions, follow symlinks and leave no temp files", { skip:
   const r = spawnSync(process.execPath, [CLI, "-f", link, "init"], { env: baseEnv, encoding: "utf8" });
   assert.equal(r.code ?? r.status, 0, r.stderr);
   assert.ok(lstatSync(link).isSymbolicLink());
-  assert.ok(readFileSync(real, "utf8").startsWith("#envseal:v1"));
+  assert.ok(readFileSync(real, "utf8").startsWith("#envlockup:v1"));
   assert.equal(statSync(real).mode & 0o777, 0o600);
   assert.deepEqual(readdirSync(d).sort(), [".env", "shared.env"]);
 });
