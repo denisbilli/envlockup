@@ -56,7 +56,10 @@ Commands:
   run [--override] -- COMMAND [ARGS]...
                          Run COMMAND with the variables in its environment.
                          Nothing decrypted is written to disk.
-  recipients             List who can decrypt the file.
+  recipients [--accept [--yes]]
+                         List who can decrypt the file. With --accept, sign
+                         the list as it is now, after checking it: needed
+                         after a merge or an edit made without the key.
   add KEY... [--label TEXT]
                          Give access to a public key: "ssh-ed25519 AAAA...",
                          a .pub file, an age1... key, an "ssh-agent ..." line
@@ -182,6 +185,13 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString("utf8").replace(/\r?\n$/, "");
 }
 
+/** Ask before a change the user should check first; --yes skips the question. */
+async function confirm(args: Args): Promise<boolean> {
+  if (args.flags.has("yes")) return true;
+  if (!process.stdin.isTTY) throw new UsageError("check the list above, then run again with --yes");
+  return /^y(es)?$/i.test((await promptLine("Continue? [y/N] ")).trim());
+}
+
 class Session {
   readonly path: string;
   private source: IdentitySource | null | undefined;
@@ -224,21 +234,21 @@ class Session {
   }
 
   /** Unlock with an explicit key, else ssh-agent, else ~/.ssh/id_ed25519. */
-  async unlock(env: SealedEnv): Promise<void> {
+  async unlock(env: SealedEnv, options: { trustRecipients?: boolean } = {}): Promise<void> {
     const explicit = explicitIdentity(process.env, this.args.flags.get("identity")?.at(-1));
     let agentError: Error | undefined;
     const socket = agentSocket();
     if (!explicit && socket && env.recipients.some((r) => r.recipient.type === "ssh-agent")) {
       try {
         const identity = await agentIdentityFor(new AgentClient(socket), env.recipients.map((r) => r.recipient));
-        if (identity) return env.unlock(identity);
+        if (identity) return env.unlock(identity, options);
       } catch (err) {
         agentError = err as Error;
       }
     }
     if (!explicit && !findIdentity(process.env) && agentError) throw agentError;
     const identity = await this.identity();
-    env.unlock(identity);
+    env.unlock(identity, options);
     await this.suggestAgent(env, identity, socket);
   }
 
@@ -470,7 +480,24 @@ async function run(argv: string[]): Promise<number> {
     case "recipients": {
       const env = s.read();
       if (!env.sealed) throw new Error(`${s.path} does not use envlockup yet`);
-      env.recipients.forEach((r, i) => out(`${i + 1}. ${describe(r.recipient)}`));
+      if (!args.flags.has("accept")) {
+        env.recipients.forEach((r, i) => out(`${i + 1}. ${describe(r.recipient)}`));
+        return 0;
+      }
+      await s.unlock(env, { trustRecipients: true });
+      if (env.recipientsVerified) {
+        info("The recipient list is already signed: nothing to accept.");
+        return 0;
+      }
+      info("Accepting signs this list. Everyone on it will get the data key the next time it changes (add, remove):");
+      for (const r of env.recipients) info(`  ${describe(r.recipient)}`);
+      if (!(await confirm(args))) {
+        info("Nothing changed.");
+        return 1;
+      }
+      env.acceptRecipients();
+      s.write(env);
+      info("Done. The recipient list is signed.");
       return 0;
     }
     case "add": {
@@ -502,12 +529,9 @@ async function run(argv: string[]): Promise<number> {
       for (const r of removed) info(`  ${describe(r)}`);
       info("The new data key will be readable by:");
       for (const r of remaining) info(`  ${describe(r)}`);
-      if (!args.flags.has("yes")) {
-        if (!process.stdin.isTTY) throw new UsageError("check the lists above, then run again with --yes");
-        if (!/^y(es)?$/i.test((await promptLine("Continue? [y/N] ")).trim())) {
-          info("Nothing changed.");
-          return 1;
-        }
+      if (!(await confirm(args))) {
+        info("Nothing changed.");
+        return 1;
       }
       env.removeRecipients(removed);
       s.write(env);

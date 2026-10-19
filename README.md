@@ -13,6 +13,7 @@ SSH key can read it. Nobody else can.
 ```dotenv
 #envlockup:v1 This file is encrypted with envlockup and safe to commit. Edit it with `npx envlockup set NAME`.
 #envlockup:recipient ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPTG... NMO1pw QJsm9jZ4... o8BS3fP3... denis@laptop
+#envlockup:mac 2mZ0rW8yQbYk3aZJ...
 DATABASE_URL=envlockup:v1:FIcxWKOGZ289iNLb84f8-j5OTwuN0cYTc2BgtJHkfQorhrMOZXwrRmye...
 STRIPE_KEY=envlockup:v1:d_1O_5okxkAcURxzsPU9dZWzjvRvELqCzyuTDQIHxNmEIbCaHswcn6ZMZg
 LOG_LEVEL=debug
@@ -83,7 +84,15 @@ npx envlockup remove @octocat              # revoke all their keys and rotate th
 
 Keys fetched from GitHub are trusted as published: confirm the fingerprint with
 their owner. `remove` lists everyone who will still be able to read the file and
-asks before changing anything (`--yes` in scripts). After `remove`, the person
+asks before changing anything (`--yes` in scripts).
+
+The list of recipients is signed with the file's key, so a line added by someone
+who can't decrypt the file stops it from being read instead of quietly getting
+access later. Two people running `add` on different branches conflict on that
+signature: after the merge, check the list and sign it again with
+`npx envlockup recipients --accept`.
+
+After `remove`, the person
 removed still knows every value they could read before. **Rotate those
 secrets**; envlockup can't do that part for you.
 
@@ -187,7 +196,7 @@ Linux they stay readable in `/proc/<pid>/environ` by the same user, so prefer
 | `encrypt [NAME]...` | Encrypt values that are still plaintext |
 | `decrypt [--format json]` | Print the whole file decrypted (dotenv format, or JSON) |
 | `run [--override] -- CMD...` | Run a command with the variables set |
-| `recipients` | List who can decrypt |
+| `recipients [--accept [--yes]]` | List who can decrypt; `--accept` signs the list after a merge or a hand edit |
 | `add KEY... [--label TEXT]` | Give access to a key, `.pub` file, `age1...`, `ssh-agent ...` line or `@github-user` |
 | `add --agent [--key K]` | Give access to your own ssh-agent key |
 | `pubkey [--agent] [--key K]` | Print your public key, to send to whoever will `add` you |

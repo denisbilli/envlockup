@@ -8,13 +8,18 @@ from pathlib import Path
 
 import pytest
 
-from envlockup import DecryptError, FormatError, NotARecipientError
+from envlockup import DecryptError, FormatError, NotARecipientError, RecipientListError
 from envlockup._dotenv import format_value, parse
 from envlockup._keys import parse_identity
 from envlockup._vault import SealedFile
 
 VECTORS = json.loads((Path(__file__).parents[2] / "test" / "vectors.json").read_text(encoding="utf-8"))
-ERRORS = {"not_a_recipient": NotARecipientError, "decrypt": DecryptError, "format": FormatError}
+ERRORS = {
+    "not_a_recipient": NotARecipientError,
+    "decrypt": DecryptError,
+    "format": FormatError,
+    "recipients": RecipientListError,
+}
 
 
 def identity(name: str):

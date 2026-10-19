@@ -23,6 +23,7 @@ values as opaque strings).
 #envlockup:recipient ssh-ed25519 <base64 SSH public key> <tag> <ephemeral share> <wrapped data key> [label]
 #envlockup:recipient X25519 <age1... recipient> <ephemeral share> <wrapped data key> [label]
 #envlockup:recipient ssh-agent <age1... recipient> <ssh key type> <base64 SSH public key> <ephemeral share> <wrapped data key> [label]
+#envlockup:mac <base64url(HMAC-SHA-256 over the recipient lines)>
 NAME=envlockup:v1:<base64url(salt[16] || ciphertext || tag[16])>
 OTHER=plain value
 ```
@@ -39,6 +40,10 @@ OTHER=plain value
   Stanza fields are standard base64 without padding, as in age; the `ssh-ed25519`
   key on the line is the base64 of its SSH wire encoding.
 - A file with a version line but no recipient lines is malformed.
+- `#envlockup:mac` signs the recipient lines with a key derived from the data key
+  (see [The recipient list](#the-recipient-list)). Writers put it right after the
+  last recipient line; readers accept it anywhere, and reject a file with more
+  than one.
 - Values may be encrypted (`envlockup:v1:` prefix, then unpadded base64url) or plain.
   Plain values are written in dotenv syntax.
 - **Comments are not encrypted**, and neither are variable names. When a value is
@@ -108,17 +113,46 @@ fails, it goes on with the next line that unwraps, since anyone can write a line
 for a public key and put it first; if none works, the whole file fails. A
 tampered or half-merged file is an error, never a partial set of variables.
 
+With a data key that decrypts every value, the reader then checks the
+`#envlockup:mac` line, below. A missing or wrong MAC fails the file too.
+
+### The recipient list
+
+Anyone can write a recipient line: it needs only a public key. Without a check,
+a line added by someone who cannot decrypt the file would get the data key the
+next time it is re-wrapped (`remove` re-wraps it for every line). The
+`#envlockup:mac` line closes that:
+
+```
+mac_key = HKDF-SHA-256(ikm = data key, salt = "", info = "github.com/denisbilli/envlockup/v1/recipients", 32 bytes)
+input   = for each #envlockup:recipient line, in file order:
+            uint32 big-endian byte length of the line (UTF-8, without the line break) || the line
+mac     = base64url without padding of HMAC-SHA-256(mac_key, input)
+```
+
+The lines are taken exactly as they are in the file, so adding, removing,
+reordering or editing one (its label included) changes the MAC, and only someone
+with the data key can compute the new one. `init`, `add`, `remove` and `keygen`
+rewrite it. Values are not covered: setting a value leaves the line alone, so
+everyday changes add no merge conflicts.
+
+Two `add`s on different branches each rewrite the MAC, so they conflict on that
+line. After resolving the conflict, someone who can decrypt the file checks the
+list with `envlockup recipients` and signs it with `envlockup recipients --accept`,
+which shows every key and asks for confirmation. The same command signs a list
+that was edited by hand.
+
+This does not stop someone who replaces the data key altogether (see the threat
+model): they can compute a MAC for any list under their own key.
+
 ### Adding and removing recipients
 
-`add` unwraps the data key, wraps it for the new recipient and appends one line.
-Existing values and existing recipient lines do not change, byte for byte: two
-`add`s on different branches merge cleanly, and a recipient line that someone
-added without being able to decrypt the file stays useless (re-wrapping every
-line would turn it into a working one).
+`add` unwraps the data key, wraps it for the new recipient, appends one line and
+rewrites the MAC. Existing values and existing recipient lines do not change,
+byte for byte.
 
 `remove` generates a new data key, re-encrypts every value and re-wraps it for
-**every remaining line**, so the old key no longer opens the current file. A line
-added by someone without the key would get the new data key too, so the CLI
+**every remaining line**, so the old key no longer opens the current file. The CLI
 lists everyone who will be able to read the file and asks for confirmation
 (`--yes` when there is no terminal). A selector that matches several recipients
 (for example `@user`, whose GitHub keys share that label) removes all of them.
@@ -135,6 +169,7 @@ Every string envlockup feeds into a KDF or a signature is namespaced with
 | Use | String |
 |-----|--------|
 | Value keys (HKDF info) | `github.com/denisbilli/envlockup/v1/value` |
+| Recipient list MAC key (HKDF info) | `github.com/denisbilli/envlockup/v1/recipients` |
 | ssh-agent message (hashed into the SSHSIG blob) | `github.com/denisbilli/envlockup/v1/agent-identity` |
 | ssh-agent secret (HKDF info) | `github.com/denisbilli/envlockup/v1/agent-identity` |
 | SSHSIG namespace | `github.com/denisbilli/envlockup` |
@@ -245,16 +280,14 @@ and the recipients' public keys and labels.
     their server), or delete a variable;
   - put back an older ciphertext of the same variable (say, a revoked API key), or
     the whole file from an older commit;
-  - add a recipient line for their own key. It cannot decrypt anything by itself,
-    but the next `remove` wraps the new data key for it, unless the person running
-    `remove` notices it in the list the CLI shows;
   - wrap a data key of their own for every recipient (public keys are public) and
     replace every value: the file decrypts cleanly to values they chose, and new
     values set on it afterwards are readable by them.
 
   What *is* caught: a value moved to another variable, a modified ciphertext,
-  values left under a different data key (the file then fails as a whole), and a
-  plaintext definition after an encrypted one of the same name. dotenv would let
+  values left under a different data key (the file then fails as a whole), a
+  recipient line added, removed or edited, and a plaintext definition after an
+  encrypted one of the same name. dotenv would let
   the last one win; envlockup refuses to read the file, and `encrypt` refuses to
   encrypt that value, until one of the two lines is removed (`set` replaces both).
   Review changes to `#envlockup:` lines and values like code; if someone can change

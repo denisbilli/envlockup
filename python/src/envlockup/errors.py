@@ -13,6 +13,23 @@ class DecryptError(EnvlockupError):
     """A value does not decrypt: it was changed, or moved from another variable."""
 
 
+class RecipientListError(EnvlockupError):
+    """The recipient lines are not the ones last signed by someone who could decrypt the file."""
+
+    def __init__(self, missing: bool = False) -> None:
+        super().__init__(
+            (
+                "the file has no #envlockup:mac line, so nobody can tell whether its recipient list was changed. "
+                if missing
+                else "the recipient list was changed by someone who could not decrypt the file "
+                "(a #envlockup:recipient line was added, removed or edited). "
+            )
+            + "Compare `envlockup recipients` with a version you trust; "
+            "if every key is one you expect, run `envlockup recipients --accept`."
+        )
+        self.missing = missing
+
+
 class NotARecipientError(EnvlockupError):
     """The private key is not one the file is encrypted for."""
 

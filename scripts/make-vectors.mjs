@@ -11,7 +11,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import dotenv from "dotenv";
-import { SealedEnv, generateAgeIdentity, parseRecipient, recipientKey } from "../dist/index.js";
+import { SealedEnv, generateAgeIdentity, parseIdentity, parseRecipient, recipientKey } from "../dist/index.js";
 import { parseEntries, splitLines } from "../dist/dotenv.js";
 
 const out = new URL("../test/vectors.json", import.meta.url);
@@ -152,6 +152,16 @@ const valueOf = (name) => lines.find((l) => l.startsWith(`${name}=`)).slice(name
 const replaceLine = (name, value) => lines.map((l) => (l.startsWith(`${name}=`) ? `${name}=${value}` : l)).join("\n");
 const tampered = valueOf("SPACES").slice(0, -2) + (valueOf("SPACES").endsWith("A") ? "BB" : "AA");
 const header = lines.filter((l) => l.startsWith("#envlockup:"));
+const macLine = lines.find((l) => l.startsWith("#envlockup:mac "));
+const lastRecipient = lines.findLastIndex((l) => l.startsWith("#envlockup:recipient "));
+// A real recipient line for the outsider, as the CLI would write it, inserted
+// without updating the #envlockup:mac line: what someone without the key can do.
+const withOutsider = new SealedEnv(sealed);
+withOutsider.unlock(parseIdentity(keys.age.private, "age"));
+withOutsider.addRecipient(parseRecipient(keys.outsider_age.public, "outsider"));
+const outsiderLine = withOutsider.toString().split("\n").find((l) => l.endsWith(" outsider"));
+const insertAfterRecipients = (line) => [...lines.slice(0, lastRecipient + 1), line, ...lines.slice(lastRecipient + 1)].join("\n");
+const agentLine = lines.find((l) => l.startsWith("#envlockup:recipient ssh-agent "));
 
 const errors = [
   { name: "key that is not a recipient", text: sealed, key: "outsider_age", error: "not_a_recipient" },
@@ -165,6 +175,12 @@ const errors = [
   { name: "recipient line with too few fields", text: `${sealed}#envlockup:recipient ssh-ed25519 AAAA\n`, key: "age", error: "format" },
   { name: "unknown recipient type", text: `${sealed}#envlockup:recipient ssh-rsa AAAA AAAA AAAA AAAA\n`, key: "age", error: "format" },
   { name: "plaintext definition after an encrypted one", text: `${sealed}SPACES=attacker\n`, key: "age", error: "format" },
+  { name: "recipient line added without the key", text: insertAfterRecipients(outsiderLine), key: "age", error: "recipients" },
+  { name: "recipient line removed without the key", text: lines.filter((l) => l !== agentLine).join("\n"), key: "age", error: "recipients" },
+  { name: "recipient label edited", text: lines.map((l) => (l.endsWith(" ci") ? `${l.slice(0, -3)} cj` : l)).join("\n"), key: "age", error: "recipients" },
+  { name: "recipient lines reordered", text: [lines[0], lines[2], lines[1], ...lines.slice(3)].join("\n"), key: "age", error: "recipients" },
+  { name: "mac line missing", text: lines.filter((l) => l !== macLine).join("\n"), key: "age", error: "recipients" },
+  { name: "two mac lines", text: insertAfterRecipients(macLine), key: "age", error: "format" },
   { name: "header without recipients", text: [header[0], ...lines.filter((l) => !l.startsWith("#envlockup:"))].join("\n"), key: "age", error: "format" },
 ];
 

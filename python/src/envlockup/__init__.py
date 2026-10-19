@@ -30,6 +30,7 @@ from .errors import (
     FormatError,
     NoKeyError,
     NotARecipientError,
+    RecipientListError,
     PassphraseRequiredError,
 )
 
@@ -42,6 +43,7 @@ __all__ = [
     "FormatError",
     "NoKeyError",
     "NotARecipientError",
+    "RecipientListError",
     "PassphraseRequiredError",
 ]
 

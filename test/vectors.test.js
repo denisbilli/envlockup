@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { NotARecipientError, SealedEnv, parseIdentity } from "../dist/index.js";
+import { NotARecipientError, RecipientListError, SealedEnv, parseIdentity } from "../dist/index.js";
 import { parseEntries, splitLines } from "../dist/dotenv.js";
 
 const vectors = JSON.parse(readFileSync(new URL("./vectors.json", import.meta.url), "utf8"));
@@ -40,6 +40,7 @@ for (const { name, text, key, error } of vectors.errors) {
       env.decryptAll();
     };
     if (error === "not_a_recipient") assert.throws(attempt, NotARecipientError);
+    else if (error === "recipients") assert.throws(attempt, RecipientListError);
     else if (error === "decrypt") assert.throws(attempt, /cannot decrypt|malformed encrypted value/);
     else assert.throws(attempt, (err) => !(err instanceof NotARecipientError) && !/cannot decrypt/.test(err.message));
   });

@@ -10,6 +10,8 @@
 from __future__ import annotations
 
 import base64
+import hashlib
+import hmac
 import re
 
 from cryptography.exceptions import InvalidTag
@@ -25,13 +27,15 @@ from ._keys import (
     ssh_key_type,
     unb64,
 )
-from .errors import DecryptError, FormatError, NotARecipientError
+from .errors import DecryptError, FormatError, NotARecipientError, RecipientListError
 
 HEADER = "#envlockup:"
 VERSION_LINE = "#envlockup:v1"
 RECIPIENT_LINE = "#envlockup:recipient "
+MAC_LINE = "#envlockup:mac "
 VALUE_PREFIX = "envlockup:v1:"
 VALUE_INFO = b"github.com/denisbilli/envlockup/v1/value"
+RECIPIENTS_INFO = b"github.com/denisbilli/envlockup/v1/recipients"
 
 # Per recipient type: how many tokens the public key takes, the stanza it uses
 # and how many stanza arguments follow.
@@ -80,6 +84,16 @@ def _parse_recipient_line(line: str) -> Stanza:
         raise FormatError(f"malformed envlockup recipient line ({err}): {line}") from None
 
 
+def _recipients_mac(data_key: bytes, lines: list[str]) -> str:
+    """HMAC over the recipient lines as they appear in the file, each prefixed with its length."""
+    mac = hmac.new(hkdf(data_key, b"", RECIPIENTS_INFO), digestmod=hashlib.sha256)
+    for line in lines:
+        raw = line.encode("utf-8")
+        mac.update(len(raw).to_bytes(4, "big"))
+        mac.update(raw)
+    return base64.urlsafe_b64encode(mac.digest()).rstrip(b"=").decode()
+
+
 def _value_aad(name: str) -> bytes:
     return (VALUE_PREFIX + name).encode()
 
@@ -110,12 +124,18 @@ class SealedFile:
         self.sealed = any(_is_version_line(line) for line in lines)
         self.stanzas: list[Stanza] = []
         self.agent_recipients = 0
+        self._recipient_lines: list[str] = []
+        macs = [line[len(MAC_LINE) :].strip() for line in lines if line.startswith(MAC_LINE)]
+        if len(macs) > 1:
+            raise FormatError("envlockup file has more than one #envlockup:mac line")
+        self._mac = macs[0] if macs else None
         for line in lines:
             if line.startswith(RECIPIENT_LINE):
                 self.stanzas.append(_parse_recipient_line(line))
+                self._recipient_lines.append(line)
                 if line[len(RECIPIENT_LINE) :].lstrip().startswith("ssh-agent "):
                     self.agent_recipients += 1
-            elif line.startswith(HEADER) and not _is_version_line(line):
+            elif line.startswith(HEADER) and not _is_version_line(line) and not line.startswith(MAC_LINE):
                 raise FormatError(f"unsupported envlockup header line (is envlockup up to date?): {line}")
         if self.sealed and not self.stanzas:
             raise FormatError("envlockup file has no recipients")
@@ -127,10 +147,12 @@ class SealedFile:
         return any(is_encrypted_value(v) for _, v in self.entries)
 
     def unlock(self, identity: Identity) -> None:
-        """Recover the data key with `identity` and check that every value decrypts."""
+        """Recover the data key with `identity`, check that every value decrypts and
+        that the recipient list is the one last signed with the data key."""
         # Anyone can write a stanza for a public key, so a key that unwraps but does
         # not decrypt the values may be a forgery placed before the real stanza.
         failure: Exception | None = None
+        list_failure: RecipientListError | None = None
         for stanza in self.stanzas:
             key = identity.unwrap(stanza)
             if key is None:
@@ -138,14 +160,20 @@ class SealedFile:
             try:
                 if len(key) != 32:
                     raise FormatError("malformed data key")
-                self._data_key = key
                 for name, value in self.entries:
                     if is_encrypted_value(value):
                         _decrypt_value(key, name, value)
-                return
             except (FormatError, DecryptError) as err:
-                self._data_key = None
                 failure = failure or err
+                continue
+            expected = _recipients_mac(key, self._recipient_lines)
+            if self._mac is None or not hmac.compare_digest(self._mac.encode(), expected.encode()):
+                list_failure = list_failure or RecipientListError(missing=self._mac is None)
+                continue
+            self._data_key = key
+            return
+        if list_failure is not None:
+            raise list_failure
         if failure is not None:
             raise failure
         raise NotARecipientError(identity.fingerprint)
