@@ -8,6 +8,22 @@ released.
 
 ## Unreleased
 
+## 0.2.1
+
+### npm
+
+- `run` on Windows passes arguments unchanged: programs start without a
+  shell, and arguments to `.cmd` and `.bat` files (npm, npx and other shims)
+  are escaped for cmd.exe. Before, `&`, `|`, `%`, `^` and quotes in arguments
+  were interpreted by the shell.
+- `init` names the `.gitignore` line that still excludes the file, and warns
+  when the file is already in earlier commits unencrypted.
+
+### PyPI
+
+- `python -m envlockup run` on Windows escapes arguments to `.cmd` and `.bat`
+  files for cmd.exe.
+
 ## 0.2.0
 
 First release under the name envlockup, for both packages. File format v1 (`#envlockup:v1`).

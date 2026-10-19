@@ -1,6 +1,6 @@
 {
   "name": "envlockup",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Encrypted .env files you can commit. Decrypt with the SSH key you already have.",
   "keywords": [
     "dotenv",

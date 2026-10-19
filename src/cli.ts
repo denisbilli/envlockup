@@ -422,7 +422,8 @@ async function run(argv: string[]): Promise<number> {
       info(`envlockup: ${s.path} is now encrypted for:`);
       for (const r of recipients) info(`  ${describe(r)}`);
       if (encrypted.length) info(`Encrypted ${encrypted.length} existing value(s): ${encrypted.join(", ")}`);
-      info("It is safe to commit. Check your .gitignore no longer excludes it.");
+      info("It is safe to commit.");
+      for (const line of gitAdvice(s.path)) info(line);
       return 0;
     }
     case "set": {
@@ -586,6 +587,35 @@ function editDistance(a: string, b: string): number {
     prev = row;
   }
   return prev[b.length]!;
+}
+
+/**
+ * What git says about a file that just became safe to commit: the ignore rule
+ * that still excludes it, and earlier commits that hold it in plaintext.
+ */
+function gitAdvice(path: string): string[] {
+  const git = (...gitArgs: string[]) => spawnSync("git", gitArgs, { cwd: dirname(path), encoding: "utf8" });
+  if (git("rev-parse", "--is-inside-work-tree").stdout?.trim() !== "true") return [];
+  const advice: string[] = [];
+  const ignored = git("check-ignore", "--verbose", "--", basename(path));
+  if (ignored.status === 0) {
+    // "<source>:<line>:<pattern>\t<path>"
+    const [rule] = ignored.stdout.split("\t");
+    const match = rule?.match(/^(.*):(\d+):(.*)$/);
+    advice.push(
+      match
+        ? `Git still ignores it: line ${match[2]} of ${match[1]} ("${match[3]}"). Remove that line, then \`git add ${basename(path)}\`.`
+        : `Git still ignores it (${rule}). Change your .gitignore, then \`git add ${basename(path)}\`.`,
+    );
+  }
+  const commits = Number(git("rev-list", "--all", "--count", "--", basename(path)).stdout?.trim() || 0);
+  if (commits > 0) {
+    advice.push(
+      `Warning: ${basename(path)} is already in ${commits} earlier commit(s), unencrypted. Encrypting it now doesn't change them: ` +
+        "anyone with a copy of the repository can still read those values. Rotate those secrets.",
+    );
+  }
+  return advice;
 }
 
 /** The file as committed in `ref`, or null if git, the commit or the file isn't there. */
