@@ -10,6 +10,7 @@ import pytest
 
 import envseal
 from envseal import EnvsealError, NoKeyError, PassphraseRequiredError
+from envseal._dotenv import parse as dotenv_parse
 
 VECTORS = json.loads((Path(__file__).parents[2] / "test" / "vectors.json").read_text(encoding="utf-8"))
 SEALED = VECTORS["files"][0]
@@ -117,8 +118,10 @@ def test_cli_get_and_decrypt(env_file, cli_env):
     r = cli("get", "NOPE", env=cli_env, cwd=env_file.parent)
     assert r.returncode == 1 and "not set" in r.stderr
     r = cli("-f", str(env_file), "decrypt", env=cli_env, cwd=env_file.parent)
-    lines = dict(line.split("=", 1) for line in r.stdout.splitlines())
-    assert {k: json.loads(v) for k, v in lines.items()} == SEALED["expected"]
+    assert r.returncode == 0, r.stderr
+    assert dotenv_parse(r.stdout) == SEALED["expected"]
+    r = cli("-f", str(env_file), "decrypt", "--format", "json", env=cli_env, cwd=env_file.parent)
+    assert json.loads(r.stdout) == SEALED["expected"]
 
 
 def test_cli_run(env_file, cli_env):

@@ -15,6 +15,7 @@ import sys
 from pathlib import Path
 
 from . import SECRET_ENV_VARS, _find_identity, load
+from ._dotenv import format_value
 from ._keys import is_encrypted_ssh_key
 from .errors import EnvsealError, PassphraseRequiredError
 
@@ -22,7 +23,9 @@ USAGE = """python -m envseal [-f FILE] [-i KEY] <command>
 
 Commands:
   get NAME               Print one decrypted value.
-  decrypt                Print the whole file decrypted, in dotenv format.
+  decrypt [--format json]
+                         Print the whole file decrypted, in dotenv format
+                         (or as a JSON object).
   run [--override] -- COMMAND [ARGS]...
                          Run COMMAND with the variables in its environment.
                          Nothing decrypted is written to disk.
@@ -41,7 +44,8 @@ def _parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="command", required=True)
     get = sub.add_parser("get")
     get.add_argument("name")
-    sub.add_parser("decrypt")
+    decrypt = sub.add_parser("decrypt")
+    decrypt.add_argument("--format", choices=["dotenv", "json"], default="dotenv")
     run = sub.add_parser("run")
     run.add_argument("--override", action="store_true")
     run.add_argument("argv", nargs=argparse.REMAINDER)
@@ -92,8 +96,19 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
             print(values[args.name])
         elif args.command == "decrypt":
-            for name, value in _values(args).items():
-                print(f"{name}={json.dumps(value, ensure_ascii=False)}")
+            values = _values(args)
+            if args.format == "json":
+                print(json.dumps(values, ensure_ascii=False, indent=2))
+            else:
+                lines = []
+                for name, value in values.items():
+                    try:
+                        lines.append(f"{name}={format_value(value)}")
+                    except ValueError:
+                        print(f"envseal: {name} cannot be written in dotenv syntax (it mixes ', \" and `); use --format json", file=sys.stderr)
+                        return 1
+                if lines:
+                    print("\n".join(lines))
         elif args.command == "run":
             command = args.argv[1:] if args.argv[:1] == ["--"] else args.argv
             if not command:

@@ -66,7 +66,7 @@ ssh-agent is not supported by the Python package yet.
 
 ```
 python -m envseal [-f FILE] [-i KEY] get NAME
-python -m envseal [-f FILE] [-i KEY] decrypt
+python -m envseal [-f FILE] [-i KEY] decrypt [--format json]
 python -m envseal [-f FILE] [-i KEY] run [--override] -- COMMAND [ARGS]...
 ```
 

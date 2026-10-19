@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createServer } from "node:http";
-import { readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, lstatSync, readFileSync, readdirSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
+import dotenv from "dotenv";
 import { sshKey, tempDir } from "./helpers.js";
 
 const CLI = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
@@ -29,7 +30,7 @@ test("init, set, get, ls, decrypt", () => {
   assert.equal(cli(["get", "PASSWORD"]).stdout, "from stdin\n");
   assert.equal(cli(["get", "TOKEN"]).stdout, "plain-secret\n");
   assert.match(cli(["ls"]).stdout, /🔒 PORT\n🔒 TOKEN\n🔒 PASSWORD\n   MODE/);
-  assert.match(cli(["decrypt"]).stdout, /^TOKEN="plain-secret"$/m);
+  assert.match(cli(["decrypt"]).stdout, /^TOKEN=plain-secret$/m);
   assert.equal(cli(["get", "NOPE"]).code, 1);
 });
 
@@ -69,7 +70,11 @@ test("add from a .pub file, keygen for CI, remove", () => {
   assert.equal(cli(["get", "PORT"], { env: { ENVSEAL_IDENTITY: "", ENVSEAL_PRIVATE_KEY: secret, HOME: "/nonexistent" } }).stdout, "3000\n");
 
   assert.match(cli(["recipients"]).stdout, /^1\. SHA256:\S+  ssh-ed25519  me@test\n2\. .*locked@test\n3\. .*age  github-actions\n$/);
-  assert.equal(cli(["remove", "github-actions"]).code, 0);
+  const refused = cli(["remove", "github-actions"]);
+  assert.equal(refused.code, 2);
+  assert.match(refused.stderr, /will be readable by:\n.*me@test\n.*locked@test\n/);
+  assert.match(cli(["recipients"]).stdout, /github-actions/);
+  assert.equal(cli(["remove", "github-actions", "--yes"]).code, 0);
   assert.match(cli(["get", "PORT"], { env: { ENVSEAL_IDENTITY: "", ENVSEAL_PRIVATE_KEY: secret, HOME: "/nonexistent" } }).stderr, /not encrypted for your key/);
 });
 
@@ -91,6 +96,59 @@ test("add @github-user fetches ed25519 keys", async () => {
   assert.equal(r.code, 0, r.stderr);
   assert.match(r.stderr, /Added SHA256:\S+  ssh-ed25519  @friend/);
   assert.equal(cli(["get", "PORT"], { env: { ENVSEAL_IDENTITY: friend.path } }).stdout, "3000\n");
+});
+
+test("remove @user removes every key of that user", async () => {
+  const k1 = sshKey(dir, "two1");
+  const k2 = sshKey(dir, "two2");
+  const server = createServer((req, res) => res.end(`${k1.public}\n${k2.public}\n`));
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  const url = `http://127.0.0.1:${server.address().port}/{user}.keys`;
+  const r = await new Promise((resolve) =>
+    import("node:child_process").then(({ execFile }) =>
+      execFile(process.execPath, [CLI, "-f", file, "add", "@two"], { env: { ...baseEnv, ENVSEAL_GITHUB_KEYS_URL: url } }, (err, stdout, stderr) =>
+        resolve({ code: err ? err.code : 0, stderr }))));
+  server.close();
+  assert.equal(r.code, 0, r.stderr);
+  assert.equal(cli(["recipients"]).stdout.match(/@two/g).length, 2);
+  assert.equal(cli(["remove", "@two", "--yes"]).code, 0);
+  assert.doesNotMatch(cli(["recipients"]).stdout, /@two/);
+  for (const k of [k1, k2]) assert.match(cli(["get", "PORT"], { env: { ENVSEAL_IDENTITY: k.path } }).stderr, /not encrypted for your key/);
+});
+
+test("ENVSEAL_GITHUB_KEYS_URL must point to localhost", () => {
+  const r = cli(["add", "@someone"], { env: { ENVSEAL_GITHUB_KEYS_URL: "https://evil.example/{user}.keys" } });
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /only for tests/);
+});
+
+test("decrypt prints dotenv that dotenv reads back unchanged", () => {
+  const value = 'pa"ss\\word\twith \'quotes\' and\nnewline';
+  assert.equal(cli(["set", "TRICKY"], { input: value }).code, 0);
+  const expected = JSON.parse(cli(["decrypt", "--format", "json"]).stdout);
+  assert.equal(expected.TRICKY, value);
+  assert.deepEqual(dotenv.parse(cli(["decrypt"]).stdout), expected);
+  assert.equal(cli(["set", "MIXED"], { input: "' \" `" }).code, 0);
+  const r = cli(["decrypt"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /MIXED cannot be written in dotenv syntax/);
+  assert.equal(r.stdout, "");
+  assert.equal(cli(["unset", "MIXED"]).code, 0);
+});
+
+test("writes keep permissions, follow symlinks and leave no temp files", { skip: process.platform === "win32" && "POSIX permissions and symlinks" }, () => {
+  const d = tempDir();
+  const real = join(d, "shared.env");
+  const link = join(d, ".env");
+  writeFileSync(real, "A=1\n");
+  chmodSync(real, 0o600);
+  symlinkSync(real, link);
+  const r = spawnSync(process.execPath, [CLI, "-f", link, "init"], { env: baseEnv, encoding: "utf8" });
+  assert.equal(r.code ?? r.status, 0, r.stderr);
+  assert.ok(lstatSync(link).isSymbolicLink());
+  assert.ok(readFileSync(real, "utf8").startsWith("#envseal:v1"));
+  assert.equal(statSync(real).mode & 0o777, 0o600);
+  assert.deepEqual(readdirSync(d).sort(), [".env", "shared.env"]);
 });
 
 test("usage errors exit with 2", () => {

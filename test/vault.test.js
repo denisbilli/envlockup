@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { parseEntries, splitLines } from "../dist/dotenv.js";
-import { generateAgeIdentity, parseIdentity, parseRecipient } from "../dist/keys.js";
+import { generateAgeIdentity, parseIdentity, parseRecipient, recipientKey } from "../dist/keys.js";
 import { NotARecipientError, SealedEnv } from "../dist/vault.js";
 import { sshKey, tempDir } from "./helpers.js";
 
@@ -137,4 +137,58 @@ test("a broken recipient line for someone else doesn't lock you out", () => {
   const other = new SealedEnv(lines.join("\n"));
   other.unlock(parseIdentity(ci2.secret, "ci2"));
   assert.equal(other.get("PORT"), "3000");
+});
+
+test("add leaves existing recipient lines untouched", () => {
+  const env = sealed();
+  env.unlock(aliceId);
+  const before = env.toString().split("\n").filter((l) => l.startsWith("#envseal:recipient"));
+  env.addRecipient(parseRecipient(bob.public));
+  const after = env.toString().split("\n").filter((l) => l.startsWith("#envseal:recipient"));
+  assert.deepEqual(after.slice(0, -1), before);
+  assert.equal(after.length, before.length + 1);
+});
+
+test("a recipient line added without the key does not gain access on add", () => {
+  const env = sealed();
+  const mallory = generateAgeIdentity();
+  const zeros = Buffer.alloc(32).toString("base64").replace(/=+$/, "");
+  const forged = `#envseal:recipient X25519 ${recipientKey(mallory.recipient)} ${zeros} ${zeros}${zeros.slice(0, 21)} ci`;
+  const text = env.toString().replace(/^(#envseal:recipient .*)$/m, `$1\n${forged}`);
+  const victim = new SealedEnv(text);
+  victim.unlock(aliceId);
+  victim.addRecipient(parseRecipient(bob.public));
+  assert.throws(() => new SealedEnv(victim.toString()).unlock(parseIdentity(mallory.secret, "m")), NotARecipientError);
+});
+
+test("a forged stanza placed first does not lock the real recipient out", () => {
+  const env = sealed();
+  // A stanza for alice's public key, wrapping some other data key.
+  const decoy = new SealedEnv("X=1\n");
+  decoy.init([parseRecipient(alice.public)]);
+  const forged = decoy.toString().split("\n")[1];
+  const text = env.toString().replace(/^(#envseal:v1.*)$/m, `$1\n${forged}`);
+  const victim = new SealedEnv(text);
+  victim.unlock(aliceId);
+  assert.equal(victim.get("PORT"), "3000");
+});
+
+test("set removes earlier definitions of the same name", () => {
+  const env = new SealedEnv("API_KEY=old-plaintext\nOTHER=1\nAPI_KEY=older\n");
+  env.init([parseRecipient(alice.public)], { keepPlain: true });
+  env.set("API_KEY", "new");
+  const text = env.toString();
+  assert.doesNotMatch(text, /old-plaintext|older/);
+  assert.equal(text.split("\n").filter((l) => l.startsWith("API_KEY=")).length, 1);
+  assert.equal(env.get("API_KEY"), "new");
+  assert.equal(env.get("OTHER"), "1");
+});
+
+test("control characters are dropped from labels", () => {
+  const env = sealed();
+  env.unlock(aliceId);
+  const ci = generateAgeIdentity();
+  ci.recipient.label = "ci\x1b[2K\x1b[1A";
+  env.addRecipient(ci.recipient);
+  assert.match(env.toString(), /^#envseal:recipient X25519 age1\S+ \S+ \S+ ci\[2K\[1A$/m);
 });
