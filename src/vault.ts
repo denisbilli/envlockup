@@ -10,7 +10,8 @@
 // value is encrypted with its own key derived from the data key and a random
 // salt, and is bound to its variable name, so values cannot be swapped around.
 
-import { hkdf, open, randomBytes, seal } from "./crypto.js";
+import { timingSafeEqual } from "node:crypto";
+import { hkdf, hmacSha256, open, randomBytes, seal } from "./crypto.js";
 import { type Entry, formatValue, parseEntries, splitLines } from "./dotenv.js";
 import {
   type Identity,
@@ -28,8 +29,10 @@ import {
 const HEADER = "#envlockup:";
 const VERSION_LINE = "#envlockup:v1";
 const RECIPIENT_LINE = "#envlockup:recipient ";
+const MAC_LINE = "#envlockup:mac ";
 const VALUE_PREFIX = "envlockup:v1:";
 const VALUE_INFO = "github.com/denisbilli/envlockup/v1/value";
+const RECIPIENTS_INFO = "github.com/denisbilli/envlockup/v1/recipients";
 
 export const HEADER_COMMENT =
   "#envlockup:v1 This file is encrypted with envlockup and safe to commit. Edit it with `npx envlockup set NAME`.";
@@ -45,6 +48,18 @@ export class NotARecipientError extends Error {
   }
 }
 
+/** The recipient lines are not the ones last signed by someone who could decrypt the file. */
+export class RecipientListError extends Error {
+  constructor(readonly missing = false) {
+    super(
+      (missing
+        ? "the file has no #envlockup:mac line, so nobody can tell whether its recipient list was changed. "
+        : "the recipient list was changed by someone who could not decrypt the file (a #envlockup:recipient line was added, removed or edited). ") +
+        "Compare `envlockup recipients` with a version you trust; if every key is one you expect, run `envlockup recipients --accept`.",
+    );
+  }
+}
+
 export class LockedError extends Error {
   constructor() {
     super("the file is locked: an identity is needed to read or write encrypted values");
@@ -53,6 +68,20 @@ export class LockedError extends Error {
 
 export function isEncryptedValue(value: string): boolean {
   return value.startsWith(VALUE_PREFIX);
+}
+
+/**
+ * HMAC over the recipient lines, exactly as they appear in the file, each one
+ * prefixed with its length. Only someone with the data key can compute it.
+ */
+function recipientsMac(dataKey: Buffer, lines: string[]): string {
+  const parts = lines.flatMap((line) => {
+    const bytes = Buffer.from(line, "utf8");
+    const length = Buffer.alloc(4);
+    length.writeUInt32BE(bytes.length);
+    return [length, bytes];
+  });
+  return hmacSha256(hkdf(dataKey, Buffer.alloc(0), RECIPIENTS_INFO, 32), ...parts).toString("base64url");
 }
 
 function plaintextOverrideError(name: string): Error {
@@ -125,6 +154,8 @@ export class SealedEnv {
   private dataKey: Buffer | null = null;
   recipients: RecipientEntry[] = [];
   readonly sealed: boolean;
+  /** After `unlock`: whether the recipient lines match the #envlockup:mac line. */
+  recipientsVerified = false;
 
   constructor(text = "") {
     this.lines = splitLines(text);
@@ -132,11 +163,12 @@ export class SealedEnv {
     this.sealed = this.lines.some(isVersionLine);
     for (const line of this.lines) {
       if (line.startsWith(RECIPIENT_LINE)) this.recipients.push(parseRecipientLine(line));
-      else if (line.startsWith(HEADER) && !isVersionLine(line)) {
+      else if (line.startsWith(HEADER) && !isVersionLine(line) && !line.startsWith(MAC_LINE)) {
         throw new Error(`unsupported envlockup header line (is your envlockup up to date?): ${line}`);
       }
     }
     if (this.sealed && this.recipients.length === 0) throw new Error("envlockup file has no recipients");
+    if (this.lines.filter((l) => l.startsWith(MAC_LINE)).length > 1) throw new Error("envlockup file has more than one #envlockup:mac line");
   }
 
   get unlocked(): boolean {
@@ -147,25 +179,41 @@ export class SealedEnv {
     return parseEntries(this.lines).map((e) => ({ ...e, encrypted: isEncryptedValue(e.value) }));
   }
 
-  /** Recover the data key with `identity` and check that every value decrypts. */
-  unlock(identity: Identity): void {
+  /**
+   * Recover the data key with `identity`, check that every value decrypts and
+   * that the recipient list is the one last signed with the data key. With
+   * `trustRecipients`, an unsigned list is accepted (see `acceptRecipients`).
+   */
+  unlock(identity: Identity, { trustRecipients = false } = {}): void {
     // Anyone can write a stanza for a public key, so a key that unwraps but does
     // not decrypt the values may be a forgery placed before the real stanza.
     let failure: Error | undefined;
+    let listFailure: RecipientListError | undefined;
     for (const { stanza } of this.recipients) {
       const key = identity.unwrap(stanza);
       if (!key) continue;
       try {
         if (key.length !== 32) throw new Error("malformed data key");
-        this.dataKey = key;
         for (const e of this.entries()) if (e.encrypted) decryptValue(key, e.name, e.value);
+        const verified = this.macMatches(key);
+        if (!verified && !trustRecipients) {
+          listFailure ??= new RecipientListError(!this.lines.some((l) => l.startsWith(MAC_LINE)));
+          continue;
+        }
+        this.dataKey = key;
+        this.recipientsVerified = verified;
         return;
       } catch (err) {
-        this.dataKey = null;
         failure ??= err as Error;
       }
     }
-    throw failure ?? new NotARecipientError(identity.recipient);
+    throw listFailure ?? failure ?? new NotARecipientError(identity.recipient);
+  }
+
+  /** Sign the current recipient lines, after checking them (a merge, a hand edit). */
+  acceptRecipients(): void {
+    this.updateMac();
+    this.recipientsVerified = true;
   }
 
   /**
@@ -264,6 +312,7 @@ export class SealedEnv {
     });
     this.lines.splice(after + 1, 0, formatRecipientLine(entry));
     this.recipients.push(entry);
+    this.updateMac();
   }
 
   /**
@@ -294,8 +343,37 @@ export class SealedEnv {
     this.recipients = recipients.map((recipient) => ({ recipient, stanza: wrap(recipient, key) }));
     const body = this.lines.filter((l) => !l.startsWith(HEADER));
     const versionLine = this.lines.find((l) => l.startsWith(VERSION_LINE)) ?? HEADER_COMMENT;
-    this.lines = [versionLine, ...this.recipients.map(formatRecipientLine), ...body];
+    const recipientLines = this.recipients.map(formatRecipientLine);
+    this.lines = [versionLine, ...recipientLines, MAC_LINE + recipientsMac(key, recipientLines), ...body];
     (this as { sealed: boolean }).sealed = true;
+    this.recipientsVerified = true;
+  }
+
+  private recipientLines(): string[] {
+    return this.lines.filter((l) => l.startsWith(RECIPIENT_LINE));
+  }
+
+  private macMatches(key: Buffer): boolean {
+    const line = this.lines.find((l) => l.startsWith(MAC_LINE));
+    if (!line) return false;
+    const expected = Buffer.from(recipientsMac(key, this.recipientLines()));
+    const actual = Buffer.from(line.slice(MAC_LINE.length).trim());
+    return actual.length === expected.length && timingSafeEqual(actual, expected);
+  }
+
+  /** Rewrite the #envlockup:mac line, or add it after the last recipient line. */
+  private updateMac(): void {
+    const line = MAC_LINE + recipientsMac(this.requireKey(), this.recipientLines());
+    const existing = this.lines.findIndex((l) => l.startsWith(MAC_LINE));
+    if (existing >= 0) {
+      this.lines[existing] = line;
+      return;
+    }
+    let after = -1;
+    this.lines.forEach((l, i) => {
+      if (l.startsWith(RECIPIENT_LINE)) after = i;
+    });
+    this.lines.splice(after + 1, 0, line);
   }
 
   private requireKey(): Buffer {

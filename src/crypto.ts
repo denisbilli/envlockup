@@ -31,6 +31,12 @@ export function hkdf(ikm: Uint8Array, salt: Uint8Array, info: string, length: nu
   return Buffer.concat(blocks).subarray(0, length);
 }
 
+export function hmacSha256(key: Uint8Array, ...data: Uint8Array[]): Buffer {
+  const mac = createHmac("sha256", key);
+  for (const d of data) mac.update(d);
+  return mac.digest();
+}
+
 export function sha256(data: Uint8Array): Buffer {
   return createHash("sha256").update(data).digest();
 }

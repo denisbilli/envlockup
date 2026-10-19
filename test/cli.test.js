@@ -116,6 +116,25 @@ test("remove @user removes every key of that user", async () => {
   for (const k of [k1, k2]) assert.match(cli(["get", "PORT"], { env: { ENVLOCKUP_IDENTITY: k.path } }).stderr, /not encrypted for your key/);
 });
 
+test("a recipient line added without the key stops the file until it is accepted", () => {
+  const other = sshKey(dir, "unsigned");
+  const signed = readFileSync(file, "utf8");
+  // What a merge or a hand edit leaves behind: a new line, the old mac.
+  assert.equal(cli(["add", other.path.replace(/$/, ".pub")]).code, 0);
+  const added = readFileSync(file, "utf8").split("\n").find((l) => l.endsWith(" unsigned@test"));
+  writeFileSync(file, signed.replace(/^(#envlockup:mac .*)$/m, `${added}\n$1`));
+  const r = cli(["get", "PORT"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /recipient list was changed .*envlockup recipients --accept/s);
+  const noTty = cli(["recipients", "--accept"]);
+  assert.equal(noTty.code, 2);
+  assert.match(noTty.stderr, /unsigned@test[\s\S]*--yes/);
+  assert.equal(cli(["recipients", "--accept", "--yes"]).code, 0);
+  assert.equal(cli(["get", "PORT"]).stdout, "3000\n");
+  assert.match(cli(["recipients", "--accept"]).stderr, /already signed/);
+  assert.equal(cli(["remove", "unsigned@test", "--yes"]).code, 0);
+});
+
 test("ENVLOCKUP_GITHUB_KEYS_URL must point to localhost", () => {
   const r = cli(["add", "@someone"], { env: { ENVLOCKUP_GITHUB_KEYS_URL: "https://evil.example/{user}.keys" } });
   assert.equal(r.code, 1);

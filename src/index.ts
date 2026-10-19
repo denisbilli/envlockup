@@ -7,7 +7,7 @@ import { SECRET_ENV_VARS, defaultIdentity, explicitIdentity, loadIdentity } from
 import { type Identity, recipientKey, x25519Identity } from "./keys.js";
 import { SealedEnv } from "./vault.js";
 
-export { SealedEnv, NotARecipientError, LockedError, isEncryptedValue } from "./vault.js";
+export { SealedEnv, NotARecipientError, LockedError, RecipientListError, isEncryptedValue } from "./vault.js";
 export { parseRecipient, parseIdentity, generateAgeIdentity, fingerprint, recipientKey } from "./keys.js";
 export type { Recipient, Identity } from "./keys.js";
 

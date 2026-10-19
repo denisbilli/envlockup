@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { parseEntries, splitLines } from "../dist/dotenv.js";
 import { generateAgeIdentity, parseIdentity, parseRecipient, recipientKey } from "../dist/keys.js";
-import { NotARecipientError, SealedEnv } from "../dist/vault.js";
+import { NotARecipientError, RecipientListError, SealedEnv } from "../dist/vault.js";
 import { sshKey, tempDir } from "./helpers.js";
 
 const dir = tempDir();
@@ -135,7 +135,9 @@ test("a broken recipient line for someone else doesn't lock you out", () => {
   parts[3] = Buffer.alloc(32).toString("base64").replace(/=+$/, "");
   lines[ci1Line] = parts.join(" ");
   const other = new SealedEnv(lines.join("\n"));
-  other.unlock(parseIdentity(ci2.secret, "ci2"));
+  // The edit is detected; once the list is accepted, ci2 still gets in.
+  assert.throws(() => other.unlock(parseIdentity(ci2.secret, "ci2")), RecipientListError);
+  other.unlock(parseIdentity(ci2.secret, "ci2"), { trustRecipients: true });
   assert.equal(other.get("PORT"), "3000");
 });
 
@@ -149,19 +151,21 @@ test("add leaves existing recipient lines untouched", () => {
   assert.equal(after.length, before.length + 1);
 });
 
-test("a recipient line added without the key does not gain access on add", () => {
+test("a recipient line added without the key is detected, and gains no access on add", () => {
   const env = sealed();
   const mallory = generateAgeIdentity();
   const zeros = Buffer.alloc(32).toString("base64").replace(/=+$/, "");
   const forged = `#envlockup:recipient X25519 ${recipientKey(mallory.recipient)} ${zeros} ${zeros}${zeros.slice(0, 21)} ci`;
   const text = env.toString().replace(/^(#envlockup:recipient .*)$/m, `$1\n${forged}`);
   const victim = new SealedEnv(text);
-  victim.unlock(aliceId);
+  assert.throws(() => victim.unlock(aliceId), RecipientListError);
+  // Even someone who accepts the list without looking doesn't hand over the key.
+  victim.unlock(aliceId, { trustRecipients: true });
   victim.addRecipient(parseRecipient(bob.public));
   assert.throws(() => new SealedEnv(victim.toString()).unlock(parseIdentity(mallory.secret, "m")), NotARecipientError);
 });
 
-test("a forged stanza placed first does not lock the real recipient out", () => {
+test("a forged stanza placed first is detected, and does not hide the real one", () => {
   const env = sealed();
   // A stanza for alice's public key, wrapping some other data key.
   const decoy = new SealedEnv("X=1\n");
@@ -169,7 +173,8 @@ test("a forged stanza placed first does not lock the real recipient out", () => 
   const forged = decoy.toString().split("\n")[1];
   const text = env.toString().replace(/^(#envlockup:v1.*)$/m, `$1\n${forged}`);
   const victim = new SealedEnv(text);
-  victim.unlock(aliceId);
+  assert.throws(() => victim.unlock(aliceId), RecipientListError);
+  victim.unlock(aliceId, { trustRecipients: true });
   assert.equal(victim.get("PORT"), "3000");
 });
 
@@ -228,4 +233,35 @@ test("remove re-encrypts every definition with its own value", () => {
   assert.equal(reread.get("DUP"), "second");
   reread.unset("DUP");
   assert.equal(reread.get("DUP"), undefined);
+});
+
+test("the recipient list is signed, and changes made with the key keep it signed", () => {
+  const env = sealed();
+  assert.match(env.toString(), /^#envlockup:recipient .*\n#envlockup:mac [\w-]{43}$/m);
+  env.unlock(aliceId);
+  assert.equal(env.recipientsVerified, true);
+  env.addRecipient(parseRecipient(bob.public));
+  const added = new SealedEnv(env.toString());
+  added.unlock(bobId);
+  added.removeRecipients([parseRecipient(alice.public)]);
+  const removed = new SealedEnv(added.toString());
+  removed.unlock(bobId);
+  assert.equal(removed.recipientsVerified, true);
+  assert.equal(removed.toString().split("\n").filter((l) => l.startsWith("#envlockup:mac ")).length, 1);
+});
+
+test("a missing or edited mac line is detected, and accepting the list signs it again", () => {
+  const env = sealed();
+  const text = env.toString();
+  for (const bad of [text.replace(/^#envlockup:mac .*\n/m, ""), text.replace(/^(#envlockup:mac .*)(.)$/m, (_, start, last) => start + (last === "A" ? "B" : "A"))]) {
+    const e = new SealedEnv(bad);
+    assert.throws(() => e.unlock(aliceId), (err) => err instanceof RecipientListError && err.missing === !/#envlockup:mac/.test(bad));
+    e.unlock(aliceId, { trustRecipients: true });
+    assert.equal(e.recipientsVerified, false);
+    e.acceptRecipients();
+    const fixed = new SealedEnv(e.toString());
+    fixed.unlock(aliceId);
+    assert.equal(fixed.get("PORT"), "3000");
+  }
+  assert.throws(() => new SealedEnv(text.replace(/^(#envlockup:mac .*)$/m, "$1\n$1")), /more than one #envlockup:mac line/);
 });
