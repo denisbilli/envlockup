@@ -75,7 +75,8 @@ def _cmd_escape(arg: str, twice: bool) -> str:
     # Backslashes before a quote, or at the end (before the closing quote), are doubled.
     quoted = '"' + re.sub(r"(\\*)$", r"\1\1", re.sub(r'(\\*)"', r'\1\1\\"', arg)) + '"'
     quoted = _CMD_META.sub(r"^\1", quoted)
-    # A node_modules/.bin shim runs cmd.exe again, which removes one level of escaping.
+    # A batch file that forwards its arguments with %* has cmd.exe parse them a
+    # second time, which removes one more level of escaping.
     return _CMD_META.sub(r"^\1", quoted) if twice else quoted
 
 
@@ -93,9 +94,9 @@ def _run(command: list[str], env: dict[str, str]) -> int:
     try:
         if re.search(r"\.(cmd|bat)$", exe, re.IGNORECASE):
             # Batch files run through cmd.exe, which would interpret & | % and
-            # friends in the arguments: escape them, as the npm CLI does.
-            shim = re.search(r"node_modules[\\/]\.bin[\\/][^\\/]+\.cmd$", exe, re.IGNORECASE) is not None
-            line = " ".join([_CMD_META.sub(r"^\1", exe), *(_cmd_escape(a, shim) for a in command[1:])])
+            # friends in the arguments: escape them, twice, since launchers pass
+            # them on with %*.
+            line = " ".join([_CMD_META.sub(r"^\1", exe), *(_cmd_escape(a, True) for a in command[1:])])
             comspec = env.get("COMSPEC") or os.environ.get("COMSPEC") or "cmd.exe"
             return subprocess.call(f'{comspec} /d /s /c "{line}"', env=env)
         return subprocess.call([exe, *command[1:]], env=env)

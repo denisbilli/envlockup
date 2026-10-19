@@ -666,7 +666,8 @@ const CMD_META = /([()\][%!^"`<>&|;, *?])/g;
 function cmdEscapeArgument(arg: string, twice: boolean): string {
   // Backslashes before a quote, or at the end (before the closing quote), are doubled.
   let quoted = `"${arg.replace(/(\\*)"/g, '$1$1\\"').replace(/(\\*)$/, "$1$1")}"`.replace(CMD_META, "^$1");
-  // A node_modules/.bin shim runs cmd.exe again, which removes one level of escaping.
+  // A batch file that forwards its arguments with %* has cmd.exe parse them a
+  // second time, which removes one more level of escaping.
   if (twice) quoted = quoted.replace(CMD_META, "^$1");
   return quoted;
 }
@@ -690,7 +691,8 @@ function whichWindows(command: string, env: Record<string, string | undefined>):
  * How to start `command` on Windows so that its arguments arrive unchanged.
  * Executables are started directly, without a shell. Batch files (npm, npx and
  * other .cmd shims) can only run through cmd.exe, so their arguments are
- * escaped for it; anything not found on PATH (a cmd.exe built-in) goes the same way.
+ * escaped for it, twice, because launchers pass them on with %*. Anything not
+ * found on PATH (a cmd.exe built-in) goes through cmd.exe, escaped once.
  */
 function windowsInvocation(
   command: string[],
@@ -700,8 +702,7 @@ function windowsInvocation(
   const resolved = whichWindows(name, env);
   if (resolved && !/\.(cmd|bat)$/i.test(resolved)) return { file: resolved, args, verbatim: false };
   const target = resolved ?? name;
-  const shim = /node_modules[\\/]\.bin[\\/][^\\/]+\.cmd$/i.test(target);
-  const line = [target.replace(CMD_META, "^$1"), ...args.map((a) => cmdEscapeArgument(a, shim))].join(" ");
+  const line = [target.replace(CMD_META, "^$1"), ...args.map((a) => cmdEscapeArgument(a, resolved !== undefined))].join(" ");
   const comspec = Object.entries(env).find(([k]) => k.toUpperCase() === "COMSPEC")?.[1] ?? "cmd.exe";
   return { file: comspec, args: ["/d", "/s", "/c", `"${line}"`], verbatim: true };
 }
