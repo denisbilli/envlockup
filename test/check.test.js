@@ -108,3 +108,31 @@ test("check: a file that doesn't use envlockup fails", () => {
   assert.equal(r.status, 1);
   assert.match(r.stderr, /does not use envlockup/);
 });
+
+test("init names the .gitignore line that still excludes the file", () => {
+  const project = join(dir, "ignored");
+  mkdirSync(project);
+  execFileSync("git", ["init", "-q"], { cwd: project });
+  writeFileSync(join(project, ".gitignore"), "node_modules\n.env\n");
+  writeFileSync(join(project, ".env"), "TOKEN=secret\n");
+  const r = spawnSync(process.execPath, [CLI, "-f", join(project, ".env"), "init"], { env: baseEnv, cwd: project, encoding: "utf8" });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stderr, /Git still ignores it: line 2 of \.gitignore \("\.env"\)/);
+  assert.doesNotMatch(r.stderr, /earlier commit/);
+});
+
+test("init warns when the file is already in git history unencrypted", () => {
+  const project = join(dir, "history");
+  mkdirSync(project);
+  const g = (...a) => execFileSync("git", ["-c", "user.name=test", "-c", "user.email=test@example.com", ...a], { cwd: project, stdio: "pipe" });
+  g("init", "-q");
+  writeFileSync(join(project, ".env"), "TOKEN=secret\n");
+  g("add", ".env");
+  g("commit", "-q", "-m", "one");
+  writeFileSync(join(project, ".env"), "TOKEN=secret2\n");
+  g("commit", "-q", "-am", "two");
+  const r = spawnSync(process.execPath, [CLI, "-f", join(project, ".env"), "init"], { env: baseEnv, cwd: project, encoding: "utf8" });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stderr, /already in 2 earlier commit\(s\), unencrypted.*Rotate those secrets/s);
+  assert.doesNotMatch(r.stderr, /Git still ignores it/);
+});
