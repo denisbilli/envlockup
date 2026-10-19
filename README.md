@@ -146,6 +146,38 @@ provider. That is the only secret it needs, however many variables the file has.
     ENVLOCKUP_PRIVATE_KEY: ${{ secrets.ENVLOCKUP_PRIVATE_KEY }}
 ```
 
+## Checking before a commit
+
+Someone will eventually add `API_KEY=sk_live_...` in an editor and commit it.
+`envlockup check` catches that:
+
+- a plaintext value that is new, or that is encrypted in the last commit, fails
+  unless it is listed with `--allow-plain` (for values that aren't secrets,
+  like `PORT`); plaintext values already committed as plaintext pass;
+- with a private key available, every value must decrypt and the recipient list
+  must be signed, which also catches a broken merge.
+
+```sh
+# .git/hooks/pre-commit (make it executable)
+#!/bin/sh
+exec npx envlockup check --allow-plain PORT,LOG_LEVEL
+```
+
+In CI, compare with the branch the pull request goes into:
+
+```yaml
+# GitHub Actions
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+- run: npx envlockup check --base origin/${{ github.base_ref }} --allow-plain PORT,LOG_LEVEL
+  env:
+    ENVLOCKUP_PRIVATE_KEY: ${{ secrets.ENVLOCKUP_PRIVATE_KEY }}
+```
+
+Without a key, `check` still checks plaintext values and says that decryption
+wasn't checked.
+
 ## Python apps
 
 A Python app can read the file without Node.js, with
@@ -201,6 +233,7 @@ Linux they stay readable in `/proc/<pid>/environ` by the same user, so prefer
 | `add --agent [--key K]` | Give access to your own ssh-agent key |
 | `pubkey [--agent] [--key K]` | Print your public key, to send to whoever will `add` you |
 | `remove WHO... [--yes]` | Revoke access (fingerprint, label or number; every match) and rotate the data key |
+| `check [--allow-plain NAME,...] [--base REF]` | Fail on new plaintext values and on files that don't decrypt; for pre-commit and CI |
 | `keygen [--label TEXT]` | Create a dedicated key for CI/servers |
 
 Global options: `-f FILE` (default `$ENVLOCKUP_FILE` or `.env`), `-i KEY`, `--key K` (which agent key).

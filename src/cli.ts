@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import {
   closeSync,
@@ -32,7 +32,7 @@ import {
   sameRecipient,
 } from "./keys.js";
 import { formatValue } from "./dotenv.js";
-import { SealedEnv } from "./vault.js";
+import { NotARecipientError, SealedEnv } from "./vault.js";
 
 const HELP = `envlockup — encrypted .env files you can commit
 
@@ -73,6 +73,11 @@ Commands:
                          \`recipients\`) and rotate the data key. Every
                          recipient matching WHO is removed. Asks before
                          changing anything, unless --yes.
+  check [--allow-plain NAME,...] [--base REF]
+                         Check the file before a commit or in CI: no plaintext
+                         value that is new or was encrypted in git REF
+                         (default HEAD) unless allowed, and, when a key is
+                         available, every value decrypts. Exits 1 on problems.
   keygen [--label TEXT]  Create a dedicated key (e.g. for CI), add it as a
                          recipient and print the private key once.
 
@@ -94,7 +99,7 @@ interface Args {
   rest: string[];
 }
 
-const VALUE_FLAGS = new Set(["file", "identity", "recipient", "label", "key", "format"]);
+const VALUE_FLAGS = new Set(["file", "identity", "recipient", "label", "key", "format", "base", "allow-plain"]);
 const ALIASES: Record<string, string> = { f: "file", i: "identity", h: "help", v: "version", y: "yes" };
 
 function parseArgs(argv: string[]): Args {
@@ -449,6 +454,8 @@ async function run(argv: string[]): Promise<number> {
       }
       return 0;
     }
+    case "check":
+      return check(s, args);
     case "encrypt": {
       const env = await s.openSealed();
       const done = env.encrypt(args.positional.length ? args.positional : undefined);
@@ -557,6 +564,78 @@ async function run(argv: string[]): Promise<number> {
     default:
       throw new UsageError(`unknown command "${args.command}". Run \`envlockup --help\`.`);
   }
+}
+
+/** The file as committed in `ref`, or null if git, the commit or the file isn't there. */
+function gitVersion(path: string, ref: string, explicit: boolean): SealedEnv | null {
+  const cwd = dirname(path);
+  const commit = spawnSync("git", ["rev-parse", "--verify", "--quiet", `${ref}^{commit}`], { cwd, encoding: "utf8" });
+  if (commit.status !== 0) {
+    if (explicit) throw new UsageError(`--base: ${ref} is not a commit in the git repository at ${cwd}`);
+    return null;
+  }
+  const show = spawnSync("git", ["show", `${ref}:./${basename(path)}`], { cwd, encoding: "utf8" });
+  if (show.status !== 0) return null;
+  try {
+    return new SealedEnv(show.stdout);
+  } catch {
+    return null;
+  }
+}
+
+async function check(s: Session, args: Args): Promise<number> {
+  if (!existsSync(s.path)) throw new Error(`${s.path} not found`);
+  const env = s.read();
+  const problems: string[] = [];
+  if (!env.sealed) problems.push(`${s.path} does not use envlockup`);
+  for (const name of env.plaintextOverrides()) problems.push(`${name} is encrypted, then set again in plaintext`);
+
+  const allowed = new Set((args.flags.get("allow-plain") ?? []).flatMap((v) => v.split(",")).map((n) => n.trim()).filter(Boolean));
+  const explicitBase = args.flags.get("base")?.at(-1);
+  const ref = explicitBase ?? "HEAD";
+  const before = gitVersion(s.path, ref, explicitBase !== undefined);
+  const beforeEntries = before?.entries() ?? [];
+  const encryptedBefore = new Set(beforeEntries.filter((e) => e.encrypted).map((e) => e.name));
+  const plainBefore = new Set(beforeEntries.filter((e) => !e.encrypted).map((e) => e.name));
+  let plaintextProblems = 0;
+  for (const name of new Set(env.entries().filter((e) => !e.encrypted).map((e) => e.name))) {
+    if (allowed.has(name)) continue;
+    if (encryptedBefore.has(name)) problems.push(`${name} is in plaintext, but is encrypted in ${ref}`);
+    else if (!plainBefore.has(name)) problems.push(`${name} is a new plaintext value`);
+    else continue;
+    plaintextProblems++;
+  }
+
+  // Values and the recipient list can only be checked with a key.
+  let decryptNote: string | undefined;
+  const hasKey =
+    findIdentity(process.env, args.flags.get("identity")?.at(-1)) ||
+    (agentSocket() && env.recipients.some((r) => r.recipient.type === "ssh-agent"));
+  if (!env.sealed) {
+    // Nothing to decrypt.
+  } else if (!hasKey) {
+    decryptNote = "not checked whether the file decrypts: no private key here (in CI, set ENVLOCKUP_PRIVATE_KEY)";
+  } else {
+    try {
+      await s.unlock(env);
+    } catch (err) {
+      if (err instanceof NotARecipientError || err instanceof PassphraseRequiredError) {
+        decryptNote = `not checked whether the file decrypts: ${(err as Error).message}`;
+      } else {
+        problems.push((err as Error).message);
+      }
+    }
+  }
+
+  if (!before && plaintextProblems > 0) info(`envlockup: no earlier version of the file in ${ref}, so every plaintext value counts as new`);
+  for (const p of problems) info(`envlockup check: ${printable(p)}`);
+  if (decryptNote) info(`envlockup: ${printable(decryptNote)}`);
+  if (plaintextProblems > 0) {
+    info("Encrypt them with `envlockup encrypt NAME`, or, if they are not secrets, list them with --allow-plain NAME,...");
+  }
+  if (problems.length) return 1;
+  info(`${s.path}: OK`);
+  return 0;
 }
 
 function spawnChild(command: string[], env: Record<string, string | undefined>): Promise<number> {
