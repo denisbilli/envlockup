@@ -1,4 +1,4 @@
-// test/vectors.json is shared with the other envseal implementations. These
+// test/vectors.json is shared with the other envlockup implementations. These
 // tests make sure it still describes what this one does.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

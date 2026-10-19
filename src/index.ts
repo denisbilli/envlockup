@@ -12,7 +12,7 @@ export { parseRecipient, parseIdentity, generateAgeIdentity, fingerprint, recipi
 export type { Recipient, Identity } from "./keys.js";
 
 export interface ConfigOptions {
-  /** Path of the file to load. Default: `ENVSEAL_FILE` or `.env` in the current directory. */
+  /** Path of the file to load. Default: `ENVLOCKUP_FILE` or `.env` in the current directory. */
   path?: string;
   /** Overwrite variables that are already set. Default: false, as in dotenv. */
   override?: boolean;
@@ -20,7 +20,7 @@ export interface ConfigOptions {
   processEnv?: Record<string, string | undefined>;
   /** Private key text to use instead of the default lookup. */
   privateKey?: string;
-  /** Passphrase for a protected SSH key. Default: `ENVSEAL_SSH_PASSPHRASE`. */
+  /** Passphrase for a protected SSH key. Default: `ENVLOCKUP_SSH_PASSPHRASE`. */
   passphrase?: string;
 }
 
@@ -34,7 +34,7 @@ export interface ConfigResult {
  * The private key is only needed when the file contains encrypted values.
  */
 export function load(options: Omit<ConfigOptions, "override" | "processEnv"> = {}): Record<string, string> {
-  const path = resolve(options.path ?? process.env.ENVSEAL_FILE ?? ".env");
+  const path = resolve(options.path ?? process.env.ENVLOCKUP_FILE ?? ".env");
   const env = new SealedEnv(readFileSync(path, "utf8"));
   if (env.entries().some((e) => e.encrypted)) {
     const explicit = options.privateKey ? { text: options.privateKey, source: "privateKey option" } : explicitIdentity();
@@ -55,7 +55,7 @@ export function load(options: Omit<ConfigOptions, "override" | "processEnv"> = {
       throw new Error(
         agentError
           ? `${path}: ${agentError.message}`
-          : `${path} contains encrypted values but no private key was found. Use ~/.ssh/id_ed25519 or ssh-agent, or set ENVSEAL_PRIVATE_KEY or ENVSEAL_IDENTITY.`,
+          : `${path} contains encrypted values but no private key was found. Use ~/.ssh/id_ed25519 or ssh-agent, or set ENVLOCKUP_PRIVATE_KEY or ENVLOCKUP_IDENTITY.`,
       );
     }
     env.unlock(loadIdentity(src, options.passphrase));
@@ -86,8 +86,8 @@ function agentIdentitySync(env: SealedEnv): Identity | null {
  * decrypted throws, because silently starting without secrets is worse.
  */
 export function config(options: ConfigOptions = {}): ConfigResult {
-  const path = resolve(options.path ?? process.env.ENVSEAL_FILE ?? ".env");
-  if (!existsSync(path)) return { parsed: {}, error: new Error(`envseal: ${path} not found`) };
+  const path = resolve(options.path ?? process.env.ENVLOCKUP_FILE ?? ".env");
+  if (!existsSync(path)) return { parsed: {}, error: new Error(`envlockup: ${path} not found`) };
   const parsed = load({ ...options, path });
   const target = options.processEnv ?? process.env;
   for (const [name, value] of Object.entries(parsed)) {

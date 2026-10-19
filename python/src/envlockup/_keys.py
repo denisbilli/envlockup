@@ -21,7 +21,7 @@ from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 
 from . import _bech32
-from .errors import EnvsealError, PassphraseRequiredError
+from .errors import EnvlockupError, PassphraseRequiredError
 
 X25519_LABEL = b"age-encryption.org/v1/X25519"
 SSH_ED25519_LABEL = b"age-encryption.org/v1/ssh-ed25519"
@@ -222,12 +222,12 @@ def parse_identity(text: str, source: str, passphrase: str | None = None) -> Ide
         except ValueError:
             hrp, data = "", b""
         if hrp != "age-secret-key-" or len(data) != 32:
-            raise EnvsealError(f"{source}: invalid age secret key")
+            raise EnvlockupError(f"{source}: invalid age secret key")
         return X25519Identity(data)
 
     m = _OPENSSH.search(text)
     if not m:
-        raise EnvsealError(f"{source} is not an OpenSSH private key")
+        raise EnvlockupError(f"{source} is not an OpenSSH private key")
     encrypted = is_encrypted_ssh_key(text)
     if encrypted and not passphrase:
         raise PassphraseRequiredError(source)
@@ -236,11 +236,11 @@ def parse_identity(text: str, source: str, passphrase: str | None = None) -> Ide
             m.group(0).encode(), password=passphrase.encode() if encrypted and passphrase else None
         )
     except ValueError as err:
-        raise EnvsealError(f"wrong passphrase for {source}" if encrypted else f"{source} is corrupted ({err})") from None
+        raise EnvlockupError(f"wrong passphrase for {source}" if encrypted else f"{source} is corrupted ({err})") from None
     except Exception as err:  # unsupported cipher or key format
-        raise EnvsealError(f"{source}: {err}") from None
+        raise EnvlockupError(f"{source}: {err}") from None
     if not isinstance(key, Ed25519PrivateKey):
-        raise EnvsealError(f"{source} is not an ssh-ed25519 key")
+        raise EnvlockupError(f"{source} is not an ssh-ed25519 key")
     raw = serialization.PrivateFormat.Raw
     seed = key.private_bytes(serialization.Encoding.Raw, raw, serialization.NoEncryption())
     public = key.public_key().public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw)

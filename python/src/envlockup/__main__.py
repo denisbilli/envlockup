@@ -1,6 +1,6 @@
-"""python -m envseal: read envseal files from the command line.
+"""python -m envlockup: read envlockup files from the command line.
 
-Edit them with the envseal CLI from npm (`npx envseal set NAME`).
+Edit them with the envlockup CLI from npm (`npx envlockup set NAME`).
 """
 
 from __future__ import annotations
@@ -17,9 +17,9 @@ from pathlib import Path
 from . import SECRET_ENV_VARS, _find_identity, load
 from ._dotenv import format_value
 from ._keys import is_encrypted_ssh_key
-from .errors import EnvsealError, PassphraseRequiredError
+from .errors import EnvlockupError, PassphraseRequiredError
 
-USAGE = """python -m envseal [-f FILE] [-i KEY] <command>
+USAGE = """python -m envlockup [-f FILE] [-i KEY] <command>
 
 Commands:
   get NAME               Print one decrypted value.
@@ -31,14 +31,14 @@ Commands:
                          Nothing decrypted is written to disk.
 
 Options:
-  -f, --file FILE        File to use (default: $ENVSEAL_FILE or .env)
-  -i, --identity KEY     Private key file (default: $ENVSEAL_PRIVATE_KEY,
-                         $ENVSEAL_IDENTITY, or ~/.ssh/id_ed25519)
+  -f, --file FILE        File to use (default: $ENVLOCKUP_FILE or .env)
+  -i, --identity KEY     Private key file (default: $ENVLOCKUP_PRIVATE_KEY,
+                         $ENVLOCKUP_IDENTITY, or ~/.ssh/id_ed25519)
 """
 
 
 def _parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="python -m envseal", usage=USAGE, add_help=True)
+    p = argparse.ArgumentParser(prog="python -m envlockup", usage=USAGE, add_help=True)
     p.add_argument("-f", "--file")
     p.add_argument("-i", "--identity")
     sub = p.add_subparsers(dest="command", required=True)
@@ -73,14 +73,14 @@ def _run(command: list[str], env: dict[str, str]) -> int:
         try:
             os.execvpe(command[0], command, env)
         except OSError as err:
-            print(f"envseal: cannot run {command[0]}: {err.strerror}", file=sys.stderr)
+            print(f"envlockup: cannot run {command[0]}: {err.strerror}", file=sys.stderr)
             return 127
     # Windows: resolve .exe/.cmd through PATHEXT, then wait for the child.
     exe = shutil.which(command[0], path=env.get("PATH")) or command[0]
     try:
         return subprocess.call([exe, *command[1:]], env=env)
     except OSError as err:
-        print(f"envseal: cannot run {command[0]}: {err.strerror}", file=sys.stderr)
+        print(f"envlockup: cannot run {command[0]}: {err.strerror}", file=sys.stderr)
         return 127
     except KeyboardInterrupt:
         return 130
@@ -92,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "get":
             values = _values(args)
             if args.name not in values:
-                print(f"envseal: {args.name} is not set", file=sys.stderr)
+                print(f"envlockup: {args.name} is not set", file=sys.stderr)
                 return 1
             print(values[args.name])
         elif args.command == "decrypt":
@@ -105,14 +105,14 @@ def main(argv: list[str] | None = None) -> int:
                     try:
                         lines.append(f"{name}={format_value(value)}")
                     except ValueError:
-                        print(f"envseal: {name} cannot be written in dotenv syntax (it mixes ', \" and `); use --format json", file=sys.stderr)
+                        print(f"envlockup: {name} cannot be written in dotenv syntax (it mixes ', \" and `); use --format json", file=sys.stderr)
                         return 1
                 if lines:
                     print("\n".join(lines))
         elif args.command == "run":
             command = args.argv[1:] if args.argv[:1] == ["--"] else args.argv
             if not command:
-                print("usage: python -m envseal run -- COMMAND [ARGS]...", file=sys.stderr)
+                print("usage: python -m envlockup run -- COMMAND [ARGS]...", file=sys.stderr)
                 return 2
             values = _values(args)
             env = dict(os.environ)
@@ -122,8 +122,8 @@ def main(argv: list[str] | None = None) -> int:
                 if args.override or name not in env:
                     env[name] = value
             return _run(command, env)
-    except (EnvsealError, OSError) as err:
-        print(f"envseal: {err}", file=sys.stderr)
+    except (EnvlockupError, OSError) as err:
+        print(f"envlockup: {err}", file=sys.stderr)
         return 1
     return 0
 

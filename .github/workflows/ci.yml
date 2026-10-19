@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      # The interop tests check envseal against the reference age CLI; they are
+      # The interop tests check envlockup against the reference age CLI; they are
       # skipped where age is not installed.
       - if: runner.os == 'Linux'
         run: sudo apt-get install -y age

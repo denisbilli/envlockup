@@ -1,4 +1,4 @@
-// envseal must read every file exactly as dotenv does, and write plain values
+// envlockup must read every file exactly as dotenv does, and write plain values
 // that dotenv reads back unchanged.
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
@@ -66,6 +66,6 @@ test("formatValue round-trips through dotenv", () => {
       continue; // not representable as a plain value: stored encrypted instead
     }
     assert.equal(dotenv.parse(line).K, value, `dotenv misreads ${JSON.stringify(line)}`);
-    assert.equal(ours(line).K, value, `envseal misreads ${JSON.stringify(line)}`);
+    assert.equal(ours(line).K, value, `envlockup misreads ${JSON.stringify(line)}`);
   }
 });

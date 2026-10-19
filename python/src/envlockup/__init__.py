@@ -1,19 +1,19 @@
-"""Read envseal files: .env files whose values are encrypted for SSH or age keys.
+"""Read envlockup files: .env files whose values are encrypted for SSH or age keys.
 
-    import envseal
-    envseal.config()          # like python-dotenv's load_dotenv(), decrypting as it goes
+    import envlockup
+    envlockup.config()          # like python-dotenv's load_dotenv(), decrypting as it goes
 
 The private key is looked for in this order:
 
-    1. ENVSEAL_PRIVATE_KEY  the key itself (CI and servers: store it as a single secret)
-    2. ENVSEAL_IDENTITY     path to a key file
+    1. ENVLOCKUP_PRIVATE_KEY  the key itself (CI and servers: store it as a single secret)
+    2. ENVLOCKUP_IDENTITY     path to a key file
     3. ~/.ssh/id_ed25519    your SSH key
 
 1 and 2 are "explicit": when set, nothing else is tried. A passphrase-protected
-SSH key is unlocked with ENVSEAL_SSH_PASSPHRASE. ssh-agent is not supported yet
+SSH key is unlocked with ENVLOCKUP_SSH_PASSPHRASE. ssh-agent is not supported yet
 by the Python package.
 
-Files are created and edited with the envseal CLI from npm.
+Files are created and edited with the envlockup CLI from npm.
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ from ._keys import Identity, parse_identity
 from ._vault import SealedFile
 from .errors import (
     DecryptError,
-    EnvsealError,
+    EnvlockupError,
     FormatError,
     NoKeyError,
     NotARecipientError,
@@ -38,7 +38,7 @@ __all__ = [
     "config",
     "load",
     "DecryptError",
-    "EnvsealError",
+    "EnvlockupError",
     "FormatError",
     "NoKeyError",
     "NotARecipientError",
@@ -47,11 +47,11 @@ __all__ = [
 
 # Removed from the environment once the file is decrypted, so the rest of the
 # application (and anything it starts) never sees the key.
-SECRET_ENV_VARS = ("ENVSEAL_PRIVATE_KEY", "ENVSEAL_SSH_PASSPHRASE")
+SECRET_ENV_VARS = ("ENVLOCKUP_PRIVATE_KEY", "ENVLOCKUP_SSH_PASSPHRASE")
 
 
 def _default_path() -> Path:
-    return Path(os.environ.get("ENVSEAL_FILE") or ".env")
+    return Path(os.environ.get("ENVLOCKUP_FILE") or ".env")
 
 
 def _find_identity(private_key: str | None, identity_path: str | os.PathLike[str] | None) -> tuple[str, str] | None:
@@ -60,11 +60,11 @@ def _find_identity(private_key: str | None, identity_path: str | os.PathLike[str
         return private_key, "private_key argument"
     if identity_path:
         return Path(identity_path).read_text(encoding="utf-8"), str(identity_path)
-    inline = os.environ.get("ENVSEAL_PRIVATE_KEY", "").strip()
+    inline = os.environ.get("ENVLOCKUP_PRIVATE_KEY", "").strip()
     if inline:
         # CI systems often flatten multi-line secrets; accept literal "\n".
-        return (inline if "\n" in inline else inline.replace("\\n", "\n")), "ENVSEAL_PRIVATE_KEY"
-    file = os.environ.get("ENVSEAL_IDENTITY")
+        return (inline if "\n" in inline else inline.replace("\\n", "\n")), "ENVLOCKUP_PRIVATE_KEY"
+    file = os.environ.get("ENVLOCKUP_IDENTITY")
     if file:
         return Path(file).read_text(encoding="utf-8"), file
     default = Path.home() / ".ssh" / "id_ed25519"
@@ -82,7 +82,7 @@ def load(
 ) -> dict[str, str]:
     """Decrypt a file and return its variables, without touching os.environ.
 
-    `path` defaults to $ENVSEAL_FILE or .env in the current directory. Pass
+    `path` defaults to $ENVLOCKUP_FILE or .env in the current directory. Pass
     `private_key` (key text) or `identity` (key file path) to skip the default
     lookup. The private key is only needed when the file has encrypted values.
     """
@@ -94,10 +94,10 @@ def load(
             hint = " ssh-agent is not supported by the Python package yet." if sealed.agent_recipients else ""
             raise NoKeyError(
                 f"{file} contains encrypted values but no private key was found. "
-                f"Use ~/.ssh/id_ed25519, or set ENVSEAL_PRIVATE_KEY or ENVSEAL_IDENTITY.{hint}"
+                f"Use ~/.ssh/id_ed25519, or set ENVLOCKUP_PRIVATE_KEY or ENVLOCKUP_IDENTITY.{hint}"
             )
         text, source = found
-        key: Identity = parse_identity(text, source, passphrase or os.environ.get("ENVSEAL_SSH_PASSPHRASE"))
+        key: Identity = parse_identity(text, source, passphrase or os.environ.get("ENVLOCKUP_SSH_PASSPHRASE"))
         sealed.unlock(key)
     return sealed.decrypt_all()
 

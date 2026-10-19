@@ -1,5 +1,5 @@
-// envseal's key wrapping must be exactly age's. These tests use the real
-// `age` CLI in both directions: age wraps / envseal unwraps, and vice versa.
+// envlockup's key wrapping must be exactly age's. These tests use the real
+// `age` CLI in both directions: age wraps / envlockup unwraps, and vice versa.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
@@ -32,12 +32,12 @@ function assertUnwraps(identity, ageFile) {
   assert.deepEqual(headerMac(keys[0], macInput), mac, "file key must verify the header MAC");
 }
 
-test("age -R ssh-ed25519 → envseal unwraps", { skip }, () => {
+test("age -R ssh-ed25519 → envlockup unwraps", { skip }, () => {
   const key = sshKey(dir, "a");
   assertUnwraps(parseIdentity(key.private, key.path), ageEncrypt(["-R", `${key.path}.pub`]));
 });
 
-test("envseal wraps ssh-ed25519 → age -d decrypts", { skip }, () => {
+test("envlockup wraps ssh-ed25519 → age -d decrypts", { skip }, () => {
   const key = sshKey(dir, "b");
   const fileKey = randomBytes(16);
   const file = join(dir, "b.age");
@@ -70,7 +70,7 @@ test("age-keygen identity: same recipient, unwraps age -r", { skip }, () => {
   assertUnwraps(identity, ageEncrypt(["-r", recipient]));
 });
 
-test("envseal age identity → age -d decrypts", { skip }, () => {
+test("envlockup age identity → age -d decrypts", { skip }, () => {
   const { secret, recipient } = generateAgeIdentity();
   const keyFile = join(dir, "gen.txt");
   writeFileSync(keyFile, secret + "\n");

@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { hkdf } from "../dist/crypto.js";
 
 export function tempDir() {
-  return mkdtempSync(join(tmpdir(), "envseal-test-"));
+  return mkdtempSync(join(tmpdir(), "envlockup-test-"));
 }
 
 /** Generate an ed25519 SSH key with ssh-keygen. */
@@ -44,7 +44,7 @@ export function headerMac(fileKey, macInput) {
   return createHmac("sha256", hkdf(fileKey, Buffer.alloc(0), "header", 32)).update(macInput).digest();
 }
 
-/** Build a complete single-chunk age file from stanzas made by envseal. */
+/** Build a complete single-chunk age file from stanzas made by envlockup. */
 export function buildAgeFile(fileKey, stanzas, plaintext) {
   let header = "age-encryption.org/v1\n";
   for (const s of stanzas) {

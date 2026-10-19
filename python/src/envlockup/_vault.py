@@ -1,11 +1,11 @@
-# Reading an envseal file (see docs/DESIGN.md in the repository):
+# Reading an envlockup file (see docs/DESIGN.md in the repository):
 #
-#   #envseal:v1 ...
-#   #envseal:recipient <type> <public key> <stanza args...> <wrapped key> [label]
-#   API_KEY=envseal:v1:<base64url(salt || ciphertext || tag)>
+#   #envlockup:v1 ...
+#   #envlockup:recipient <type> <public key> <stanza args...> <wrapped key> [label]
+#   API_KEY=envlockup:v1:<base64url(salt || ciphertext || tag)>
 #   PORT=3000
 #
-# Writing (set, add, remove, ...) is done with the envseal CLI from npm.
+# Writing (set, add, remove, ...) is done with the envlockup CLI from npm.
 
 from __future__ import annotations
 
@@ -27,11 +27,11 @@ from ._keys import (
 )
 from .errors import DecryptError, FormatError, NotARecipientError
 
-HEADER = "#envseal:"
-VERSION_LINE = "#envseal:v1"
-RECIPIENT_LINE = "#envseal:recipient "
-VALUE_PREFIX = "envseal:v1:"
-VALUE_INFO = b"github.com/denisbilli/envseal/v1/value"
+HEADER = "#envlockup:"
+VERSION_LINE = "#envlockup:v1"
+RECIPIENT_LINE = "#envlockup:recipient "
+VALUE_PREFIX = "envlockup:v1:"
+VALUE_INFO = b"github.com/denisbilli/envlockup/v1/value"
 
 # Per recipient type: how many tokens the public key takes, the stanza it uses
 # and how many stanza arguments follow.
@@ -69,7 +69,7 @@ def _parse_recipient_line(line: str) -> Stanza:
     parts = _WS.split(line[len(RECIPIENT_LINE) :].strip())
     layout = _LINE_LAYOUT.get(parts[0])
     if not layout or len(parts) < 2 + layout[0] + layout[2]:
-        raise FormatError(f"malformed envseal recipient line: {line}")
+        raise FormatError(f"malformed envlockup recipient line: {line}")
     key_tokens, stanza_type, n_args = layout
     key_end = 1 + key_tokens
     stanza_end = key_end + n_args
@@ -77,7 +77,7 @@ def _parse_recipient_line(line: str) -> Stanza:
         _check_recipient(parts[0], parts[1:key_end])
         return Stanza(stanza_type, parts[key_end:stanza_end], unb64(parts[stanza_end]))
     except (ValueError, UnicodeDecodeError) as err:
-        raise FormatError(f"malformed envseal recipient line ({err}): {line}") from None
+        raise FormatError(f"malformed envlockup recipient line ({err}): {line}") from None
 
 
 def _value_aad(name: str) -> bytes:
@@ -98,12 +98,12 @@ def _decrypt_value(data_key: bytes, name: str, value: str) -> str:
     except InvalidTag:
         raise DecryptError(
             f"{name}: cannot decrypt (the value was changed, or moved from another variable). "
-            f"Set it again with `envseal set {name}`."
+            f"Set it again with `envlockup set {name}`."
         ) from None
 
 
 class SealedFile:
-    """A parsed envseal (or plain dotenv) file."""
+    """A parsed envlockup (or plain dotenv) file."""
 
     def __init__(self, text: str) -> None:
         lines = split_lines(text)
@@ -116,9 +116,9 @@ class SealedFile:
                 if line[len(RECIPIENT_LINE) :].lstrip().startswith("ssh-agent "):
                     self.agent_recipients += 1
             elif line.startswith(HEADER) and not _is_version_line(line):
-                raise FormatError(f"unsupported envseal header line (is envseal up to date?): {line}")
+                raise FormatError(f"unsupported envlockup header line (is envlockup up to date?): {line}")
         if self.sealed and not self.stanzas:
-            raise FormatError("envseal file has no recipients")
+            raise FormatError("envlockup file has no recipients")
         self.entries = parse_entries(lines)
         self._data_key: bytes | None = None
 
@@ -168,7 +168,7 @@ class SealedFile:
             raise FormatError(
                 f"{name} is encrypted, then set again in plaintext further down the file. "
                 "Anyone who can edit the file can add such a line, so it is not used. "
-                f"Delete the line you don't want, or run `envseal set {name}`."
+                f"Delete the line you don't want, or run `envlockup set {name}`."
             )
         out: dict[str, str] = {}
         for name, value in self.entries:

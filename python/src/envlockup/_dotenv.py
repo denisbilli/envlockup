@@ -1,5 +1,5 @@
 # A port of the dotenv 16/17 parser (lib/main.js), so that a file means the same
-# thing to Python as to Node's dotenv and to envseal. python-dotenv parses
+# thing to Python as to Node's dotenv and to envlockup. python-dotenv parses
 # differently and is not used.
 #
 # The JavaScript regex is translated by hand, because JavaScript and Python

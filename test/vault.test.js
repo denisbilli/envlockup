@@ -38,10 +38,10 @@ test("dotenv parsing", () => {
 test("init encrypts every value and keeps comments", () => {
   const env = sealed();
   const text = env.toString();
-  assert.match(text, /^#envseal:v1 /);
+  assert.match(text, /^#envlockup:v1 /);
   assert.match(text, /# app settings/);
   assert.doesNotMatch(text, /postgres|abc 123|3000|line one/);
-  assert.match(text, /^export DATABASE_URL=envseal:v1:/m);
+  assert.match(text, /^export DATABASE_URL=envlockup:v1:/m);
   assert.ok(env.entries().every((e) => e.encrypted));
   env.unlock(aliceId);
   assert.equal(env.get("MULTI"), "line one\nline two");
@@ -93,7 +93,7 @@ test("ciphertexts are bound to their variable name", () => {
 });
 
 test("tampered values are rejected", () => {
-  const text = sealed().toString().replace(/^(PORT=envseal:v1:.{30})(.)/m, (_, a, c) => a + (c === "A" ? "B" : "A"));
+  const text = sealed().toString().replace(/^(PORT=envlockup:v1:.{30})(.)/m, (_, a, c) => a + (c === "A" ? "B" : "A"));
   assert.throws(() => new SealedEnv(text).unlock(aliceId), /PORT: cannot decrypt/);
 });
 
@@ -104,7 +104,7 @@ test("age identities work as recipients (CI keys)", () => {
   ci.recipient.label = "ci";
   env.addRecipient(ci.recipient);
   const other = new SealedEnv(env.toString());
-  assert.match(env.toString(), /^#envseal:recipient X25519 age1\S+ \S+ \S+ ci$/m);
+  assert.match(env.toString(), /^#envlockup:recipient X25519 age1\S+ \S+ \S+ ci$/m);
   other.unlock(parseIdentity(ci.secret, "ci"));
   assert.equal(other.get("PORT"), "3000");
 });
@@ -116,7 +116,7 @@ test("set replaces in place and keeps export", () => {
   env.set("NEW_ONE", "x");
   const lines = env.toString().split("\n");
   assert.equal(lines.filter((l) => l.includes("DATABASE_URL")).length, 1);
-  assert.ok(lines.some((l) => l.startsWith("export DATABASE_URL=envseal:v1:")));
+  assert.ok(lines.some((l) => l.startsWith("export DATABASE_URL=envlockup:v1:")));
   assert.equal(lines.at(-2).startsWith("NEW_ONE="), true);
   assert.equal(env.get("DATABASE_URL"), "postgres://new");
 });
@@ -130,7 +130,7 @@ test("a broken recipient line for someone else doesn't lock you out", () => {
   env.addRecipient(ci2.recipient);
   // Give ci1's line (checked before ci2's) a low-order, all-zero ephemeral share.
   const lines = env.toString().split("\n");
-  const ci1Line = lines.findIndex((l) => l.startsWith("#envseal:recipient X25519"));
+  const ci1Line = lines.findIndex((l) => l.startsWith("#envlockup:recipient X25519"));
   const parts = lines[ci1Line].split(" ");
   parts[3] = Buffer.alloc(32).toString("base64").replace(/=+$/, "");
   lines[ci1Line] = parts.join(" ");
@@ -142,9 +142,9 @@ test("a broken recipient line for someone else doesn't lock you out", () => {
 test("add leaves existing recipient lines untouched", () => {
   const env = sealed();
   env.unlock(aliceId);
-  const before = env.toString().split("\n").filter((l) => l.startsWith("#envseal:recipient"));
+  const before = env.toString().split("\n").filter((l) => l.startsWith("#envlockup:recipient"));
   env.addRecipient(parseRecipient(bob.public));
-  const after = env.toString().split("\n").filter((l) => l.startsWith("#envseal:recipient"));
+  const after = env.toString().split("\n").filter((l) => l.startsWith("#envlockup:recipient"));
   assert.deepEqual(after.slice(0, -1), before);
   assert.equal(after.length, before.length + 1);
 });
@@ -153,8 +153,8 @@ test("a recipient line added without the key does not gain access on add", () =>
   const env = sealed();
   const mallory = generateAgeIdentity();
   const zeros = Buffer.alloc(32).toString("base64").replace(/=+$/, "");
-  const forged = `#envseal:recipient X25519 ${recipientKey(mallory.recipient)} ${zeros} ${zeros}${zeros.slice(0, 21)} ci`;
-  const text = env.toString().replace(/^(#envseal:recipient .*)$/m, `$1\n${forged}`);
+  const forged = `#envlockup:recipient X25519 ${recipientKey(mallory.recipient)} ${zeros} ${zeros}${zeros.slice(0, 21)} ci`;
+  const text = env.toString().replace(/^(#envlockup:recipient .*)$/m, `$1\n${forged}`);
   const victim = new SealedEnv(text);
   victim.unlock(aliceId);
   victim.addRecipient(parseRecipient(bob.public));
@@ -167,7 +167,7 @@ test("a forged stanza placed first does not lock the real recipient out", () => 
   const decoy = new SealedEnv("X=1\n");
   decoy.init([parseRecipient(alice.public)]);
   const forged = decoy.toString().split("\n")[1];
-  const text = env.toString().replace(/^(#envseal:v1.*)$/m, `$1\n${forged}`);
+  const text = env.toString().replace(/^(#envlockup:v1.*)$/m, `$1\n${forged}`);
   const victim = new SealedEnv(text);
   victim.unlock(aliceId);
   assert.equal(victim.get("PORT"), "3000");
@@ -190,7 +190,7 @@ test("control characters are dropped from labels", () => {
   const ci = generateAgeIdentity();
   ci.recipient.label = "ci\x1b[2K\x1b[1A";
   env.addRecipient(ci.recipient);
-  assert.match(env.toString(), /^#envseal:recipient X25519 age1\S+ \S+ \S+ ci\[2K\[1A$/m);
+  assert.match(env.toString(), /^#envlockup:recipient X25519 age1\S+ \S+ \S+ ci\[2K\[1A$/m);
 });
 
 test("a plaintext definition after an encrypted one is refused", () => {

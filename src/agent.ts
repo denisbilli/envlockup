@@ -1,13 +1,13 @@
 // ssh-agent support.
 //
 // An agent can sign but not decrypt, so an agent key cannot open an age
-// ssh-ed25519 stanza. Instead we ask the agent to sign a fixed, envseal-specific
+// ssh-ed25519 stanza. Instead we ask the agent to sign a fixed, envlockup-specific
 // message and derive an X25519 age identity from the signature:
 //
-//   message   = SSHSIG blob, namespace "github.com/denisbilli/envseal",
-//               over "github.com/denisbilli/envseal/v1/agent-identity"
+//   message   = SSHSIG blob, namespace "github.com/denisbilli/envlockup",
+//               over "github.com/denisbilli/envlockup/v1/agent-identity"
 //   signature = agent.sign(key, message)       // Ed25519, or RSA with rsa-sha2-512
-//   secret    = HKDF-SHA-256(ikm = signature, salt = ssh_key, info = "github.com/denisbilli/envseal/v1/agent-identity")
+//   secret    = HKDF-SHA-256(ikm = signature, salt = ssh_key, info = "github.com/denisbilli/envlockup/v1/agent-identity")
 //
 // This only works because these signatures are deterministic, which we check by
 // signing twice before handing out a recipient. The derived `age1...` public key
@@ -21,9 +21,9 @@ import { createPublicKey, verify } from "node:crypto";
 import { hkdf, sha512, x25519Base } from "./crypto.js";
 import { type Identity, type Recipient, fingerprint, sshKeyType, x25519Identity } from "./keys.js";
 
-export const AGENT_NAMESPACE = "github.com/denisbilli/envseal";
-const AGENT_MESSAGE = "github.com/denisbilli/envseal/v1/agent-identity";
-const AGENT_INFO = "github.com/denisbilli/envseal/v1/agent-identity";
+export const AGENT_NAMESPACE = "github.com/denisbilli/envlockup";
+const AGENT_MESSAGE = "github.com/denisbilli/envlockup/v1/agent-identity";
+const AGENT_INFO = "github.com/denisbilli/envlockup/v1/agent-identity";
 
 const SSH_AGENT_FAILURE = 5;
 const SSH_AGENTC_REQUEST_IDENTITIES = 11;
@@ -126,7 +126,7 @@ function uint32(n: number): Buffer {
   return b;
 }
 
-/** The SSHSIG "signed data" structure for the envseal namespace. */
+/** The SSHSIG "signed data" structure for the envlockup namespace. */
 export function signedData(): Buffer {
   return Buffer.concat([
     Buffer.from("SSHSIG"),
@@ -191,7 +191,7 @@ export async function agentRecipient(client: AgentClient, key: AgentKey): Promis
   const first = await agentIdentity(client, key);
   const second = await agentIdentity(client, key);
   if (!first.recipient.publicKey.equals(second.recipient.publicKey)) {
-    throw new Error(`the ssh-agent key ${fingerprint(first.recipient)} does not produce deterministic signatures, so envseal cannot use it`);
+    throw new Error(`the ssh-agent key ${fingerprint(first.recipient)} does not produce deterministic signatures, so envlockup cannot use it`);
   }
   return first.recipient;
 }

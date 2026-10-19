@@ -49,7 +49,7 @@ after(() => agentProc?.kill());
 
 const envFile = join(dir, ".env");
 function cli(args, env = {}) {
-  const inherited = Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith("ENVSEAL_")));
+  const inherited = Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith("ENVLOCKUP_")));
   const r = spawnSync(process.execPath, [CLI, "-f", envFile, ...args], {
     env: { ...inherited, HOME: home, SSH_AUTH_SOCK: sock, ...env },
     encoding: "utf8",
@@ -62,8 +62,8 @@ test("agent signatures match ssh-keygen -Y sign (SSHSIG framing)", { skip }, asy
   const { wire } = parseSSHPublicKey(ed.public);
   const fromAgent = await client.sign(wire, signedData());
   const msg = join(dir, "msg");
-  writeFileSync(msg, "github.com/denisbilli/envseal/v1/agent-identity");
-  execFileSync("ssh-keygen", ["-q", "-Y", "sign", "-n", "github.com/denisbilli/envseal", "-f", ed.path, msg]);
+  writeFileSync(msg, "github.com/denisbilli/envlockup/v1/agent-identity");
+  execFileSync("ssh-keygen", ["-q", "-Y", "sign", "-n", "github.com/denisbilli/envlockup", "-f", ed.path, msg]);
   const armored = readFileSync(`${msg}.sig`, "utf8").replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
   const sshsig = Buffer.from(armored, "base64");
   // The SSHSIG file ends with string(signature); compare it with the agent's.
@@ -89,7 +89,7 @@ test("CLI: init --agent, then everything works with no key file", { skip }, () =
   writeFileSync(envFile, "TOKEN=t0ps3cret\n");
   const init = cli(["init", "--agent", "--key", "ed@test"]);
   assert.equal(init.code, 0, init.stderr);
-  assert.match(readFileSync(envFile, "utf8"), /^#envseal:recipient ssh-agent age1\S+ ssh-ed25519 \S+ \S+ \S+ ed@test$/m);
+  assert.match(readFileSync(envFile, "utf8"), /^#envlockup:recipient ssh-agent age1\S+ ssh-ed25519 \S+ \S+ \S+ ed@test$/m);
   assert.equal(cli(["get", "TOKEN"]).stdout, "t0ps3cret\n");
   const run = cli(["run", "--", process.execPath, "-e", "console.log(process.env.TOKEN)"]);
   assert.equal(run.stdout, "t0ps3cret\n", run.stderr);
@@ -97,7 +97,7 @@ test("CLI: init --agent, then everything works with no key file", { skip }, () =
   assert.notEqual(cli(["get", "TOKEN"], { SSH_AUTH_SOCK: "" }).code, 0);
 });
 
-test("import 'envseal/config' unlocks through the agent", { skip }, () => {
+test("import 'envlockup/config' unlocks through the agent", { skip }, () => {
   const config = new URL("../dist/config.js", import.meta.url).href;
   const r = spawnSync(process.execPath, ["--input-type=module", "-e", `import ${JSON.stringify(config)}; console.log(process.env.TOKEN)`], {
     cwd: dir,
@@ -119,14 +119,14 @@ test("pubkey --agent output can be added by someone else", { skip }, () => {
 
 test("a passphrase key: unlock once, add --agent, then no passphrase", { skip }, () => {
   writeFileSync(envFile, "TOKEN=t0ps3cret\n");
-  assert.equal(cli(["init"], { ENVSEAL_IDENTITY: locked.path }).code, 0);
+  assert.equal(cli(["init"], { ENVLOCKUP_IDENTITY: locked.path }).code, 0);
   sshAdd(locked.path, "pw");
   // The file is encrypted for the key file: the agent line doesn't exist yet.
-  assert.match(cli(["get", "TOKEN"], { ENVSEAL_IDENTITY: locked.path }).stderr, /passphrase/);
-  const hinted = cli(["get", "TOKEN"], { ENVSEAL_IDENTITY: locked.path, ENVSEAL_SSH_PASSPHRASE: "pw" });
-  assert.match(hinted.stderr, /Tip: .*envseal add --agent/);
-  const add = cli(["add", "--agent", "--key", "locked@test"], { ENVSEAL_IDENTITY: locked.path, ENVSEAL_SSH_PASSPHRASE: "pw" });
-  assert.doesNotMatch(cli(["get", "TOKEN"], { ENVSEAL_IDENTITY: locked.path, ENVSEAL_SSH_PASSPHRASE: "pw" }).stderr, /Tip:/);
+  assert.match(cli(["get", "TOKEN"], { ENVLOCKUP_IDENTITY: locked.path }).stderr, /passphrase/);
+  const hinted = cli(["get", "TOKEN"], { ENVLOCKUP_IDENTITY: locked.path, ENVLOCKUP_SSH_PASSPHRASE: "pw" });
+  assert.match(hinted.stderr, /Tip: .*envlockup add --agent/);
+  const add = cli(["add", "--agent", "--key", "locked@test"], { ENVLOCKUP_IDENTITY: locked.path, ENVLOCKUP_SSH_PASSPHRASE: "pw" });
+  assert.doesNotMatch(cli(["get", "TOKEN"], { ENVLOCKUP_IDENTITY: locked.path, ENVLOCKUP_SSH_PASSPHRASE: "pw" }).stderr, /Tip:/);
   assert.equal(add.code, 0, add.stderr);
   assert.equal(cli(["get", "TOKEN"]).stdout, "t0ps3cret\n");
 });
