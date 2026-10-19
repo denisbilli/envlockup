@@ -36,7 +36,8 @@ class NotARecipientError(EnvlockupError):
     def __init__(self, fingerprint: str) -> None:
         super().__init__(
             f"this file is not encrypted for your key ({fingerprint}). "
-            "Ask someone who can open it to run `envlockup add` with your public key."
+            "Run `npx envlockup pubkey` and send the line it prints to someone who can open the file, "
+            "so they can run `npx envlockup add` with it."
         )
         self.fingerprint = fingerprint
 

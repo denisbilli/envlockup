@@ -44,7 +44,10 @@ export interface RecipientEntry {
 
 export class NotARecipientError extends Error {
   constructor(public readonly identity: Recipient) {
-    super(`this file is not encrypted for your key (${fingerprint(identity)}). Ask someone who can open it to run \`envlockup add\` with your public key.`);
+    super(
+      `this file is not encrypted for your key (${fingerprint(identity)}). Ask someone who can open it to run:\n` +
+        `  npx envlockup add "${recipientKey(identity)}${identity.label ? ` ${identity.label}` : ""}"`,
+    );
   }
 }
 
@@ -115,7 +118,8 @@ function decryptValue(dataKey: Buffer, name: string, value: string): string {
     return open(key, raw.subarray(16), valueAad(name)).toString("utf8");
   } catch {
     throw new Error(
-      `${name}: cannot decrypt (the value was changed, or moved from another variable). Set it again with \`envlockup set ${name}\`.`,
+      `${name}: cannot decrypt. The value was changed or moved from another variable, or it was encrypted ` +
+        `before the data key changed on another branch (a \`remove\` merged with a \`set\`). Set it again with \`envlockup set ${name}\`.`,
     );
   }
 }

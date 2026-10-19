@@ -42,7 +42,10 @@ export interface Identity {
 
 export class PassphraseRequiredError extends Error {
   constructor(public readonly source: string) {
-    super(`the SSH key ${source} is protected by a passphrase`);
+    super(
+      `the SSH key ${source} is protected by a passphrase. Set ENVLOCKUP_SSH_PASSPHRASE, ` +
+        "or load the key in ssh-agent (`ssh-add`) and run `npx envlockup add --agent` once so you don't need it.",
+    );
   }
 }
 
@@ -138,6 +141,14 @@ export function parseRecipient(text: string, label?: string): Recipient {
     return { type: "X25519", publicKey: decodeAgeRecipient(parts[0]), label: label ?? parts.slice(1).join(" ") };
   }
   if (parts[0]?.startsWith("sk-")) throw new Error("FIDO (sk-) SSH keys cannot decrypt; use a regular ssh-ed25519 key");
+  if (parts[0] === "ssh-rsa") {
+    throw new Error(
+      "ssh-rsa public keys can't be added yet. If the private key is in ssh-agent, ask its owner to run `npx envlockup pubkey --agent` and add the line it prints; otherwise ask for an ssh-ed25519 key.",
+    );
+  }
+  if (parts[0]?.startsWith("ecdsa-sha2-")) {
+    throw new Error("ECDSA keys can't be used, from a file or from ssh-agent. Ask for an ssh-ed25519 key (`ssh-keygen -t ed25519`).");
+  }
   throw new Error(`unsupported recipient "${parts[0] ?? ""}" (expected ssh-ed25519 or age1...)`);
 }
 

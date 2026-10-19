@@ -30,6 +30,24 @@ export function defaultKeyPath(): string {
   return join(homedir(), ".ssh", "id_ed25519");
 }
 
+/** The "no private key" message, with the advice that fits the keys this user has. */
+export function noKeyMessage(agentRunning: boolean): string {
+  const ssh = join(homedir(), ".ssh");
+  const agentHint = agentRunning
+    ? " If your key lives only in ssh-agent (a password manager's SSH agent, for example), run `npx envlockup pubkey --agent` and send the line it prints to someone who can open the file."
+    : "";
+  if (existsSync(join(ssh, "id_rsa"))) {
+    return (
+      `no usable private key: ${join(ssh, "id_rsa")} is an RSA key file, which envlockup can't use directly. ` +
+      "Load it in ssh-agent (`ssh-add`) and run `npx envlockup pubkey --agent`, or create an Ed25519 key with `ssh-keygen -t ed25519`."
+    );
+  }
+  if (existsSync(join(ssh, "id_ecdsa"))) {
+    return `no usable private key: ${join(ssh, "id_ecdsa")} is an ECDSA key, which can't be used. Create an Ed25519 key with \`ssh-keygen -t ed25519\`.${agentHint}`;
+  }
+  return `no private key found. Create one with \`ssh-keygen -t ed25519\`, or set ENVLOCKUP_PRIVATE_KEY or ENVLOCKUP_IDENTITY.${agentHint}`;
+}
+
 export function explicitIdentity(env: Env = process.env, path?: string): IdentitySource | null {
   if (path) return { text: readFileSync(path, "utf8"), source: path, path };
   const inline = env.ENVLOCKUP_PRIVATE_KEY?.trim();

@@ -113,7 +113,8 @@ def _decrypt_value(data_key: bytes, name: str, value: str) -> str:
         return open_sealed(key, raw[16:], _value_aad(name)).decode("utf-8", errors="replace")
     except InvalidTag:
         raise DecryptError(
-            f"{name}: cannot decrypt (the value was changed, or moved from another variable). "
+            f"{name}: cannot decrypt. The value was changed or moved from another variable, or it was "
+            "encrypted before the data key changed on another branch (a `remove` merged with a `set`). "
             f"Set it again with `envlockup set {name}`."
         ) from None
 
