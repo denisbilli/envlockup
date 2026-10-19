@@ -241,9 +241,8 @@ and the recipients' public keys and labels.
 - **Write access to the file.** Encryption hides values; it does not say who wrote
   them, and nothing authenticates the file as a whole. Someone who can change the
   file, without any private key, can:
-  - append a plaintext definition after an encrypted one (`DATABASE_URL=` pointing
-    at their server): the last definition wins, as in dotenv;
-  - replace an encrypted value with a plaintext one, or delete a variable;
+  - replace an encrypted value with a plaintext one (`DATABASE_URL=` pointing at
+    their server), or delete a variable;
   - put back an older ciphertext of the same variable (say, a revoked API key), or
     the whole file from an older commit;
   - add a recipient line for their own key. It cannot decrypt anything by itself,
@@ -253,8 +252,11 @@ and the recipients' public keys and labels.
     replace every value: the file decrypts cleanly to values they chose, and new
     values set on it afterwards are readable by them.
 
-  What *is* caught: a value moved to another variable, a modified ciphertext, and
-  values left under a different data key (the file then fails as a whole).
+  What *is* caught: a value moved to another variable, a modified ciphertext,
+  values left under a different data key (the file then fails as a whole), and a
+  plaintext definition after an encrypted one of the same name. dotenv would let
+  the last one win; envseal refuses to read the file, and `encrypt` refuses to
+  encrypt that value, until one of the two lines is removed (`set` replaces both).
   Review changes to `#envseal:` lines and values like code; if someone can change
   your code, they can also just print your secrets.
 - **A compromised developer machine.** The SSH key is the key to everything it can

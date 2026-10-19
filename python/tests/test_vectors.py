@@ -40,7 +40,9 @@ def test_decrypts(file):
 @pytest.mark.parametrize("case", VECTORS["errors"], ids=lambda c: c["name"])
 def test_rejects(case):
     with pytest.raises(ERRORS[case["error"]]):
-        SealedFile(case["text"]).unlock(identity(case["key"]))
+        sealed = SealedFile(case["text"])
+        sealed.unlock(identity(case["key"]))
+        sealed.decrypt_all()
 
 
 _VALUES = sorted({v for case in VECTORS["parse"] for v in case["expected"].values()})

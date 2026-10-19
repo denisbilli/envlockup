@@ -139,7 +139,9 @@ class SealedFile:
                 if len(key) != 32:
                     raise FormatError("malformed data key")
                 self._data_key = key
-                self.decrypt_all()
+                for name, value in self.entries:
+                    if is_encrypted_value(value):
+                        _decrypt_value(key, name, value)
                 return
             except (FormatError, DecryptError) as err:
                 self._data_key = None
@@ -148,8 +150,26 @@ class SealedFile:
             raise failure
         raise NotARecipientError(identity.fingerprint)
 
+    def plaintext_overrides(self) -> list[str]:
+        """Names defined in plaintext after an encrypted definition of the same name."""
+        encrypted: set[str] = set()
+        found: list[str] = []
+        for name, value in self.entries:
+            if is_encrypted_value(value):
+                encrypted.add(name)
+            elif name in encrypted and name not in found:
+                found.append(name)
+        return found
+
     def decrypt_all(self) -> dict[str, str]:
-        """All variables, decrypted. Later definitions win, as in dotenv."""
+        """All variables, decrypted. Later definitions win, as in dotenv, except that a
+        plaintext definition after an encrypted one is refused: it needs no key to write."""
+        for name in self.plaintext_overrides():
+            raise FormatError(
+                f"{name} is encrypted, then set again in plaintext further down the file. "
+                "Anyone who can edit the file can add such a line, so it is not used. "
+                f"Delete the line you don't want, or run `envseal set {name}`."
+            )
         out: dict[str, str] = {}
         for name, value in self.entries:
             if is_encrypted_value(value):

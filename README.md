@@ -212,6 +212,8 @@ inspect it on that machine. It also can't protect you from someone who can chang
 your code or the file in the repository: review changes to the `#envseal:` lines
 like you would review code. See [docs/DESIGN.md](docs/DESIGN.md) for the details.
 
+To report a vulnerability, see [SECURITY.md](SECURITY.md).
+
 ## Requirements
 
 Node.js 22.12 or later. Keys: `ssh-ed25519` files, `ssh-ed25519` and `ssh-rsa`
