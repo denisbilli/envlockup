@@ -263,43 +263,7 @@ keys. A new implementation should pass them before reading real files.
 
 ## Threat model
 
-**Protected against**: anyone who obtains the file but none of the recipients'
-private keys: a public or leaked repository, a fork, CI logs that print the file,
-backups, a laptop's synced folders, a copy sent over chat. They learn the variable
-names, the comments, the number of variables, the approximate length of each value,
-and the recipients' public keys and labels.
-
-**Not protected against**:
-
-- **A running process.** Decrypted values are normal environment variables, and the
-  operating system lets the process owner (and root) read them.
-- **Write access to the file.** Encryption hides values; it does not say who wrote
-  them, and nothing authenticates the file as a whole. Someone who can change the
-  file, without any private key, can:
-  - replace an encrypted value with a plaintext one (`DATABASE_URL=` pointing at
-    their server), or delete a variable;
-  - put back an older ciphertext of the same variable (say, a revoked API key), or
-    the whole file from an older commit;
-  - wrap a data key of their own for every recipient (public keys are public) and
-    replace every value: the file decrypts cleanly to values they chose, and new
-    values set on it afterwards are readable by them.
-
-  What *is* caught: a value moved to another variable, a modified ciphertext,
-  values left under a different data key (the file then fails as a whole), a
-  recipient line added, removed or edited, and a plaintext definition after an
-  encrypted one of the same name. dotenv would let
-  the last one win; envlockup refuses to read the file, and `encrypt` refuses to
-  encrypt that value, until one of the two lines is removed (`set` replaces both).
-  Review changes to `#envlockup:` lines and values like code; if someone can change
-  your code, they can also just print your secrets.
-- **A compromised developer machine.** The SSH key is the key to everything it can
-  decrypt, as with any key-based scheme.
-- **Other users of your agent.** Any process that can talk to your agent can
-  derive your envlockup identity, offline and for good, not just while it has
-  access. That includes root on a server you forwarded your agent to (`ssh -A`).
-  Agents that confirm each signature (`ssh-add -c`, 1Password's prompts) help.
-- **Lost keys.** If every recipient loses their private key, the values are gone.
-  Keep at least two recipients (e.g. your laptop and a backup key stored offline).
+See [THREAT_MODEL.md](THREAT_MODEL.md).
 
 ## Planned
 
