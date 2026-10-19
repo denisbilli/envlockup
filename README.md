@@ -281,6 +281,10 @@ Node.js 22.12 or later; Python 3.10 or later for the Python package. Keys:
 `ssh-ed25519` files, `ssh-ed25519` and `ssh-rsa` keys in ssh-agent, and native
 age X25519 keys. RSA key files and FIDO `sk-` keys are not supported.
 
+CI runs the tests on Linux, macOS and Windows. On Windows, the ssh-agent tests and
+the comparison with the `age` CLI don't run yet, so agent support there is
+untested.
+
 ## Prior art and credits
 
 - [age](https://age-encryption.org): the key wrapping is age's X25519 and
