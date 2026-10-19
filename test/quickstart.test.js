@@ -10,7 +10,8 @@ import { test } from "node:test";
 import { sshKey, tempDir } from "./helpers.js";
 
 const CLI = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
-const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+// Git on Windows may check the README out with CRLF line endings.
+const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 
 function quickstart() {
   const block = readme.match(/<!-- quickstart[^>]*-->\s*```sh\n([\s\S]*?)```\s*<!-- \/quickstart -->/);
