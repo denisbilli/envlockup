@@ -4,6 +4,8 @@ Thanks for helping. Bug reports, questions about the design and pull requests
 are all welcome. For security problems, don't open an issue: see
 [SECURITY.md](SECURITY.md).
 
+Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
+
 ## Layout
 
 - `src/`: the npm package (library and CLI), TypeScript, built into `dist/`.
