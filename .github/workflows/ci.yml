@@ -1,19 +1,34 @@
 name: CI
 
+# Runs on the self-hosted runner on the Mac mini (repository variable
+# CI_RUNNER=mac-mini, Linux arm64), which uses no GitHub minutes. Without the
+# variable nothing runs. GitHub's own runners (Linux, macOS, Windows) are for
+# emergencies only: start the workflow by hand with "github_hosted".
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      github_hosted:
+        description: "Emergency: run on GitHub's Linux, macOS and Windows runners (paid minutes)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    if: vars.CI_RUNNER != '' || inputs.github_hosted
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: ${{ fromJSON(inputs.github_hosted && '["ubuntu-latest","macos-latest","windows-latest"]' || format('["{0}"]', vars.CI_RUNNER)) }}
         node: [22, 24]
     runs-on: ${{ matrix.os }}
     steps:
@@ -21,20 +36,21 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ matrix.node }}
-      # The interop tests check envlockup against the reference age CLI; they are
-      # skipped where age is not installed.
+      # The interop tests check envlockup against the reference age CLI, and the
+      # agent tests need ssh-agent; both are skipped where the tools are missing.
       - if: runner.os == 'Linux'
-        run: sudo apt-get install -y age
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq age openssh-client
       - if: runner.os == 'macOS'
         run: brew install age
       - run: npm ci
       - run: npm test
 
   python:
+    if: vars.CI_RUNNER != '' || inputs.github_hosted
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: ${{ fromJSON(inputs.github_hosted && '["ubuntu-latest","macos-latest","windows-latest"]' || format('["{0}"]', vars.CI_RUNNER)) }}
         python: ["3.10", "3.13"]
     runs-on: ${{ matrix.os }}
     steps:
