@@ -15,6 +15,7 @@ import {
   ed25519PublicToX25519,
   ed25519SeedToX25519,
   hkdf,
+  isEd25519Point,
   open,
   randomBytes,
   seal,
@@ -46,9 +47,12 @@ export class PassphraseRequiredError extends Error {
 }
 
 const b64 = (b: Uint8Array) => Buffer.from(b).toString("base64").replace(/=+$/, "");
+/** Strict unpadded base64: only the canonical encoding of the bytes is accepted. */
 const unb64 = (s: string) => {
   if (!/^[A-Za-z0-9+/]*$/.test(s)) throw new Error("invalid base64");
-  return Buffer.from(s, "base64");
+  const bytes = Buffer.from(s, "base64");
+  if (b64(bytes) !== s) throw new Error("invalid base64");
+  return bytes;
 };
 
 // --- SSH wire format ------------------------------------------------------------
@@ -105,6 +109,7 @@ function ed25519FromWire(wire: Buffer): Buffer {
   if (type !== "ssh-ed25519") throw new Error(`unsupported SSH key type ${type} (only ssh-ed25519 is supported)`);
   const key = r.string();
   if (key.length !== 32 || !r.done) throw new Error("malformed ssh-ed25519 key");
+  if (!isEd25519Point(key)) throw new Error("malformed ssh-ed25519 key (not a point on the curve)");
   return key;
 }
 

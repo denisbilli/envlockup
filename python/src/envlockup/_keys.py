@@ -70,9 +70,13 @@ def b64(data: bytes) -> str:
 
 
 def unb64(s: str) -> bytes:
-    if not re.fullmatch(r"[A-Za-z0-9+/]*", s):
+    """Strict unpadded base64: only the canonical encoding of the bytes is accepted."""
+    if not re.fullmatch(r"[A-Za-z0-9+/]*", s) or len(s) % 4 == 1:
         raise ValueError("invalid base64")
-    return base64.b64decode(s + "=" * (-len(s) % 4))
+    raw = base64.b64decode(s + "=" * (-len(s) % 4))
+    if base64.b64encode(raw).rstrip(b"=").decode() != s:
+        raise ValueError("invalid base64")
+    return raw
 
 
 # --- SSH wire format --------------------------------------------------------------
@@ -119,7 +123,26 @@ def ed25519_from_wire(wire: bytes) -> bytes:
     key = r.string()
     if len(key) != 32 or not r.done:
         raise ValueError("malformed ssh-ed25519 key")
+    if not is_ed25519_point(key):
+        raise ValueError("malformed ssh-ed25519 key (not a point on the curve)")
     return key
+
+
+_P = 2**255 - 19
+_D = -121665 * pow(121666, _P - 2, _P) % _P
+
+
+def is_ed25519_point(public_key: bytes) -> bool:
+    """Whether 32 bytes decode to a point on the Ed25519 curve (RFC 8032, 5.1.3)."""
+    if len(public_key) != 32:
+        return False
+    y = int.from_bytes(public_key, "little") & ((1 << 255) - 1)
+    if y >= _P:
+        return False
+    x2 = (y * y - 1) * pow(_D * y * y + 1, _P - 2, _P) % _P
+    if x2 == 0:
+        return public_key[31] >> 7 == 0
+    return pow(x2, (_P - 1) // 2, _P) == 1
 
 
 def decode_age_recipient(s: str) -> bytes:

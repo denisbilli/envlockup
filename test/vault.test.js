@@ -265,3 +265,12 @@ test("a missing or edited mac line is detected, and accepting the list signs it 
   }
   assert.throws(() => new SealedEnv(text.replace(/^(#envlockup:mac .*)$/m, "$1\n$1")), /more than one #envlockup:mac line/);
 });
+
+test("a plaintext value that looks encrypted is refused", () => {
+  const env = sealed();
+  env.unlock(aliceId);
+  assert.throws(() => env.set("NOTE", "envlockup:v1:hello", { plain: true }), /cannot start with "envlockup:v1:"/);
+  env.set("NOTE", "envlockup:v1:hello");
+  assert.equal(new SealedEnv(env.toString()).entries().find((e) => e.name === "NOTE").encrypted, true);
+  assert.equal(env.get("NOTE"), "envlockup:v1:hello");
+});

@@ -100,10 +100,12 @@ def _value_aad(name: str) -> bytes:
 
 def _decrypt_value(data_key: bytes, name: str, value: str) -> str:
     encoded = value[len(VALUE_PREFIX) :]
-    try:
+    raw = b""
+    # Strict: unpadded base64url in its canonical form only, as in every implementation.
+    if re.fullmatch(r"[A-Za-z0-9_-]*", encoded) and len(encoded) % 4 != 1:
         raw = base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4))
-    except ValueError:
-        raw = b""
+        if base64.urlsafe_b64encode(raw).rstrip(b"=").decode() != encoded:
+            raw = b""
     if len(raw) < 32:
         raise DecryptError(f"{name}: malformed encrypted value")
     key = hkdf(data_key, raw[:16], VALUE_INFO)

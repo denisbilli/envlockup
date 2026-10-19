@@ -104,8 +104,12 @@ function encryptValue(dataKey: Buffer, name: string, value: string): string {
 }
 
 function decryptValue(dataKey: Buffer, name: string, value: string): string {
-  const raw = Buffer.from(value.slice(VALUE_PREFIX.length), "base64url");
-  if (raw.length < 32) throw new Error(`${name}: malformed encrypted value`);
+  const encoded = value.slice(VALUE_PREFIX.length);
+  const raw = Buffer.from(encoded, "base64url");
+  // Strict: unpadded base64url in its canonical form only, as in every implementation.
+  if (!/^[A-Za-z0-9_-]*$/.test(encoded) || raw.toString("base64url") !== encoded || raw.length < 32) {
+    throw new Error(`${name}: malformed encrypted value`);
+  }
   const key = hkdf(dataKey, raw.subarray(0, 16), VALUE_INFO, 32);
   try {
     return open(key, raw.subarray(16), valueAad(name)).toString("utf8");
@@ -256,6 +260,9 @@ export class SealedEnv {
 
   set(name: string, value: string, { plain = false } = {}): void {
     if (!/^[\w.-]+$/.test(name)) throw new Error(`invalid variable name: ${name}`);
+    if (plain && isEncryptedValue(value)) {
+      throw new Error(`a plaintext value cannot start with "${VALUE_PREFIX}": it would be read as encrypted`);
+    }
     const raw = plain ? formatValue(value) : encryptValue(this.requireKey(), name, value);
     const [last, ...earlier] = this.entries()
       .filter((e) => e.name === name)

@@ -6,13 +6,14 @@
 // The output is random (keys, salts), so it is committed rather than rebuilt in
 // CI; test/vectors.test.js checks that it still matches this implementation.
 import { execFileSync } from "node:child_process";
-import { randomBytes } from "node:crypto";
+import { createHmac, hkdfSync, randomBytes } from "node:crypto";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import dotenv from "dotenv";
 import { SealedEnv, generateAgeIdentity, parseIdentity, parseRecipient, recipientKey } from "../dist/index.js";
 import { parseEntries, splitLines } from "../dist/dotenv.js";
+import { isEd25519Point } from "../dist/crypto.js";
 
 const out = new URL("../test/vectors.json", import.meta.url);
 
@@ -163,6 +164,46 @@ const outsiderLine = withOutsider.toString().split("\n").find((l) => l.endsWith(
 const insertAfterRecipients = (line) => [...lines.slice(0, lastRecipient + 1), line, ...lines.slice(lastRecipient + 1)].join("\n");
 const agentLine = lines.find((l) => l.startsWith("#envlockup:recipient ssh-agent "));
 
+// Base64 that decodes to the same bytes but isn't the canonical encoding: the
+// unused low bits of the last character are set.
+function nonCanonical(encoded, alphabet) {
+  const unused = { 2: 4, 3: 2 }[encoded.length % 4];
+  if (!unused) return null;
+  const last = alphabet.indexOf(encoded.at(-1));
+  return encoded.slice(0, -1) + alphabet[last | 1];
+}
+const B64URL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+const valueName = ["SPACES", "UNICODE", "QUOTES", "HASH", "DATABASE_URL", "MULTILINE"].find((n) =>
+  nonCanonical(valueOf(n).slice("envlockup:v1:".length), B64URL),
+);
+const loose = "envlockup:v1:" + nonCanonical(valueOf(valueName).slice("envlockup:v1:".length), B64URL);
+const withJunk = valueOf("SPACES").slice(0, 20) + "!*" + valueOf("SPACES").slice(20);
+
+// An ssh-ed25519 recipient whose key is not a point on the curve.
+const sshLine = lines.find((l) => l.startsWith("#envlockup:recipient ssh-ed25519 "));
+let offCurve = Buffer.alloc(32);
+for (let y = 2; isEd25519Point(offCurve); y++) offCurve = Buffer.from(y.toString(16).padStart(64, "0"), "hex").reverse();
+const sshString = (b) => Buffer.concat([Buffer.from([0, 0, 0, b.length]), b]);
+const offCurveWire = Buffer.concat([sshString(Buffer.from("ssh-ed25519")), sshString(offCurve)]).toString("base64").replace(/=+$/, "");
+const offCurveLine = sshLine.replace(/^(#envlockup:recipient ssh-ed25519 )\S+/, `$1${offCurveWire}`);
+
+// Re-sign a modified recipient list, from the spec in DESIGN.md, so that only the
+// check a vector is about can catch it.
+const dataKey = parseIdentity(keys.age.private, "age").unwrap(new SealedEnv(sealed).recipients.find((r) => r.recipient.type === "X25519").stanza);
+function resign(fileLines) {
+  const key = Buffer.from(hkdfSync("sha256", dataKey, Buffer.alloc(0), "github.com/denisbilli/envlockup/v1/recipients", 32));
+  const mac = createHmac("sha256", key);
+  for (const l of fileLines.filter((l) => l.startsWith("#envlockup:recipient "))) {
+    const bytes = Buffer.from(l, "utf8");
+    mac.update(Buffer.from([bytes.length >>> 24, (bytes.length >>> 16) & 255, (bytes.length >>> 8) & 255, bytes.length & 255]));
+    mac.update(bytes);
+  }
+  const signed = `#envlockup:mac ${mac.digest("base64url")}`;
+  return fileLines.map((l) => (l.startsWith("#envlockup:mac ") ? signed : l)).join("\n");
+}
+if (resign(lines) !== sealed) throw new Error("resign() does not reproduce the file's #envlockup:mac line");
+
+
 const errors = [
   { name: "key that is not a recipient", text: sealed, key: "outsider_age", error: "not_a_recipient" },
   { name: "ssh key that is not a recipient", text: sealed, key: "outsider_ssh", error: "not_a_recipient" },
@@ -181,6 +222,9 @@ const errors = [
   { name: "recipient lines reordered", text: [lines[0], lines[2], lines[1], ...lines.slice(3)].join("\n"), key: "age", error: "recipients" },
   { name: "mac line missing", text: lines.filter((l) => l !== macLine).join("\n"), key: "age", error: "recipients" },
   { name: "two mac lines", text: insertAfterRecipients(macLine), key: "age", error: "format" },
+  { name: "value with characters outside base64url", text: replaceLine("SPACES", withJunk), key: "age", error: "decrypt" },
+  { name: "value in non-canonical base64url", text: replaceLine(valueName, loose), key: "age", error: "decrypt" },
+  { name: "ssh-ed25519 recipient that is not a curve point", text: resign(lines.map((l) => (l === sshLine ? offCurveLine : l))), key: "age", error: "format" },
   { name: "header without recipients", text: [header[0], ...lines.filter((l) => !l.startsWith("#envlockup:"))].join("\n"), key: "age", error: "format" },
 ];
 
