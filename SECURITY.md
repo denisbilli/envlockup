@@ -16,7 +16,7 @@ CLI) and the Python package, including how they handle keys, ssh-agent and the
 files they write.
 
 What envlockup does and does not protect against is described in the
-[threat model](docs/DESIGN.md#threat-model). A report that one of the listed
+[threat model](docs/THREAT_MODEL.md). A report that one of the listed
 limits applies (for example, that someone with write access to the file can
 delete a variable) is not a vulnerability, but a way around something the threat
 model says is caught is.

@@ -1,0 +1,45 @@
+name: Bug report
+description: Something doesn't work as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste private keys, passphrases or decrypted values.** Public keys and
+        encrypted `envlockup:v1:...` values are fine. For security problems, use
+        [private reporting](https://github.com/denisbilli/envlockup/security/advisories/new) instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command you ran, what you expected, and what you got (the full error message).
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: envlockup version
+      description: "`npx envlockup --version`, or `pip show envlockup`"
+    validations:
+      required: true
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options: [npm (CLI or library), Python]
+    validations:
+      required: true
+  - type: input
+    id: runtime
+    attributes:
+      label: OS and Node.js or Python version
+      placeholder: macOS 15, Node 22.12
+    validations:
+      required: true
+  - type: dropdown
+    id: key
+    attributes:
+      label: Key type
+      options: [ssh-ed25519 key file, ssh-ed25519 key file with passphrase, ssh-agent, age key (keygen), not relevant]
+    validations:
+      required: true

@@ -77,5 +77,7 @@ like python-dotenv. The test suite runs the same vectors as the Node
 implementation (`test/vectors.json` in the repository), generated with the real
 `dotenv` package.
 
-The file format and threat model are described in
-[docs/DESIGN.md](https://github.com/denisbilli/envlockup/blob/main/docs/DESIGN.md).
+The file format is described in
+[docs/DESIGN.md](https://github.com/denisbilli/envlockup/blob/main/docs/DESIGN.md), and
+what it protects against in
+[docs/THREAT_MODEL.md](https://github.com/denisbilli/envlockup/blob/main/docs/THREAT_MODEL.md).
