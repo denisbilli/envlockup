@@ -1,0 +1,39 @@
+name: Publish NuGet package
+
+# A GitHub release whose tag starts with nuget-v (e.g. nuget-v0.2.1) publishes
+# dotnet/ to nuget.org as Envlockup, with trusted publishing (no long-lived key).
+# The repository variable NUGET_USER is the nuget.org account that owns the policy.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: startsWith(github.event.release.tag_name, 'nuget-v')
+    runs-on: ubuntu-latest
+    environment: nuget
+    permissions:
+      id-token: write # NuGet trusted publishing
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 8.0.x
+      - name: Check that the tag matches Envlockup.csproj
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version=$(dotnet msbuild dotnet/src/Envlockup -getProperty:Version)
+          test "$TAG" = "nuget-v$version" || { echo "release tag $TAG does not match Envlockup.csproj version $version"; exit 1; }
+      - run: dotnet test dotnet/tests/Envlockup.Tests
+      - run: dotnet pack dotnet/src/Envlockup -c Release -o dotnet/dist
+      - uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        id: login
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - run: dotnet nuget push "dotnet/dist/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}

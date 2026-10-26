@@ -10,8 +10,9 @@ Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
 
 - `src/`: the npm package (library and CLI), TypeScript, built into `dist/`.
 - `python/`: the Python package, which only reads files.
-- `test/`: Node tests; `test/vectors.json` holds test vectors shared by both
-  implementations.
+- `dotnet/`: the .NET package (NuGet `Envlockup`), which only reads files.
+- `test/`: Node tests; `test/vectors.json` holds test vectors shared by every
+  implementation.
 - `docs/DESIGN.md`: the file format; `docs/THREAT_MODEL.md`: what it protects.
 
 ## Building and testing
@@ -24,6 +25,9 @@ cd python
 python -m venv .venv
 .venv/bin/pip install -e '.[test]'
 .venv/bin/python -m pytest
+
+cd dotnet
+dotnet test tests/Envlockup.Tests
 ```
 
 The interoperability tests check the key wrapping against the reference `age`
@@ -33,13 +37,13 @@ CLI and are skipped when it isn't installed (`brew install age`,
 
 ## Changing the format or the parser
 
-The file format is shared by two implementations, so a change to it starts in
+The file format is shared by three implementations, so a change to it starts in
 `docs/DESIGN.md`, not in the code:
 
 1. Open an issue describing the change and why it is needed.
 2. Update `docs/DESIGN.md` (and `docs/THREAT_MODEL.md` if what is protected
    changes).
-3. Change both implementations in the same pull request.
+3. Change every implementation in the same pull request.
 4. Regenerate the vectors with `npm run vectors` and commit `test/vectors.json`.
    The output is random, so the whole file changes; that's expected.
 

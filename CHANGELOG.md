@@ -1,12 +1,18 @@
 # Changelog
 
-Both packages are listed here: `envlockup` on npm (library and CLI) and
-`envlockup` on PyPI (reader). The format follows
+Every package is listed here: `envlockup` on npm (library and CLI),
+`envlockup` on PyPI (reader) and `Envlockup` on NuGet (reader). The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Nothing has been
 published yet; versions before the rename were called envseal and were never
 released.
 
 ## Unreleased
+
+### NuGet
+
+- First version of `Envlockup` for .NET: `Env.Config()` and `Env.Load()` read
+  envlockup files with an SSH key (also passphrase-protected) or an age key,
+  like the Python package. ssh-agent is not supported yet.
 
 ## 0.2.1
 
