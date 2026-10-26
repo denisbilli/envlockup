@@ -6,3 +6,7 @@ __pycache__/
 *.egg-info/
 build/
 .pytest_cache/
+bin/
+obj/
+*.nupkg
+*.snupkg

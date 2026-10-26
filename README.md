@@ -52,7 +52,7 @@ envlockup reads it exactly like dotenv. It prints variable names, never values.
 
 | You want | Use |
 |---|---|
-| A `.env` in git where each person decrypts with their own SSH key, loaded by a library in Node or Python | envlockup |
+| A `.env` in git where each person decrypts with their own SSH key, loaded by a library in Node, Python or .NET | envlockup |
 | One shared private key per environment, the biggest ecosystem, hosted team features | [dotenvx](https://dotenvx.com) |
 | KMS, YAML/JSON/INI, Kubernetes, many formats, a mature and widely used tool | [SOPS](https://github.com/getsops/sops) |
 | Secrets in TOML next to [mise](https://mise.jdx.dev), many secret backends | [fnox](https://github.com/jdx/fnox) |
@@ -204,6 +204,21 @@ envlockup.config()  # before anything reads settings (works with python-decouple
 or `python -m envlockup run -- gunicorn app.wsgi`. It only reads files; edit them
 with the CLI above. ssh-agent is not supported in Python yet.
 
+## .NET apps
+
+C# and other .NET apps read the file with the
+[Envlockup NuGet package](dotnet/README.md):
+
+```sh
+dotnet add package Envlockup
+```
+
+```csharp
+Envlockup.Env.Config();  // before WebApplication.CreateBuilder, so IConfiguration sees the values
+```
+
+It only reads files, like the Python package; ssh-agent is not supported yet.
+
 ## Where the private key comes from
 
 In order:
@@ -277,7 +292,8 @@ file format in [docs/DESIGN.md](docs/DESIGN.md). To report a vulnerability, see
 
 ## Requirements
 
-Node.js 22.12 or later; Python 3.10 or later for the Python package. Keys:
+Node.js 22.12 or later; Python 3.10 or later for the Python package; .NET 8 or
+.NET Standard 2.0 for the .NET package. Keys:
 `ssh-ed25519` files, `ssh-ed25519` and `ssh-rsa` keys in ssh-agent, and native
 age X25519 keys. RSA key files and FIDO `sk-` keys are not supported.
 
