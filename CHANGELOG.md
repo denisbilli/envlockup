@@ -8,6 +8,12 @@ released.
 
 ## Unreleased
 
+### npm
+
+- The CLI no longer truncates its output into a pipe: `envlockup get BIG | ...`
+  stopped after the first 64 KB when the reader was slower than the writer,
+  because the process exited before stdout was flushed.
+
 ### NuGet
 
 - First version of `Envlockup` for .NET: `Env.Config()` and `Env.Load()` read
