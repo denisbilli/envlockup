@@ -34,6 +34,17 @@ test("init, set, get, ls, decrypt", () => {
   assert.equal(cli(["get", "NOPE"]).code, 1);
 });
 
+test("get prints a large value in full into a slow pipe", { skip: process.platform === "win32" && "POSIX shell" }, () => {
+  const big = join(dir, "big.env");
+  const value = "x".repeat(300_000);
+  writeFileSync(big, `BIG=${value}\n`);
+  execFileSync(process.execPath, [CLI, "-f", big, "init"], { env: baseEnv });
+  // the reader starts late, so the 64 KB pipe buffer fills up while envlockup is still writing
+  const cmd = `"${process.execPath}" "${CLI}" -f "${big}" get BIG | (sleep 1; wc -c)`;
+  const r = spawnSync("sh", ["-c", cmd], { env: baseEnv, encoding: "utf8" });
+  assert.equal(Number(r.stdout.trim()), value.length + 1);
+});
+
 test("run injects variables and hides the private key from the child", () => {
   const script = "console.log(JSON.stringify([process.env.TOKEN, process.env.PORT, process.env.ENVLOCKUP_PRIVATE_KEY ?? null]))";
   const keyText = readFileSync(me.path, "utf8");

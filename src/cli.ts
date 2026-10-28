@@ -765,10 +765,21 @@ function signalNumber(signal: NodeJS.Signals): number | undefined {
   return ({ SIGHUP: 1, SIGINT: 2, SIGTERM: 15, SIGKILL: 9 } as Record<string, number>)[signal];
 }
 
+/** Exit once stdout and stderr are flushed: into a pipe they are written asynchronously, and
+ * process.exit() would drop what the reader hasn't taken yet (all but the first 64 KB). */
+function exit(code: number): void {
+  let pending = 2;
+  const done = () => {
+    if (--pending === 0) process.exit(code);
+  };
+  process.stdout.write("", done);
+  process.stderr.write("", done);
+}
+
 run(process.argv.slice(2)).then(
-  (code) => process.exit(code),
+  (code) => exit(code),
   (err: Error) => {
     info(`envlockup: ${printable(err.message)}`);
-    process.exit(err instanceof UsageError ? 2 : 1);
+    exit(err instanceof UsageError ? 2 : 1);
   },
 );
